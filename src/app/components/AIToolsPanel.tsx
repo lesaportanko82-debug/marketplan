@@ -1,5 +1,5 @@
 /**
- * 🤖 AIToolsPanel — панель расширенных AI-инструментов
+ * 🤖 AIToolsPanel - панель расширенных AI-инструментов
  * 
  * Интеграция новых AI-функций в Content Studio:
  * - Content Repurposing

@@ -1,5 +1,5 @@
 /**
- * 🎓 TourManager — управление интерактивными турами
+ * 🎓 TourManager - управление интерактивными турами
  * 
  * Компонент для запуска и отслеживания пошаговых туров по интерфейсу
  */
@@ -361,7 +361,7 @@ export function TourManager({ onClose }: TourManagerProps) {
                         Совет от Марка 🦊
                       </p>
                       <p className="text-[12px] text-muted-foreground leading-relaxed">
-                        Начните с тура "Знакомство с MarketPlan" — это займёт всего 5 минут 
+                        Начните с тура "Знакомство с MarketPlan" - это займёт всего 5 минут 
                         и вы узнаете все основные функции платформы!
                       </p>
                     </div>

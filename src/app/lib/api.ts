@@ -57,7 +57,13 @@ export async function getData<T = any>(key: string): Promise<T | null> {
       { headers: headers() }
     );
     const json = await res.json();
+    // If ws/data returns 401 (stale/invalid token), silently return null
+    // The auth system will refresh the token and retry naturally
     if (!json.success) {
+      if (res.status === 401 && prefix === "ws/data") {
+        console.info(`getData: ws/ auth rejected for "${key}", token may be refreshing`);
+        return null;
+      }
       console.error(`getData error for key=${key}:`, json.error);
       return null;
     }
@@ -81,6 +87,11 @@ export async function saveData(key: string, value: any): Promise<boolean> {
     );
     const json = await res.json();
     if (!json.success) {
+      // 401 on ws/data means the token is stale - don't log as an error, just skip
+      if (res.status === 401 && prefix === "ws/data") {
+        console.info(`saveData: ws/ auth rejected for "${key}", token may be refreshing - skipping save`);
+        return false;
+      }
       console.error(`saveData error for key=${key}:`, json.error);
       return false;
     }
@@ -99,6 +110,10 @@ export async function deleteData(key: string): Promise<boolean> {
       { method: "DELETE", headers: headers() }
     );
     const json = await res.json();
+    if (!json.success && res.status === 401 && prefix === "ws/data") {
+      console.info(`deleteData: ws/ auth rejected for "${key}", token may be refreshing`);
+      return false;
+    }
     return json.success;
   } catch (err) {
     console.error(`deleteData network error for key=${key}:`, err);

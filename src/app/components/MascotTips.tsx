@@ -1,5 +1,5 @@
 /**
- * 🦊 Марк — контекстные подсказки при первом посещении модуля.
+ * 🦊 Марк - контекстные подсказки при первом посещении модуля.
  * Cloud-style speech bubble с интерактивными хотспотами:
  * кликабельные точки внутри облачка подсвечивают реальные UI-элементы.
  */
@@ -20,7 +20,7 @@ import { playPop } from "../lib/mascot-sounds";
 interface TipConfig {
   message: string;
   emotion: MascotEmotion;
-  /** Interactive hotspot points — clicking them highlights a real UI element */
+  /** Interactive hotspot points - clicking them highlights a real UI element */
   hotspots?: SpotlightTarget[];
 }
 
@@ -44,7 +44,7 @@ const TIPS: Record<string, TipConfig> = {
   },
   "/dashboard": {
     message:
-      "Аналитика — моё любимое! Перетаскивайте виджеты, чтобы настроить свой дашборд.",
+      "Аналитика - моё любимое! Перетаскивайте виджеты, чтобы настроить свой дашборд.",
     emotion: "love",
     hotspots: [
       {
@@ -67,13 +67,13 @@ const TIPS: Record<string, TipConfig> = {
       {
         selector: '[data-hotspot="header-search"]',
         label: "Поиск",
-        description: "Ctrl+K — быстрый поиск событий и модулей",
+        description: "Ctrl+K - быстрый поиск событий и модулей",
       },
     ],
   },
   "/smm/plan": {
     message:
-      "Контент-план — сердце SMM! Перетаскивайте идеи из банка прямо в таблицу.",
+      "Контент-план - сердце SMM! Перетаскивайте идеи из банка прямо в таблицу.",
     emotion: "work",
     hotspots: [
       {
@@ -85,7 +85,7 @@ const TIPS: Record<string, TipConfig> = {
   },
   "/content-studio": {
     message:
-      "Content Studio — моя гордость! Выберите платформу, опишите тему — и я создам пост + изображение.",
+      "Content Studio - моя гордость! Выберите платформу, опишите тему - и я создам пост + изображение.",
     emotion: "celebrate",
     hotspots: [
       {
@@ -102,7 +102,7 @@ const TIPS: Record<string, TipConfig> = {
   },
   "/smm/hashtags": {
     message:
-      "Хештеги и SEO-ключи — тайное оружие охватов. AI проанализирует нишу и подберёт лучшие!",
+      "Хештеги и SEO-ключи - тайное оружие охватов. AI проанализирует нишу и подберёт лучшие!",
     emotion: "celebrate",
   },
   "/influencers": {
@@ -117,12 +117,12 @@ const TIPS: Record<string, TipConfig> = {
   },
   "/competitor-spy": {
     message:
-      "Competitor Spy — AI разведка! Я проанализирую стратегию конкурента и найду точки роста для вас.",
+      "Competitor Spy - AI разведка! Я проанализирую стратегию конкурента и найду точки роста для вас.",
     emotion: "work",
   },
   "/ab-tests": {
     message:
-      "A/B тесты — это как эксперименты, только прибыльные. Создайте гипотезу и проверьте на данных!",
+      "A/B тесты - это как эксперименты, только прибыльные. Создайте гипотезу и проверьте на данных!",
     emotion: "think",
     hotspots: [
       {
@@ -134,17 +134,17 @@ const TIPS: Record<string, TipConfig> = {
   },
   "/unit-economics": {
     message:
-      "Unit-экономика покажет, зарабатываете ли вы на каждом клиенте. CAC, LTV, маржа — всё тут.",
+      "Unit-экономика покажет, зарабатываете ли вы на каждом клиенте. CAC, LTV, маржа - всё тут.",
     emotion: "work",
   },
   "/media": {
     message:
-      "Храните логотипы, шрифты, гайдлайны — всё, что делает бренд узнаваемым. Drag & drop файлов!",
+      "Храните логотипы, шрифты, гайдлайны - всё, что делает бренд узнаваемым. Drag & drop файлов!",
     emotion: "idle",
   },
   "/brand-voice": {
     message:
-      "Brand Voice — я запомню тональность вашего бренда и буду генерировать тексты в вашем стиле.",
+      "Brand Voice - я запомню тональность вашего бренда и буду генерировать тексты в вашем стиле.",
     emotion: "love",
   },
   "/fatigue-detector": {
@@ -159,12 +159,12 @@ const TIPS: Record<string, TipConfig> = {
   },
   "/cjm": {
     message:
-      "Customer Journey Map — путь клиента от первого касания до покупки. Найдите узкие места!",
+      "Customer Journey Map - путь клиента от первого касания до покупки. Найдите узкие места!",
     emotion: "think",
   },
   "/personas": {
     message:
-      "Persona Builder создаст детальный портрет ЦА с помощью AI. Чем точнее — тем лучше конверсия!",
+      "Persona Builder создаст детальный портрет ЦА с помощью AI. Чем точнее - тем лучше конверсия!",
     emotion: "work",
   },
   "/campaign-storyline": {
@@ -179,7 +179,7 @@ const TIPS: Record<string, TipConfig> = {
   },
   "/pricing": {
     message:
-      "Тарифы MarketPlan! 🦊 Совет от Марка: начните с Демо, а когда AI-лимиты закончатся — переходите на Лайт.",
+      "Тарифы MarketPlan! 🦊 Совет от Марка: начните с Демо, а когда AI-лимиты закончатся - переходите на Лайт.",
     emotion: "celebrate",
   },
   "/repurpose": {
@@ -189,27 +189,27 @@ const TIPS: Record<string, TipConfig> = {
   },
   "/tools/metrics": {
     message:
-      "Проработка метрик — AI разберёт ваш бизнес и предложит KPI, которые реально влияют на прибыль.",
+      "Проработка метрик - AI разберёт ваш бизнес и предложит KPI, которые реально влияют на прибыль.",
     emotion: "work",
   },
   "/tools/budget": {
     message:
-      "Прогноз бюджета — я рассчитаю оптимальное распределение бюджета по каналам и прогноз ROI.",
+      "Прогноз бюджета - я рассчитаю оптимальное распределение бюджета по каналам и прогноз ROI.",
     emotion: "think",
   },
   "/tools/audience": {
     message:
-      "ЦА и аватары — AI создаст детальные портреты ваших клиентов для точного таргетинга.",
+      "ЦА и аватары - AI создаст детальные портреты ваших клиентов для точного таргетинга.",
     emotion: "work",
   },
   "/tools/triggers": {
     message:
-      "Триггеры из отзывов — AI найдёт болевые точки клиентов и превратит их в продающие аргументы.",
+      "Триггеры из отзывов - AI найдёт болевые точки клиентов и превратит их в продающие аргументы.",
     emotion: "celebrate",
   },
   "/automations": {
     message:
-      "Автоматизации избавят от рутины! Создайте цепочку действий — AI выполнит их по расписанию.",
+      "Автоматизации избавят от рутины! Создайте цепочку действий - AI выполнит их по расписанию.",
     emotion: "work",
     hotspots: [
       {
@@ -226,12 +226,12 @@ const TIPS: Record<string, TipConfig> = {
   },
   "/notion": {
     message:
-      "Notion Hub — мост между MarketPlan и вашим Notion. Синхронизируйте задачи и заметки!",
+      "Notion Hub - мост между MarketPlan и вашим Notion. Синхронизируйте задачи и заметки!",
     emotion: "idle",
   },
   "/settings": {
     message:
-      "Настройте MarketPlan под себя. Уведомления, интеграции, бэкап данных — всё здесь.",
+      "Настройте MarketPlan под себя. Уведомления, интеграции, бэкап данных - всё здесь.",
     emotion: "idle",
     hotspots: [
       {

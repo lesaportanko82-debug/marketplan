@@ -480,7 +480,7 @@ export function ToolsMetrics() {
   };
 
   return (
-    <div className="p-5 max-w-[1000px] mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1000px] mx-auto space-y-4 sm:space-y-5">
       {/* Header */}
       <div>
         <h1 className="text-foreground flex items-center gap-3">
@@ -528,7 +528,7 @@ export function ToolsMetrics() {
           <div className="flex items-center gap-3 p-3 bg-muted/30 border border-border rounded-xl text-[12px] text-muted-foreground">
             <Info className="w-4 h-4 shrink-0 text-primary" />
             <span>
-              Раскройте любой калькулятор, введите данные или нажмите «Заполнить пример» — формулы рассчитаются мгновенно.
+              Раскройте любой калькулятор, введите данные или нажмите «Заполнить пример» - формулы рассчитаются мгновенно.
               Наведите на <Info className="w-3 h-3 inline" /> для подсказки по бенчмаркам.
             </span>
           </div>

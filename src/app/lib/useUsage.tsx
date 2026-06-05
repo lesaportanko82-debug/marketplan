@@ -262,7 +262,7 @@ export function UsageProvider({ children }: { children: ReactNode }) {
   const increment = useCallback(async (key: UsageKey, amount: number = 1): Promise<boolean> => {
     const info = getUsage(key);
     if (!info.isInfinite && info.current + amount > info.limit) {
-      // Limit reached — show mascot reaction
+      // Limit reached - show mascot reaction
       showMascotReaction("error", `Лимит ${KEY_LABELS[key]} исчерпан! 🦊`);
       return false;
     }

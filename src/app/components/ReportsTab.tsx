@@ -360,7 +360,7 @@ export function ReportsTab({ project }: { project: Project }) {
                     ? project.campaigns.reduce((best, c) =>
                         c.conversions > best.conversions ? c : best
                       ).channel
-                    : "—"
+                    : "-"
                 }
                 . Рекомендуется{" "}
                 {avgROI > 200

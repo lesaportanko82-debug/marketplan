@@ -1,0 +1,307 @@
+Create an onboarding + pricing page for **Marketing Planer**.
+
+❗CRITICAL:
+
+* Design MUST fully match the existing app UI.
+* Use the same colors, typography, spacing, cards, buttons, shadows and visual style.
+* The page must look like a native part of the application, not like a separate landing page.
+* ALL TEXT MUST BE IN RUSSIAN.
+* Copy must be detailed, valuable and selling, but not aggressive.
+
+---
+
+## GOAL
+
+Create a page that explains the product value so clearly that the user immediately understands:
+
+1. what Marketing Planer does;
+2. why it is useful;
+3. what problems it solves;
+4. what functionality is inside;
+5. why it is worth upgrading from Demo to paid access.
+
+---
+
+## PRODUCT POSITIONING
+
+Marketing Planer — это приложение, которое помогает превратить разрозненные маркетинговые идеи в понятную систему: проекты, задачи, этапы, контент, гипотезы, действия и контроль выполнения.
+
+It is not just a planner. It is a workspace for structured marketing work.
+
+---
+
+## PAGE STRUCTURE
+
+### 1. HERO SECTION
+
+Create a strong headline in Russian.
+
+Main idea:
+**Маркетинг без хаоса: от идеи до понятного плана**
+
+Subheadline:
+Explain that Marketing Planer helps organize campaigns, projects, tasks and marketing ideas in one place.
+
+Example direction:
+«Собирайте идеи, планируйте кампании, разбивайте задачи на шаги и контролируйте продвижение — без таблиц, хаоса и бесконечных заметок.»
+
+Buttons:
+
+* «Начать бесплатно»
+* «Посмотреть тарифы»
+
+---
+
+### 2. VALUE BLOCK
+
+Create a detailed block explaining the main value.
+
+Text direction:
+Marketing Planer helps users:
+
+* видеть всю маркетинговую картину целиком;
+* не терять идеи и задачи;
+* превращать хаотичные заметки в конкретный план;
+* вести несколько проектов отдельно;
+* быстрее переходить от “надо что-то сделать” к понятным действиям.
+
+Make this block emotional and practical.
+
+---
+
+### 3. DETAILED FUNCTIONALITY BLOCK
+
+Create 6–8 feature cards with detailed selling descriptions.
+
+Use this functionality logic:
+
+#### 1. Проекты
+
+User can create separate marketing projects for different brands, products, clients, launches or campaigns.
+
+Selling text:
+«Разделяйте маркетинг по проектам: отдельный бренд, запуск, клиент или направление. Так всё остаётся в порядке, а нужные задачи не смешиваются между собой.»
+
+#### 2. Структура маркетингового плана
+
+The app helps break big marketing goals into clear blocks.
+
+Selling text:
+«Не просто список задач, а понятная структура: что нужно сделать, зачем, в какой последовательности и к какому результату это должно привести.»
+
+#### 3. Задачи и шаги
+
+User can turn ideas into concrete actions.
+
+Selling text:
+«Каждую идею можно превратить в конкретный шаг: что сделать, когда, для чего и в рамках какого проекта.»
+
+#### 4. Контроль выполнения
+
+The app helps track progress.
+
+Selling text:
+«Видно, что уже сделано, что в процессе, а что ещё требует внимания. Это помогает не терять фокус и двигаться по плану.»
+
+#### 5. Контент и кампании
+
+User can plan content ideas, campaigns and marketing activities.
+
+Selling text:
+«Планируйте контент, акции, рассылки, рекламные активности и запуски в одной системе — без разбросанных заметок и забытых идей.»
+
+#### 6. Приоритеты
+
+User can focus on important actions.
+
+Selling text:
+«Выделяйте главное и не распыляйтесь. Marketing Planer помогает видеть, какие действия действительно двигают проект вперёд.»
+
+#### 7. Несколько проектов
+
+Paid plans unlock project creation.
+
+Selling text:
+«Ведите несколько направлений отдельно: личный бренд, бизнес, клиентские проекты, запуски или разные продукты.»
+
+#### 8. Простота
+
+The app should feel easier than complex project-management tools.
+
+Selling text:
+«Без перегруза, сложных CRM и десятков лишних кнопок. Только то, что нужно, чтобы планировать маркетинг и действовать.»
+
+---
+
+### 4. PROBLEM → RESULT BLOCK
+
+Create a before/after section.
+
+Before:
+
+* идеи разбросаны по заметкам;
+* задачи теряются;
+* непонятно, с чего начать;
+* маркетинг делается рывками;
+* нет общей картины.
+
+After:
+
+* всё собрано в одном месте;
+* каждый проект имеет структуру;
+* задачи понятны;
+* легче держать фокус;
+* проще доводить идеи до результата.
+
+---
+
+### 5. HOW IT WORKS
+
+Create a 4-step visual flow:
+
+1. Создайте проект
+2. Добавьте идеи и задачи
+3. Разбейте план на понятные шаги
+4. Двигайтесь по структуре и отслеживайте прогресс
+
+Add short descriptions under each step.
+
+---
+
+### 6. WHO IT IS FOR
+
+Create audience cards:
+
+* Маркетологам
+  «Чтобы вести кампании, идеи и задачи в одном рабочем пространстве.»
+
+* Предпринимателям
+  «Чтобы видеть маркетинг бизнеса системно, а не держать всё в голове.»
+
+* Фрилансерам и экспертам
+  «Чтобы планировать продвижение, контент и клиентские проекты отдельно.»
+
+* Командам
+  «Чтобы быстрее договориться, что делаем, зачем и в какой последовательности.»
+
+---
+
+### 7. PRICING SECTION
+
+Create 3 pricing cards.
+
+#### Демо — 0 ₽
+
+Description:
+«Посмотрите, как устроен Marketing Planer, изучите интерфейс и демо-примеры без оплаты.»
+
+Features:
+
+* просмотр демо-версии;
+* знакомство с интерфейсом;
+* без создания проектов;
+* без доступа к рабочему функционалу.
+
+Button:
+«Попробовать бесплатно»
+
+#### Старт — 1000 ₽
+
+Description:
+«Идеально, если хотите попробовать Marketing Planer на реальных задачах и создать первые проекты.»
+
+Features:
+
+* до 2 проектов;
+* доступ к рабочему функционалу;
+* планирование задач и идей;
+* подходит для теста продукта на реальной работе.
+
+Button:
+«Выбрать Старт»
+
+Highlight this card as a good first step.
+
+#### Про — 1500 ₽ / месяц
+
+Description:
+«Для тех, кто регулярно занимается маркетингом и хочет вести все проекты в одной системе без ограничений.»
+
+Features:
+
+* безлимит проектов;
+* полный доступ ко всем функциям;
+* подходит для нескольких брендов, клиентов или направлений;
+* оптимально для постоянной работы.
+
+Button:
+«Перейти на Про»
+
+Highlight as:
+«Лучший выбор»
+
+---
+
+### 8. UPGRADE MOTIVATION BLOCK
+
+Add a persuasive block after pricing.
+
+Text direction:
+«Демо помогает посмотреть. Старт — попробовать на практике. Про — работать без ограничений.»
+
+Add supporting text:
+«Если маркетинг — часть вашей ежедневной работы, безлимит проектов быстро становится не удобством, а необходимостью.»
+
+---
+
+### 9. FINAL CTA
+
+Strong but calm final call to action:
+
+Headline:
+«Соберите маркетинг в понятную систему»
+
+Subheadline:
+«Начните с демо или сразу создайте первые проекты — Marketing Planer поможет превратить идеи в действия.»
+
+Button:
+«Начать сейчас»
+
+---
+
+## COPY REQUIREMENTS
+
+* Russian language only.
+* Detailed descriptions, but easy to read.
+* Each block must sell value through clarity, not pressure.
+* Avoid generic phrases like “удобный инструмент” without explanation.
+* Explain every feature through user benefit.
+* Use short paragraphs.
+* Make texts feel premium and confident.
+
+---
+
+## DESIGN REQUIREMENTS
+
+* Match existing Marketing Planer app design exactly.
+* Use current app UI components where possible.
+* Clean SaaS interface.
+* Cards, soft shadows, rounded corners.
+* No noisy gradients if the product does not use them.
+* No random illustrations.
+* No aggressive marketing banners.
+* Pricing cards must be visually clear and conversion-focused.
+* Mobile responsive.
+
+---
+
+## PAYMENT / ACCESS LOGIC REMINDER
+
+Plans:
+
+* demo: 0 RUB, view only, no project creation
+* starter: 1000 RUB, max 2 projects
+* pro: 1500 RUB/month, unlimited projects
+
+Access must be granted only after YooKassa payment.succeeded webhook.
+Do not unlock access after clicking payment button or returning from checkout.

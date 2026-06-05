@@ -326,77 +326,78 @@ export function MarketingCalendar() {
   const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
   return (
-    <div className="p-6 space-y-5 animate-in fade-in duration-300">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold text-foreground flex items-center gap-2.5">
-            <CalendarRange className="w-6 h-6 text-[#d4a373]" />
-            Маркетинговый календарь
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <CalendarRange className="w-5 h-5 text-[#d4a373] shrink-0" />
+            <span>Маркетинговый календарь</span>
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Все события из {events.length} модулей на одной шкале
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={goToday}
-            className="px-3 py-1.5 text-[12px] font-medium bg-[#d4a373]/10 text-[#d4a373] rounded-lg hover:bg-[#d4a373]/20 transition-colors"
+            className="px-2.5 py-1.5 text-[12px] font-medium bg-[#d4a373]/10 text-[#d4a373] rounded-lg hover:bg-[#d4a373]/20 transition-colors"
           >
             Сегодня
           </button>
           <div className="flex bg-muted rounded-lg p-0.5">
             <button
               onClick={() => setViewMode("month")}
-              className={`px-3 py-1.5 text-[12px] font-medium rounded-md transition-colors ${
+              className={`px-2.5 py-1.5 text-[12px] font-medium rounded-md transition-colors ${
                 viewMode === "month" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <LayoutGrid className="w-3.5 h-3.5 inline mr-1" />Месяц
+              <LayoutGrid className="w-3.5 h-3.5 inline sm:mr-1" /><span className="hidden sm:inline">Месяц</span>
             </button>
             <button
               onClick={() => setViewMode("week")}
-              className={`px-3 py-1.5 text-[12px] font-medium rounded-md transition-colors ${
+              className={`px-2.5 py-1.5 text-[12px] font-medium rounded-md transition-colors ${
                 viewMode === "week" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <List className="w-3.5 h-3.5 inline mr-1" />Неделя
+              <List className="w-3.5 h-3.5 inline sm:mr-1" /><span className="hidden sm:inline">Неделя</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Filters bar */}
-      <div className="flex items-center gap-3 flex-wrap">
-        {/* Module toggles */}
-        {(Object.entries(MODULE_CONFIG) as [ModuleType, typeof MODULE_CONFIG[ModuleType]][]).map(([key, cfg]) => {
-          const active = visibleModules.has(key);
-          const count = events.filter((e) => e.module === key).length;
-          return (
-            <button
-              key={key}
-              onClick={() => toggleModule(key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium border transition-all ${
-                active
-                  ? `${cfg.bg} border-current`
-                  : "bg-muted/50 text-muted-foreground border-transparent opacity-50"
-              }`}
-            >
-              <cfg.icon className="w-3.5 h-3.5" />
-              {cfg.label}
-              {count > 0 && <span className="ml-1 text-[10px] opacity-70">({count})</span>}
-            </button>
-          );
-        })}
-
-        <div className="ml-auto relative">
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-0.5">
+          {/* Module toggles */}
+          {(Object.entries(MODULE_CONFIG) as [ModuleType, typeof MODULE_CONFIG[ModuleType]][]).map(([key, cfg]) => {
+            const active = visibleModules.has(key);
+            const count = events.filter((e) => e.module === key).length;
+            return (
+              <button
+                key={key}
+                onClick={() => toggleModule(key)}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium border transition-all whitespace-nowrap shrink-0 ${
+                  active
+                    ? `${cfg.bg} border-current`
+                    : "bg-muted/50 text-muted-foreground border-transparent opacity-50"
+                }`}
+              >
+                <cfg.icon className="w-3 h-3" />
+                <span className="hidden sm:inline">{cfg.label}</span>
+                {count > 0 && <span className="text-[10px] opacity-70">({count})</span>}
+              </button>
+            );
+          })}
+        </div>
+        <div className="relative">
           <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             placeholder="Поиск событий..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-8 pr-3 py-1.5 text-[12px] bg-muted/50 border border-border rounded-lg w-48 focus:outline-none focus:ring-1 focus:ring-[#d4a373]/50 text-foreground"
+            className="pl-8 pr-3 py-1.5 text-[12px] bg-muted/50 border border-border rounded-lg w-full focus:outline-none focus:ring-1 focus:ring-[#d4a373]/50 text-foreground"
           />
         </div>
       </div>
@@ -435,26 +436,27 @@ export function MarketingCalendar() {
         {/* Weekday header */}
         <div className="grid grid-cols-7 border-b border-border">
           {WEEKDAYS.map((d) => (
-            <div key={d} className="py-2.5 text-center text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-              {d}
+            <div key={d} className="py-2 text-center text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              <span className="sm:hidden">{d[0]}</span>
+              <span className="hidden sm:inline">{d}</span>
             </div>
           ))}
         </div>
 
         {/* Day cells */}
-        <div className={`grid grid-cols-7 ${viewMode === "week" ? "" : ""}`}>
+        <div className="grid grid-cols-7">
           {calendarDays.map((day, idx) => {
             const dayEvents = eventsForDay(day);
             const isCurrentMonth = isSameMonth(day, currentDate);
             const _isToday = isToday(day);
             const isSelected = selectedDay && isSameDay(day, selectedDay);
             const hasConflict = dayEvents.length >= 3;
-            const MAX_VISIBLE = viewMode === "week" ? 8 : 3;
+            const MAX_VISIBLE = viewMode === "week" ? 6 : 2;
 
             return (
               <div
                 key={idx}
-                className={`border-b border-r border-border ${viewMode === "week" ? "min-h-[300px]" : "min-h-[110px]"} p-1.5 cursor-pointer transition-colors relative ${
+                className={`border-b border-r border-border ${viewMode === "week" ? "min-h-[200px] sm:min-h-[300px]" : "min-h-[60px] sm:min-h-[100px]"} p-1 sm:p-1.5 cursor-pointer transition-colors relative ${
                   !isCurrentMonth && viewMode === "month" ? "bg-muted/20 opacity-50" : ""
                 } ${isSelected ? "bg-[#d4a373]/5 ring-1 ring-[#d4a373]/30 ring-inset" : "hover:bg-muted/30"}`}
                 onClick={() => setSelectedDay(selectedDay && isSameDay(day, selectedDay) ? null : day)}
@@ -462,9 +464,9 @@ export function MarketingCalendar() {
                 onDrop={(e) => handleDrop(e, day)}
               >
                 {/* Day number */}
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-0.5 sm:mb-1">
                   <span
-                    className={`text-[12px] font-medium w-6 h-6 flex items-center justify-center rounded-full ${
+                    className={`text-[11px] sm:text-[12px] font-medium w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full ${
                       _isToday
                         ? "bg-[#d4a373] text-white"
                         : "text-foreground"
@@ -473,7 +475,7 @@ export function MarketingCalendar() {
                     {format(day, "d")}
                   </span>
                   {hasConflict && (
-                    <AlertTriangle className="w-3 h-3 text-amber-500" />
+                    <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-amber-500" />
                   )}
                 </div>
 
@@ -486,21 +488,21 @@ export function MarketingCalendar() {
                         key={evt.id}
                         draggable
                         onDragStart={(e) => handleDragStart(e, evt)}
-                        className={`text-[10px] px-1.5 py-0.5 rounded border truncate cursor-grab active:cursor-grabbing ${cfg.bg} ${cfg.color}`}
+                        className={`text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0.5 rounded border truncate cursor-grab active:cursor-grabbing ${cfg.bg} ${cfg.color}`}
                         title={evt.title}
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedDay(day);
                         }}
                       >
-                        <cfg.icon className="w-2.5 h-2.5 inline mr-0.5 -mt-px" />
+                        <cfg.icon className="w-2 h-2 sm:w-2.5 sm:h-2.5 inline mr-0.5 -mt-px hidden sm:inline" />
                         {evt.title}
                       </div>
                     );
                   })}
                   {dayEvents.length > MAX_VISIBLE && (
                     <div className="text-[9px] text-muted-foreground text-center">
-                      +{dayEvents.length - MAX_VISIBLE} ещё
+                      +{dayEvents.length - MAX_VISIBLE}
                     </div>
                   )}
                 </div>

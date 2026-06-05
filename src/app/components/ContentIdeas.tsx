@@ -10,6 +10,7 @@ import { MarkdownRenderer } from "./MarkdownRenderer";
 import { useModal } from "../hooks/useModal";
 import { AddToProjectButton } from "./AddToProjectModal";
 import { ModalOverlay } from "./ModalOverlay";
+import { EmptyState } from "./EmptyState";
 
 interface ContentIdea {
   id: string;
@@ -110,19 +111,21 @@ export function ContentIdeas() {
   };
 
   return (
-    <div className="p-5 max-w-[1440px] mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1440px] mx-auto space-y-4 sm:space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
-              <Lightbulb className="w-4.5 h-4.5 text-white" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center shrink-0">
+              <Lightbulb className="w-4 h-4 text-white" />
             </div>
             Генерация контента
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">Идеи, заметки, ссылки - всё в одном месте</p>
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">Идеи, заметки, ссылки - всё в одном месте</p>
         </div>
-        <button onClick={() => setShowAdd(true)} className="flex items-center gap-2 bg-primary text-primary-foreground px-3.5 py-2 rounded-lg text-[13px] hover:opacity-90 transition-opacity">
-          <Plus className="w-4 h-4" /> Новая идея
+        <button onClick={() => setShowAdd(true)} className="flex items-center gap-2 bg-primary text-primary-foreground px-3.5 py-2 rounded-lg text-[13px] hover:opacity-90 transition-opacity shrink-0">
+          <Plus className="w-4 h-4" />
+          <span className="hidden sm:inline">Новая идея</span>
+          <span className="sm:hidden">Идея</span>
         </button>
       </div>
 
@@ -132,12 +135,12 @@ export function ContentIdeas() {
           <Sparkles className="w-4 h-4 text-primary" />
           <span className="text-[13px] text-foreground font-medium">AI-генератор идей</span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input type="text" value={aiPrompt} onChange={(e) => setAiPrompt(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") handleAIGenerate(); }}
             placeholder="Тема: фитнес-студия, аудитория - женщины 25-35..."
             className="flex-1 bg-muted/30 border border-border rounded-lg px-3 py-2 text-foreground text-[13px] placeholder:text-muted-foreground/50" />
           <button onClick={handleAIGenerate} disabled={aiLoading}
-            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px] hover:opacity-90 disabled:opacity-50">
+            className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px] hover:opacity-90 disabled:opacity-50 shrink-0">
             {aiLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             Сгенерировать
           </button>
@@ -150,32 +153,34 @@ export function ContentIdeas() {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+        <div className="relative flex-1 min-w-0">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Поиск идей..."
             className="w-full bg-card border border-border rounded-lg pl-10 pr-4 py-2 text-foreground text-[13px] placeholder:text-muted-foreground" />
         </div>
-        <div className="flex items-center gap-1 flex-wrap">
+        <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-0.5">
           {CATEGORIES.map((c) => (
             <button key={c} onClick={() => setCategory(c)}
-              className={`px-2.5 py-1.5 rounded-lg text-[12px] transition-colors ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
+              className={`px-2.5 py-1.5 rounded-lg text-[12px] transition-colors whitespace-nowrap shrink-0 ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
               {c}
             </button>
           ))}
         </div>
         <button onClick={() => setShowStarred(!showStarred)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] transition-colors ${showStarred ? "bg-amber-500/10 text-amber-600" : "bg-muted text-muted-foreground"}`}>
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] transition-colors shrink-0 ${showStarred ? "bg-amber-500/10 text-amber-600" : "bg-muted text-muted-foreground"}`}>
           <Star className="w-3.5 h-3.5" /> Избранное
         </button>
       </div>
 
       {/* Ideas Grid */}
       {filtered.length === 0 ? (
-        <div className="bg-card border border-border border-dashed rounded-xl p-12 text-center">
-          <Lightbulb className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-muted-foreground text-[14px]">{ideas.length === 0 ? "Пока нет идей. Добавьте первую!" : "Ничего не найдено"}</p>
-        </div>
+        <EmptyState
+          title={ideas.length === 0 ? "Банк идей пуст" : "Ничего не найдено"}
+          description={ideas.length === 0 ? "Добавьте первую идею контента или используйте AI для генерации идей" : "Попробуйте изменить поисковый запрос или фильтры"}
+          emotion={ideas.length === 0 ? "idle" : "think"}
+          action={ideas.length === 0 ? { label: "Добавить идею", onClick: () => setShowAdd(true), icon: <Plus className="w-4 h-4" /> } : undefined}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.map((idea) => (

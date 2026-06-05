@@ -1,5 +1,5 @@
 /**
- * 🦊 Usage Limit Alert — visual header alert when any usage counter ≥ 80%.
+ * 🦊 Usage Limit Alert - visual header alert when any usage counter ≥ 80%.
  *
  * Shows a compact amber/red banner with the most critical counters,
  * auto-hides after dismissal (per session), and links to /pricing.

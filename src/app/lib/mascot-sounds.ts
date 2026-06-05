@@ -1,5 +1,5 @@
 /**
- * 🔊 Sound effects for Марк (Web Audio API — no external files)
+ * 🔊 Sound effects for Марк (Web Audio API - no external files)
  * 
  * Тихие, приятные звуки при появлении маскота.
  * Все звуки синтезируются через Web Audio API.
@@ -75,19 +75,19 @@ function playTone(
 
 /* ═══ Sound presets per emotion/event ═══ */
 
-/** Мягкий "pop" — появление подсказки */
+/** Мягкий "pop" - появление подсказки */
 export function playPop() {
   playTone(800, 0.12, 0.1, "sine");
   setTimeout(() => playTone(1200, 0.08, 0.06, "sine"), 40);
 }
 
-/** Приветствие — два мелодичных тона */
+/** Приветствие - два мелодичных тона */
 export function playWave() {
   playTone(523, 0.15, 0.08, "sine"); // C5
   setTimeout(() => playTone(659, 0.15, 0.08, "sine"), 120); // E5
 }
 
-/** Ура! — маленькая восходящая трель */
+/** Ура! - маленькая восходящая трель */
 export function playCelebrate() {
   playTone(523, 0.1, 0.09, "sine"); // C5
   setTimeout(() => playTone(659, 0.1, 0.09, "sine"), 80); // E5
@@ -95,28 +95,28 @@ export function playCelebrate() {
   setTimeout(() => playTone(1047, 0.2, 0.07, "triangle"), 250); // C6
 }
 
-/** Думает — мягкий низкий "хм" */
+/** Думает - мягкий низкий "хм" */
 export function playThink() {
   playTone(330, 0.25, 0.06, "sine", 0, { freq: 350, time: 0.2 });
 }
 
-/** Работает — тихое "клик-клик" клавиатуры */
+/** Работает - тихое "клик-клик" клавиатуры */
 export function playWork() {
   playTone(1800, 0.04, 0.04, "square");
   setTimeout(() => playTone(2200, 0.03, 0.03, "square"), 60);
 }
 
-/** Ой! — нисходящий тон */
+/** Ой! - нисходящий тон */
 export function playOops() {
   playTone(600, 0.2, 0.08, "sine", 0, { freq: 300, time: 0.18 });
 }
 
-/** Сон — мягкий "ш-ш" (белый шум через oscillator trick) */
+/** Сон - мягкий "ш-ш" (белый шум через oscillator trick) */
 export function playSleep() {
   playTone(200, 0.4, 0.04, "sine", 0, { freq: 180, time: 0.35 });
 }
 
-/** Любовь — восходящая "сердечная" нота */
+/** Любовь - восходящая "сердечная" нота */
 export function playLove() {
   playTone(440, 0.15, 0.07, "sine"); // A4
   setTimeout(() => playTone(554, 0.15, 0.08, "sine"), 100); // C#5
@@ -145,7 +145,7 @@ export function playStep() {
 type Emotion = "idle" | "wave" | "think" | "celebrate" | "work" | "oops" | "sleep" | "love";
 
 const SOUND_MAP: Record<Emotion, (() => void) | null> = {
-  idle: null, // no sound for idle — too frequent
+  idle: null, // no sound for idle - too frequent
   wave: playWave,
   think: playThink,
   celebrate: playCelebrate,

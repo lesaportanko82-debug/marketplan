@@ -9,6 +9,7 @@ import { copyToClipboard } from "../lib/clipboard";
 import { getData, saveData } from "../lib/api";
 import { AddToProjectButton } from "./AddToProjectModal";
 import { generateBrandbookPDF } from "../lib/brandbook-pdf";
+import { EmptyState } from "./EmptyState";
 
 interface BrandAsset {
   id: string;
@@ -65,29 +66,9 @@ const emptyAsset = (): BrandAsset => ({
   starred: false, category: "Бренд", createdAt: new Date().toISOString(),
 });
 
-const DEMO_ASSETS: BrandAsset[] = [
-  { id: "demo-1", name: "Primary", type: "color", value: "#d4a373", description: "Основной акцентный цвет бренда", tags: ["основной", "акцент"], starred: true, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-2", name: "Secondary", type: "color", value: "#2a2420", description: "Тёмный фоновый цвет", tags: ["фон", "тёмный"], starred: false, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-3", name: "Success Green", type: "color", value: "#22c55e", description: "Цвет успешных действий", tags: ["статус", "успех"], starred: false, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-4", name: "Warning Amber", type: "color", value: "#f59e0b", description: "Цвет предупреждений", tags: ["статус", "внимание"], starred: false, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-5", name: "Error Red", type: "color", value: "#ef4444", description: "Цвет ошибок", tags: ["статус", "ошибка"], starred: false, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-6", name: "Inter - заголовки", type: "font", value: "Inter", description: "Основной шрифт для заголовков и UI", tags: ["заголовки", "ui"], starred: true, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-7", name: "Georgia - тексты", type: "font", value: "Georgia", description: "Шрифт для длинных текстов и статей", tags: ["текст", "статьи"], starred: false, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-8", name: "Fira Code - код", type: "font", value: "Fira Code", description: "Моноширинный шрифт для кода", tags: ["код", "mono"], starred: false, category: "Сайт", createdAt: new Date().toISOString() },
-  { id: "demo-9", name: "Логотип MarketPlan", type: "logo", value: "https://via.placeholder.com/400x200/d4a373/fff?text=MarketPlan", description: "Основной логотип на янтарном фоне", tags: ["логотип", "основной"], starred: true, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-10", name: "Логотип тёмный", type: "logo", value: "https://via.placeholder.com/400x200/2a2420/d4a373?text=MP+Dark", description: "Логотип для тёмного фона", tags: ["логотип", "тёмный"], starred: false, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-11", name: "Пост-анонс", type: "template", value: "🔥 [Тема поста]\n\nМы рады сообщить, что [событие/новость]!\n\n✅ Преимущество 1\n✅ Преимущество 2\n✅ Преимущество 3\n\nПодробности по ссылке в шапке профиля 👆\n\n#маркетинг #бизнес #продвижение", description: "Шаблон для анонса в соцсетях", tags: ["пост", "анонс", "соцсети"], starred: true, category: "Соцсети", createdAt: new Date().toISOString() },
-  { id: "demo-12", name: "Email приветствие", type: "template", value: "Здравствуйте, [Имя]!\n\nДобро пожаловать в MarketPlan! 🎉\n\nВы сделали отличный выбор. Вот что вас ждёт:\n\n1. AI-аналитика маркетинга\n2. Умный контент-план\n3. Отслеживание конкурентов\n\nС наилучшими пожеланиями,\nКоманда MarketPlan", description: "Приветственное письмо для новых пользователей", tags: ["email", "welcome"], starred: false, category: "Email", createdAt: new Date().toISOString() },
-  { id: "demo-13", name: "Tone of Voice", type: "guideline", value: "ГОЛОС БРЕНДА MarketPlan\n\nМы звучим:\n• Экспертно, но доступно - объясняем сложное простыми словами\n• Дружелюбно, но профессионально - без панибратства\n• Уверенно, но не высокомерно - делимся знаниями, а не хвастаемся\n\nМы НЕ используем:\n• Канцеляризмы и бюрократический язык\n• Сленг и ��аргон без необходимости\n• Негативные формулировки ('не упустите' → 'успейте')\n\nПримеры:\n✅ 'Разберём 5 стратегий, которые помогут вашему бизнесу расти'\n❌ 'ТОП-5 СЕКРЕТОВ для ВЗРЫВА продаж!!!'", description: "Руководство по тону коммуникации бренда", tags: ["голос", "тон", "стиль"], starred: true, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-14", name: "Визуальные правила", type: "guideline", value: "ВИЗУАЛЬНЫЙ СТИЛЬ\n\nЦветовая палитра:\n— Основной: #d4a373 (янтарный)\n— Фон: #1a1a1a (графитовый)\n— Акцент: #c0854a (бронзовый)\n\nТипографика:\n— Заголовки: Inter, 600-700 weight\n— Тексты: Inter/Georgia, 400 weight\n— Размеры: 32/24/18/14/12px\n\nОтступы: 8px сетка (8, 16, 24, 32, 48)\nСкругления: 8px (карточки), 12px (модалки), 50% (аватары)\nТени: мягкие, тёплые оттенки", description: "Визуальные стандарты дизайна", tags: ["дизайн", "визуал", "стиль"], starred: false, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-15", name: "Слоган основной", type: "copy", value: "MarketPlan — AI-маркетинг, который работает на результат", description: "Основной слоган бренда для всех каналов", tags: ["слоган", "основной"], starred: true, category: "Бренд", createdAt: new Date().toISOString() },
-  { id: "demo-16", name: "CTA для лендинга", type: "copy", value: "Начните планировать маркетинг с AI — бесплатно", description: "Призыв к действию на главной странице", tags: ["cta", "лендинг"], starred: false, category: "Сайт", createdAt: new Date().toISOString() },
-  { id: "demo-17", name: "Bio Instagram", type: "copy", value: "📊 AI-маркетинг планер\n🚀 Стратегии, контент, аналитика\n💡 Автоматизируй рутину\n⬇️ Попробуй бесплатно", description: "Описание профиля в Instagram", tags: ["bio", "instagram"], starred: false, category: "Соцсети", createdAt: new Date().toISOString() },
-  { id: "demo-18", name: "Хэштеги — маркетинг", type: "hashtag", value: "#маркетинг #digitalmarketing #smm #продвижение #контентплан #маркетолог #бизнес #стратегия #аналитика #реклама", description: "Основной набор хэштегов про маркетинг", tags: ["маркетинг", "основные"], starred: true, category: "Соцсети", createdAt: new Date().toISOString() },
-  { id: "demo-19", name: "Хэштеги — AI", type: "hashtag", value: "#искусственныйинтеллект #AI #нейросети #автоматизация #aimarketing #chatgpt #machinelearning #технологии #инновации #будущее", description: "Набор хэштегов на тему AI и технологий", tags: ["ai", "технологии"], starred: false, category: "Соцсети", createdAt: new Date().toISOString() },
-  { id: "demo-20", name: "Хэштеги — бизнес", type: "hashtag", value: "#бизнес #предприниматель #стартап #успех #рост #масштабирование #b2b #saas #ecommerce #roi", description: "Набор хэштегов для бизнес-тематики", tags: ["бизнес", "b2b"], starred: false, category: "Соцсети", createdAt: new Date().toISOString() },
-];
 
+  // (removed demo data)\n\nВы сделали отличный выбор. Вот что вас ждёт:\n\n1. AI-аналитика маркетинга\n2. Умный контент-план\n3. Отслеживание конкурентов\n\nС наилучшими пожеланиями,\nКоманда MarketPlan", description: "Приветственное письмо для новых пользователей", tags: ["email", "welcome"], starred: false, category: "Email", createdAt: new Date().toISOString() },
+  // (removed demo data 2) сложное простыми словами\n• Дружелюбно, но профессионально - без панибратства\n• Уверенно, но не высокомерно - делимся знаниями, а не хвастаемся\n\nМы НЕ используем:\n• Канцеляризмы и бюрократический язык\n• Сленг и жаргон без необходимости\n• Негативные формулировки ('не упустите' → 'успейте')\n\nПримеры:\n✅ 'Разберём 5 стратегий, которые помогут вашему бизнесу расти'\n❌ 'ТОП-5 СЕКРЕТОВ для ВЗРЫВА продаж!!!'", description: "Руководство по тону коммуникации бренда", tags: ["голос", "тон", "стиль"], starred: true, category: "Бренд", createdAt: new Date().toISOString() },
 // Load Google Font dynamically
 function loadGoogleFont(fontName: string) {
   const id = `gfont-${fontName.replace(/\s+/g, "-")}`;
@@ -114,9 +95,9 @@ export function MediaLibrary() {
   useEffect(() => {
     getData<BrandAsset[]>(STORAGE_KEY).then(d => {
       if (d && Array.isArray(d) && d.length > 0) setAssets(d);
-      else { setAssets(DEMO_ASSETS); saveData(STORAGE_KEY, DEMO_ASSETS); }
+      else setAssets([]);
       setLoading(false);
-    }).catch(() => { setAssets(DEMO_ASSETS); setLoading(false); });
+    }).catch(() => { setAssets([]); setLoading(false); });
   }, []);
 
   useEffect(() => {
@@ -151,17 +132,17 @@ export function MediaLibrary() {
   if (loading) return <div className="flex items-center justify-center h-64"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
 
   return (
-    <div className="p-5 max-w-[1440px] mx-auto">
+    <div className="p-4 sm:p-5 max-w-[1440px] mx-auto">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 mb-5">
+      <div className="flex items-start justify-between gap-3 mb-4 sm:mb-5 flex-wrap">
         <div className="min-w-0">
           <h1 className="text-foreground text-xl font-semibold flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#a87040] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#a87040] flex items-center justify-center shrink-0">
               <Palette className="w-4 h-4 text-white" />
             </div>
             Бренд-ассеты
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1 ml-12">
+          <p className="text-muted-foreground text-[13px] mt-1 ml-11 hidden sm:block">
             {stats.total} ассетов · {stats.colors} цветов · {stats.fonts} шрифтов · {stats.logos} лого
           </p>
         </div>
@@ -215,11 +196,12 @@ export function MediaLibrary() {
 
       {/* Content */}
       {filtered.length === 0 ? (
-        <div className="text-center py-20 text-muted-foreground">
-          <Palette className="w-10 h-10 mx-auto mb-3 opacity-30" />
-          <p className="text-[14px]">{assets.length === 0 ? "Библиотека бренда пуста" : "Ничего не найдено"}</p>
-          <p className="text-[12px] mt-1">{assets.length === 0 ? "Добавьте цвета, шрифты, шаблоны и хэштеги" : "Попробуйте изменить фильтры"}</p>
-        </div>
+        <EmptyState
+          title={assets.length === 0 ? "Библиотека бренда пуста" : "Ничего не найдено"}
+          description={assets.length === 0 ? "Добавьте цвета, шрифты, шаблоны и хэштеги вашего бренда" : "Попробуйте изменить фильтры или поисковый запрос"}
+          emotion={assets.length === 0 ? "idle" : "think"}
+          action={assets.length === 0 ? { label: "Добавить ассет", onClick: () => setShowAdd(true), icon: <Plus className="w-4 h-4" /> } : undefined}
+        />
       ) : view === "grid" ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
           {filtered.map(asset => (
@@ -296,7 +278,7 @@ function BrandbookModal({ assets, onClose }: { assets: BrandAsset[]; onClose: ()
     setProgress("Подготовка...");
     try {
       const pages = await generateBrandbookPDF(assets, { brandName, tagline, ...sections }, setProgress);
-      toast.success(`Брендбук скачан — ${pages} стр.`);
+      toast.success(`Брендбук скачан - ${pages} стр.`);
       onClose();
     } catch (err) {
       console.error(err);
@@ -723,11 +705,11 @@ function ColorFullPreview({ value }: { value: string }) {
         </div>
         <div className="bg-muted/20 rounded-lg p-3">
           <div className="text-[10px] text-muted-foreground mb-1">RGB</div>
-          <div className="text-[13px] text-foreground font-mono">{rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : "—"}</div>
+          <div className="text-[13px] text-foreground font-mono">{rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : "-"}</div>
         </div>
         <div className="bg-muted/20 rounded-lg p-3">
           <div className="text-[10px] text-muted-foreground mb-1">HSL</div>
-          <div className="text-[13px] text-foreground font-mono">{hsl ? `${hsl.h}°, ${hsl.s}%, ${hsl.l}%` : "—"}</div>
+          <div className="text-[13px] text-foreground font-mono">{hsl ? `${hsl.h}°, ${hsl.s}%, ${hsl.l}%` : "-"}</div>
         </div>
       </div>
       <div>
@@ -775,7 +757,7 @@ function FontFullPreview({ value }: { value: string }) {
         {[12, 14, 18, 24, 32].map(size => (
           <div key={size} className="flex items-baseline gap-3">
             <span className="text-[10px] text-muted-foreground w-10 text-right shrink-0 tabular-nums">{size}px</span>
-            <span className="text-foreground truncate" style={{ fontFamily: `"${value}", sans-serif`, fontSize: `${size}px` }}>MarketPlan — AI маркетинг</span>
+            <span className="text-foreground truncate" style={{ fontFamily: `"${value}", sans-serif`, fontSize: `${size}px` }}>MarketPlan - AI маркетинг</span>
           </div>
         ))}
       </div>
@@ -914,7 +896,7 @@ function FontPicker({ value, onChange }: { value: string; onChange: (v: string) 
                       {isSelected && <Check className="w-3 h-3 text-primary" />}
                     </div>
                     <div className="text-foreground/60 text-[14px] mt-0.5 truncate" style={{ fontFamily: `"${font}", sans-serif` }}>
-                      Аа Бб Вв Гг — {FONT_SAMPLES}
+                      Аа Бб Вв Гг - {FONT_SAMPLES}
                     </div>
                   </div>
                 </button>
@@ -925,7 +907,7 @@ function FontPicker({ value, onChange }: { value: string; onChange: (v: string) 
       )}
       {value && !showDropdown && (
         <div className="bg-muted/20 rounded-lg p-3">
-          <div style={{ fontFamily: `"${value}", sans-serif` }} className="text-foreground text-[20px] font-semibold">Аа Бб Вв Гг Дд — {value}</div>
+          <div style={{ fontFamily: `"${value}", sans-serif` }} className="text-foreground text-[20px] font-semibold">Аа Бб Вв Гг Дд - {value}</div>
           <div style={{ fontFamily: `"${value}", sans-serif` }} className="text-foreground/60 text-[13px] mt-1">{FONT_SAMPLES}</div>
           <div className="flex gap-3 mt-1.5">
             {[400, 600, 700].map(w => (

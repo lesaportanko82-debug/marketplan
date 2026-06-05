@@ -1,5 +1,5 @@
 /**
- * 🦊 Visual usage meter — progress bar + label.
+ * 🦊 Visual usage meter - progress bar + label.
  *
  * Colors: green → amber → red based on percentage.
  * Supports inline (compact) and card (large) variants.
@@ -99,7 +99,7 @@ export function UsageMeter({
             style={{ color }}
           >
             <TrendingUp className="w-3 h-3" />
-            Лимит исчерпан — обновить план
+            Лимит исчерпан - обновить план
           </button>
         )}
       </div>
@@ -153,7 +153,7 @@ export function UsageMeter({
 }
 
 /**
- * Compact usage overview — grid of all tracked metrics.
+ * Compact usage overview - grid of all tracked metrics.
  * Used in dashboard and settings.
  */
 export function UsageOverview({ className = "" }: { className?: string }) {

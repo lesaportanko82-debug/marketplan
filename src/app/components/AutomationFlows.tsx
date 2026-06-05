@@ -17,6 +17,7 @@ import { useUsage } from "../lib/useUsage";
 import { checkServerUsage } from "../lib/api";
 import { ModalOverlay } from "./ModalOverlay";
 import { useModal } from "../hooks/useModal";
+import { EmptyState } from "./EmptyState";
 
 /* ========== TYPES ========== */
 type NodeType = "trigger" | "action" | "condition";
@@ -106,7 +107,7 @@ const FLOW_TEMPLATES: Omit<AutomationFlow, "id" | "createdAt" | "updatedAt" | "r
   },
   {
     name: "Контент -> Telegram + Webhook",
-    description: "При публикации кон��ента отправляет уведомление и триггерит Pipedream",
+    description: "При публикации конента отправляет уведомление и триггерит Pipedream",
     active: false,
     nodes: [
       { id: "t1", type: "trigger", subtype: "content_published", label: "Контент опубликован", config: { platform: "Любая" }, x: 50, y: 50 },
@@ -310,26 +311,26 @@ export function AutomationFlows() {
   }, []);
 
   return (
-    <div className="p-6 space-y-5 animate-in fade-in duration-300">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold text-foreground flex items-center gap-2.5">
-            <Workflow className="w-6 h-6 text-[#d4a373]" />
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <Workflow className="w-5 h-5 text-[#d4a373] shrink-0" />
             Автоматизации
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Визуальный конструктор маркетинговых цепочек с реальным выполнением
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
           <button onClick={() => setShowTemplates(true)}
-            className="px-3 py-2 text-[12px] font-medium bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-colors flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#d4a373]" />Из шаблона
+            className="px-2.5 py-2 text-[12px] font-medium bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-colors flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#d4a373]" /><span className="hidden sm:inline">Из шаблона</span>
           </button>
           <button onClick={() => createFlow()}
-            className="px-3 py-2 text-[12px] font-medium bg-[#d4a373] text-white rounded-lg hover:bg-[#c0854a] transition-colors flex items-center gap-1.5">
-            <Plus className="w-3.5 h-3.5" />Новая
+            className="px-2.5 py-2 text-[12px] font-medium bg-[#d4a373] text-white rounded-lg hover:bg-[#c0854a] transition-colors flex items-center gap-1.5">
+            <Plus className="w-3.5 h-3.5" /><span className="hidden sm:inline">Новая</span>
           </button>
         </div>
       </div>
@@ -373,7 +374,7 @@ export function AutomationFlows() {
               <MascotMessage
                 emotion="work"
                 message="Нет автоматизаций"
-                subtext="Создайте первую или выберите шаблон — Марк всё выполнит!"
+                subtext="Создайте первую или выберите шаблон - Марк всё выполнит!"
                 size={80}
               />
             </div>
@@ -417,7 +418,7 @@ export function AutomationFlows() {
                       <span className={`w-1.5 h-1.5 rounded-full ${flow.active ? "bg-emerald-500" : "bg-muted-foreground/50"}`} />
                       {flow.active ? "Активна" : "Пауза"}
                     </span>
-                    <span>{flow.nodes.length} у��лов</span>
+                    <span>{flow.nodes.length} улов</span>
                     <span>{flow.runsCount} запусков</span>
                   </div>
                   <div className="flex flex-wrap gap-1 mt-2">

@@ -4,7 +4,7 @@ import {
   X, FolderKanban, Plus, Check, Search, Loader2, ChevronRight,
 } from "lucide-react";
 import { getData, saveData } from "../lib/api";
-import { mockProjects, type Project } from "../data/mock-data";
+import { type Project } from "../data/mock-data";
 import { toast } from "sonner";
 
 // ════════════════════════════════════════
@@ -152,7 +152,7 @@ function AddToProjectModal({
     setLoading(true);
     try {
       const projData = await getData<Project[]>(PROJECTS_KEY);
-      const projs = (projData && Array.isArray(projData) && projData.length > 0) ? projData : mockProjects;
+      const projs = (projData && Array.isArray(projData) && projData.length > 0) ? projData : [];
       setProjects(projs);
 
       // Check which projects already have this item linked

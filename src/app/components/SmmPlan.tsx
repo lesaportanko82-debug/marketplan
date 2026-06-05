@@ -241,30 +241,34 @@ export function SmmPlan() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="p-5 max-w-[1440px] mx-auto space-y-5">
+      <div className="p-4 md:p-5 max-w-[1440px] mx-auto space-y-4 md:space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <div>
-            <h1 className="text-foreground flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center"><CalendarRange className="w-4.5 h-4.5 text-white" /></div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-foreground flex items-center gap-2.5">
+              <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center shrink-0"><CalendarRange className="w-4 h-4 text-white" /></div>
               Контент-план
             </h1>
-            <p className="text-muted-foreground text-[13px] mt-1">Планируйте, публикуйте и анализируйте контент по площадкам</p>
+            <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">Планируйте, публикуйте и анализируйте контент по площадкам</p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <button onClick={() => setShowIdeasPanel(!showIdeasPanel)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] transition-colors ${showIdeasPanel ? "bg-amber-500/10 text-amber-700 border border-amber-500/20" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
-              {showIdeasPanel ? <PanelRightClose className="w-4 h-4" /> : <PanelRightOpen className="w-4 h-4" />}
-              <Lightbulb className="w-3.5 h-3.5" />
-              Банк идей {ideas.length > 0 && <span className="bg-amber-500/20 text-amber-700 text-[10px] px-1.5 py-0.5 rounded-full">{ideas.length}</span>}
-            </button>
+          <div className="flex items-center gap-1.5 flex-wrap justify-end shrink-0">
             <div className="flex items-center gap-0.5 bg-muted rounded-lg p-0.5">
               {(["table", "calendar", "dashboard"] as const).map((v) => (
-                <button key={v} onClick={() => setView(v)} className={`px-3 py-1.5 rounded-md text-[13px] transition-colors ${view === v ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"}`}>
-                  {v === "table" ? "Таблица" : v === "calendar" ? "Календарь" : "Дашборд"}
+                <button key={v} onClick={() => setView(v)} className={`px-2 sm:px-3 py-1.5 rounded-md text-[12px] transition-colors ${view === v ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"}`}>
+                  {v === "table" ? <><span className="hidden sm:inline">Таблица</span><span className="sm:hidden">Табл</span></> : v === "calendar" ? <><span className="hidden sm:inline">Календарь</span><span className="sm:hidden">Кал</span></> : <><span className="hidden sm:inline">Дашборд</span><span className="sm:hidden">Дашб</span></>}
                 </button>
               ))}
             </div>
-            <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-primary text-primary-foreground px-3.5 py-2 rounded-lg text-[13px] hover:opacity-90" data-hotspot="smm-add-post"><Plus className="w-4 h-4" /> Добавить пост</button>
+            <button onClick={() => setShowIdeasPanel(!showIdeasPanel)} className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[12px] transition-colors ${showIdeasPanel ? "bg-amber-500/10 text-amber-700 border border-amber-500/20" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
+              <Lightbulb className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Идеи</span>
+              {ideas.length > 0 && <span className="bg-amber-500/20 text-amber-700 text-[10px] px-1 py-0.5 rounded-full">{ideas.length}</span>}
+            </button>
+            <button onClick={() => setShowAddModal(true)} className="flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-2 rounded-lg text-[13px] hover:opacity-90" data-hotspot="smm-add-post">
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Добавить пост</span>
+              <span className="sm:hidden">Пост</span>
+            </button>
             <button
               onClick={() => {
                 const headers = ["Дата", "Площадки", "Тип", "Тема", "Статус", "Охват", "Лайки", "Комменты", "Клики"];
@@ -272,34 +276,33 @@ export function SmmPlan() {
                 exportToCSV(headers, rows, `content-plan-${currentMonth}`);
                 toast.success("CSV экспортирован");
               }}
-              className="flex items-center gap-1.5 bg-muted text-muted-foreground px-3 py-2 rounded-lg text-[13px] hover:text-foreground"
+              className="flex items-center gap-1.5 bg-muted text-muted-foreground px-2.5 py-2 rounded-lg text-[12px] hover:text-foreground"
               title="Экспорт в CSV"
             >
-              <FileText className="w-4 h-4" /> CSV
+              <FileText className="w-4 h-4" />
             </button>
           </div>
         </div>
 
         {/* Month nav + Platform filter */}
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2">
             <button onClick={prevMonth} className="p-1.5 rounded-md hover:bg-muted text-muted-foreground"><ChevronLeft className="w-4 h-4" /></button>
-            <h2 className="text-foreground capitalize min-w-[180px] text-center">{monthLabel}</h2>
+            <h2 className="text-foreground capitalize min-w-[130px] sm:min-w-[180px] text-center text-[15px] sm:text-[18px]">{monthLabel}</h2>
             <button onClick={nextMonth} className="p-1.5 rounded-md hover:bg-muted text-muted-foreground"><ChevronRight className="w-4 h-4" /></button>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-0.5">
             {/* Platform filter chips */}
-            <div className="flex items-center gap-1 flex-wrap">
-              <button onClick={() => setPlatformFilter("all")} className={`px-2.5 py-1 rounded-lg text-[11px] transition-colors border ${platformFilter === "all" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border hover:text-foreground"}`}>Все</button>
-              {PLATFORMS.map((p) => {
-                const count = platformStats[p]?.posts || 0;
-                if (count === 0 && platformFilter !== p) return null;
-                const PIcon = PLATFORM_ICONS[p];
-                return (
-                  <button key={p} onClick={() => setPlatformFilter(platformFilter === p ? "all" : p)}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] transition-colors border ${platformFilter === p ? PLATFORM_COLORS[p] + " border" : "bg-card text-muted-foreground border-border hover:text-foreground"}`}>
-                    <PIcon className="w-3 h-3" /> {p} <span className="opacity-60">{count}</span>
-                  </button>
+            <button onClick={() => setPlatformFilter("all")} className={`px-2.5 py-1 rounded-lg text-[11px] transition-colors border whitespace-nowrap shrink-0 ${platformFilter === "all" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border hover:text-foreground"}`}>Все</button>
+            {PLATFORMS.map((p) => {
+              const count = platformStats[p]?.posts || 0;
+              if (count === 0 && platformFilter !== p) return null;
+              const PIcon = PLATFORM_ICONS[p];
+              return (
+                <button key={p} onClick={() => setPlatformFilter(platformFilter === p ? "all" : p)}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] transition-colors border whitespace-nowrap shrink-0 ${platformFilter === p ? PLATFORM_COLORS[p] + " border" : "bg-card text-muted-foreground border-border hover:text-foreground"}`}>
+                  <PIcon className="w-3 h-3" /> {p} <span className="opacity-60">{count}</span>
+                </button>
                 );
               })}
             </div>
@@ -311,12 +314,11 @@ export function SmmPlan() {
               <Calculator className="w-3.5 h-3.5" /> Посчитать метрики
             </button>
           </div>
-        </div>
 
         {/* Goals editor */}
         {editingMetrics && (
           <div className="bg-card border border-border rounded-xl p-5 space-y-4">
-            <h3 className="text-foreground text-[14px] flex items-center gap-2"><Target className="w-4 h-4 text-primary" /> Общие цели н�� период</h3>
+            <h3 className="text-foreground text-[14px] flex items-center gap-2"><Target className="w-4 h-4 text-primary" /> Общие цели на период</h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {[{ key: "targetReach", label: "Охват" }, { key: "targetEngagement", label: "ER %" }, { key: "targetFollowers", label: "Подписчики" }, { key: "targetClicks", label: "Клики" }, { key: "targetPosts", label: "Постов" }].map((f) => (
                 <div key={f.key}><label className="text-[12px] text-muted-foreground block mb-1">{f.label}</label>
@@ -629,7 +631,7 @@ function TableDropZone({ posts, onEdit, onDelete, onIdeaDrop, onAddClick }: { po
                     <svg width="14" height="10" viewBox="0 0 14 10" fill="none" className="absolute -bottom-[9px] left-1/2 -translate-x-1/2">
                       <path d="M7 10 L0 0 L14 0 Z" fill="var(--muted)" />
                     </svg>
-                    <p className="text-[12px] text-foreground">Контент-план пуст — давай его заполним!</p>
+                    <p className="text-[12px] text-foreground">Контент-план пуст - давай его заполним!</p>
                   </div>
                 </div>
                 <Mascot emotion="wave" size={64} />
@@ -739,11 +741,11 @@ ${form.goals ? `Цель: ${form.goals}` : ""}
         showMascotReaction("ai_generate", "Текст готов!");
         // Pick a random contextual tip from Марк
         const tips = [
-          "Попробуй добавить вопрос в конце — это повысит ER!",
-          "Первые 2 строки решают всё — зацепи читателя!",
-          "Не забудь CTA — без него вовлечённость падает на 40%",
+          "Попробуй добавить вопрос в конце - это повысит ER!",
+          "Первые 2 строки решают всё - зацепи читателя!",
+          "Не забудь CTA - без него вовлечённость падает на 40%",
           "Хештеги лучше ставить в первом комментарии (для Instagram)",
-          "Длинные посты работают лучше в Telegram, короткие — в Instagram",
+          "Длинные посты работают лучше в Telegram, короткие - в Instagram",
         ];
         setAiTip(tips[Math.floor(Math.random() * tips.length)]);
       }

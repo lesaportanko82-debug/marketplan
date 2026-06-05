@@ -10,6 +10,7 @@ import { aiGenerate } from "../lib/api";
 import { AddToProjectButton } from "./AddToProjectModal";
 import { ModalOverlay } from "./ModalOverlay";
 import { useModal } from "../hooks/useModal";
+import { EmptyState } from "./EmptyState";
 
 interface KeyResult {
   id: string;
@@ -134,7 +135,7 @@ export function OKRTracker() {
     setAiLoading(true);
     try {
       const result = await aiGenerate("okr_suggest",
-        `Ты — стратег по маркетингу. Предложи 3 маркетинговых OKR для ${quarterFilter} в формате JSON:
+        `Ты - стратег по маркетингу. Предложи 3 маркетинговых OKR для ${quarterFilter} в формате JSON:
         [{"title":"Objective...", "description":"...", "category":"Маркетинг", "keyResults":[{"title":"KR...", "metric":"...", "target":100, "unit":"%"}]}]
         Каждый OKR должен иметь 3-4 измеримых ключевых результата. Только JSON.`
       );
@@ -166,13 +167,13 @@ export function OKRTracker() {
   };
 
   return (
-    <div className="p-5 max-w-[1440px] mx-auto space-y-5">
+    <div className="p-4 md:p-5 max-w-[1440px] mx-auto space-y-4 md:space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center">
-              <Target className="w-4.5 h-4.5 text-white" />
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center shrink-0">
+              <Target className="w-4 h-4 text-white" />
             </div>
             OKR-трекинг
           </h1>
@@ -180,21 +181,21 @@ export function OKRTracker() {
             Цели и ключевые результаты маркетинга
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={handleAISuggest}
             disabled={aiLoading}
-            className="flex items-center gap-2 px-3 py-2 bg-muted text-foreground rounded-lg text-[12px] font-medium hover:bg-muted/80 transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-2 bg-muted text-foreground rounded-lg text-[12px] font-medium hover:bg-muted/80 transition-colors disabled:opacity-50"
           >
             {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-            AI предложит OKR
+            <span className="hidden sm:inline">AI предложит </span>OKR
           </button>
           <button
             onClick={() => setShowAdd(true)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium text-white"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] font-medium text-white"
             style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
           >
-            <Plus className="w-3.5 h-3.5" /> Добавить OKR
+            <Plus className="w-3.5 h-3.5" /><span className="hidden sm:inline"> Добавить</span> OKR
           </button>
         </div>
       </div>
@@ -373,11 +374,13 @@ export function OKRTracker() {
         })}
 
         {filtered.length === 0 && (
-          <div className="text-center py-16 text-muted-foreground">
-            <Target className="w-10 h-10 mx-auto mb-3 opacity-30" />
-            <p className="text-[14px]">Нет целей для {quarterFilter}</p>
-            <p className="text-[12px] mt-1">Создайте OKR или попросите AI предложить</p>
-          </div>
+          <EmptyState
+            title={`Нет целей для ${quarterFilter}`}
+            description="Создайте OKR вручную или попросите AI предложить цели для вашего квартала"
+            emotion="think"
+            action={{ label: "Создать OKR", onClick: () => setShowAdd(true), icon: <Plus className="w-3.5 h-3.5" /> }}
+            secondaryAction={{ label: "AI предложит OKR", onClick: handleAISuggest }}
+          />
         )}
       </div>
 
@@ -411,7 +414,7 @@ function AddOKRModal({ quarter, onSave, onClose }: { quarter: string; onSave: (o
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between p-4 border-b border-border">
-        <h3 id="add-okr-title" className="text-[14px] font-semibold text-foreground">Новый OKR — {quarter}</h3>
+        <h3 id="add-okr-title" className="text-[14px] font-semibold text-foreground">Новый OKR - {quarter}</h3>
         <button onClick={onClose} className="text-muted-foreground hover:text-foreground" aria-label="Закрыть"><X className="w-4 h-4" /></button>
       </div>
       <div className="p-4 space-y-3">

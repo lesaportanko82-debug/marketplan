@@ -1,5 +1,5 @@
 /**
- * 🤖 AI Tools — расширенные AI-инструменты для MarketPlan
+ * 🤖 AI Tools - расширенные AI-инструменты для MarketPlan
  *
  * Новые функции:
  * - Content Repurposing (адаптация контента)
@@ -91,7 +91,7 @@ export async function repurposeContent(
   request: ContentRepurposeRequest
 ): Promise<ContentRepurposeResult> {
   const prompt = `
-Ты — эксперт по адаптации контента для разных социальных сетей.
+Ты - эксперт по адаптации контента для разных социальных сетей.
 
 Исходный контент для ${request.originalPlatform}:
 "${request.originalContent}"
@@ -184,7 +184,7 @@ export async function analyzeCompetitorContent(
   contentSample: string
 ): Promise<CompetitorAnalysis> {
   const prompt = `
-Ты — эксперт по конкурентному анализу в маркетинге.
+Ты - эксперт по конкурентному анализу в маркетинге.
 
 Конкурент: ${competitorName}
 
@@ -233,7 +233,7 @@ export async function predictTrends(
   keywords: string[]
 ): Promise<TrendPrediction[]> {
   const prompt = `
-Ты — аналитик трендов в ${industry}.
+Ты - аналитик трендов в ${industry}.
 
 Ключевые слова: ${keywords.join(", ")}
 
@@ -278,7 +278,7 @@ export async function generateABTestIdeas(
   goal: string
 ): Promise<ABTestSuggestion[]> {
   const prompt = `
-Ты — эксперт по A/B тестированию в digital-маркетинге.
+Ты - эксперт по A/B тестированию в digital-маркетинге.
 
 Кампания/контент: ${campaign}
 Цель: ${goal}

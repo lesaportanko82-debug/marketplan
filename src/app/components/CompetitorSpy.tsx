@@ -13,6 +13,7 @@ import { copyToClipboard } from "../lib/clipboard";
 import { aiGenerate } from "../lib/api";
 import { useKV } from "../lib/useKV";
 import { AddToProjectButton } from "./AddToProjectModal";
+import { EmptyState } from "./EmptyState";
 
 /* ========== TYPES ========== */
 interface CompetitorLinks {
@@ -365,21 +366,21 @@ export function CompetitorSpy() {
   const secondaryLinks = LINK_FIELDS.slice(3);
 
   return (
-    <div className="p-6 space-y-5 animate-in fade-in duration-300">
-      <div className="flex items-center justify-between">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5 animate-in fade-in duration-300">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold text-foreground flex items-center gap-2.5">
-            <Radar className="w-6 h-6 text-[#d4a373]" />
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <Radar className="w-5 h-5 text-[#d4a373] shrink-0" />
             Competitor Creative Spy
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Добавьте ссылки на сайт, Instagram, Telegram конкурента - AI проведёт разведку
           </p>
         </div>
         <AddToProjectButton itemType="competitor" itemId="spy" itemTitle="Competitor Spy" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
         {/* Left */}
         <div className="lg:col-span-2 space-y-4">
           {/* My business */}
@@ -567,13 +568,12 @@ export function CompetitorSpy() {
         {/* Right */}
         <div className="lg:col-span-3 space-y-4">
           {reports.length === 0 && !analyzing ? (
-            <div className="bg-card border border-border rounded-xl p-12 flex flex-col items-center justify-center text-center">
-              <Radar className="w-14 h-14 text-muted-foreground/20 mb-4" />
-              <p className="text-[15px] font-medium text-muted-foreground">Разведданные появятся здесь</p>
-              <p className="text-[12px] text-muted-foreground/60 mt-1 max-w-sm">
-                Добавьте ссылки на сайт, Instagram, Telegram конкурента - система проанализирует их контент-стратегию и предложит контратаки
-              </p>
-            </div>
+            <EmptyState
+              title="Разведданные появятся здесь"
+              description="Добавьте ссылки на сайт, Instagram или Telegram конкурента - система проанализирует их контент-стратегию и предложит контратаки"
+              emotion="think"
+              compact
+            />
           ) : analyzing ? (
             <div className="bg-card border border-border rounded-xl p-12 flex flex-col items-center justify-center">
               <Loader2 className="w-10 h-10 text-[#d4a373] animate-spin mb-3" />

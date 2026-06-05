@@ -27,6 +27,7 @@ import { getData, saveData } from "../lib/api";
 import { AddToProjectButton } from "./AddToProjectModal";
 import { MascotMessage } from "./Mascot";
 import { useModal } from "../hooks/useModal";
+import { EmptyState } from "./EmptyState";
 
 interface Influencer {
   id: string;
@@ -148,26 +149,27 @@ export function InfluencerDashboard() {
       : 0;
 
   return (
-    <div className="p-5 max-w-[1440px] mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1440px] mx-auto space-y-4 sm:space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center">
-              <Users className="w-4.5 h-4.5 text-white" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center shrink-0">
+              <Users className="w-4 h-4 text-white" />
             </div>
             Инфлюенс-маркетинг
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Управление блогерами, рекламными закупками и креативами
           </p>
         </div>
         <button
           onClick={() => setShowAdd(true)}
-          className="flex items-center gap-2 bg-primary text-primary-foreground px-3.5 py-2 rounded-lg text-[13px] hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 bg-primary text-primary-foreground px-3.5 py-2 rounded-lg text-[13px] hover:opacity-90 transition-opacity shrink-0"
         >
           <Plus className="w-4 h-4" />
-          Добавить блогера
+          <span className="hidden sm:inline">Добавить блогера</span>
+          <span className="sm:hidden">Блогер</span>
         </button>
       </div>
 
@@ -206,8 +208,8 @@ export function InfluencerDashboard() {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+        <div className="relative flex-1 min-w-0">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
@@ -217,13 +219,13 @@ export function InfluencerDashboard() {
             className="w-full bg-card border border-border rounded-lg pl-10 pr-4 py-2 text-foreground text-[13px]"
           />
         </div>
-        <div className="flex items-center gap-1">
-          <Filter className="w-4 h-4 text-muted-foreground" />
+        <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-0.5">
+          <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
           {["all", "active", "negotiation", "completed", "paused"].map((s) => (
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`px-2.5 py-1.5 rounded-lg text-[12px] transition-colors ${
+              className={`px-2.5 py-1.5 rounded-lg text-[12px] transition-colors whitespace-nowrap shrink-0 ${
                 statusFilter === s
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground hover:text-foreground"
@@ -233,7 +235,7 @@ export function InfluencerDashboard() {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground shrink-0">
           <ArrowUpDown className="w-3.5 h-3.5" />
           <select
             value={sortBy}
@@ -250,14 +252,12 @@ export function InfluencerDashboard() {
 
       {/* Influencers list */}
       {filtered.length === 0 ? (
-        <div className="bg-card border border-border border-dashed rounded-xl p-12 text-center">
-          <MascotMessage
-            emotion="idle"
-            message={influencers.length === 0 ? "Добавьте первого блогера" : "Ничего не найдено"}
-            subtext={influencers.length === 0 ? "Ведите базу инфлюенсеров, отслеживайте ROI коллабораций и рейтинг каждого" : "Попробуйте изменить фильтры или поисковый запрос"}
-            size={90}
-          />
-        </div>
+        <EmptyState
+          title={influencers.length === 0 ? "Добавьте первого блогера" : "Ничего не найдено"}
+          description={influencers.length === 0 ? "Ведите базу инфлюенсеров, отслеживайте ROI коллабораций и рейтинг каждого" : "Попробуйте изменить фильтры или поисковый запрос"}
+          emotion={influencers.length === 0 ? "idle" : "think"}
+          action={influencers.length === 0 ? { label: "Добавить блогера", onClick: () => setShowAdd(true), icon: <Plus className="w-4 h-4" /> } : undefined}
+        />
       ) : (
         <div className="space-y-3">
           {filtered.map((inf) => (

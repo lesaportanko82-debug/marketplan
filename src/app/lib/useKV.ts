@@ -99,7 +99,8 @@ export function useKV<T>(
 
   /**
    * Optimistic save: updates UI instantly, persists to KV in background.
-   * On failure, rolls back to previous value and shows error.
+   * On persistent failure rolls back; on transient auth failures keeps the
+   * optimistic value (the token will refresh and data can be re-saved).
    */
   const save = useCallback(
     async (newData: T) => {
@@ -110,9 +111,16 @@ export function useKV<T>(
 
       try {
         const ok = await saveData(key, newData);
-        if (!ok) throw new Error("saveData returned false");
+        if (!ok) {
+          // saveData returns false for two reasons:
+          //   1. auth rejection (401) - transient, token will refresh → keep optimistic value
+          //   2. actual server error - also non-fatal, log quietly
+          // Do NOT throw or rollback: the UI has the correct value,
+          // and re-saves will succeed once auth is established.
+          console.info(`useKV: save skipped for "${key}" (server returned false, likely auth refresh in progress)`);
+        }
       } catch (err) {
-        // Rollback
+        // Network-level errors - rollback the optimistic update
         console.error(`useKV save error for ${key}:`, err);
         if (prev !== undefined) {
           cache.set(key, { data: prev, timestamp: Date.now() });

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import {
-  Hash, Search, TrendingUp, Copy, Star, Plus, X, Loader2,
+  Hash, Search, TrendingUp, Copy, Star, Plus, X, Loader2, Trash2,
   Sparkles, Globe, Instagram, BarChart3, Target, RefreshCw,
   CheckCircle2, ArrowUpRight, Tag, Zap, Filter, Download,
 } from "lucide-react";
@@ -9,6 +9,7 @@ import { copyToClipboard } from "../lib/clipboard";
 import { aiGenerate } from "../lib/api";
 import { useKV } from "../lib/useKV";
 import { AddToProjectButton } from "./AddToProjectModal";
+import { EmptyState } from "./EmptyState";
 
 interface HashtagSet {
   id: string;
@@ -64,12 +65,12 @@ export function HashtagSEO() {
     setAiLoading(true);
     try {
       const result = await aiGenerate("hashtag_research", 
-        `Ты — SMM-эксперт. Сгенерируй 30 релевантных хештегов для темы: "${aiPrompt}".
+        `Ты - SMM-эксперт. Сгенерируй 30 релевантных хештегов для темы: "${aiPrompt}".
         
         Раздели на 3 группы:
-        1. **Высокий охват** (популярные, >100K постов) — 10 штук
-        2. **Средний охват** (10K-100K постов) — 10 штук  
-        3. **Нишевые** (<10K постов, но точно целевые) — 10 штук
+        1. **Высокий охват** (популярные, >100K постов) - 10 штук
+        2. **Средний охват** (10K-100K постов) - 10 штук  
+        3. **Нишевые** (<10K постов, но точно целевые) - 10 штук
         
         Формат: верни ТОЛЬКО хештеги через запятую, без нумерации и пояснений. Каждая группа на новой строке с заголовком.`
       );
@@ -94,7 +95,7 @@ export function HashtagSEO() {
     setKeywordLoading(true);
     try {
       const result = await aiGenerate("keyword_research",
-        `Ты — SEO-эксперт. Для ниши/продукта: "${keywordPrompt}" проведи исследование ключевых слов.
+        `Ты - SEO-эксперт. Для ниши/продукта: "${keywordPrompt}" проведи исследование ключевых слов.
         
         Верни 15 ключевых слов в формате JSON массива:
         [{"keyword":"...", "volume":"высокий/средний/низкий", "difficulty":"низкая/средняя/высокая", "intent":"информационный/транзакционный/навигационный", "suggestions":["связанное1","связанное2"]}]
@@ -127,13 +128,13 @@ export function HashtagSEO() {
     setTrendLoading(true);
     try {
       const result = await aiGenerate("trend_analysis",
-        `Ты — аналитик трендов в digital-маркетинге. Для ниши "${trendNiche}" дай анализ текущих трендов (март 2026):
+        `Ты - аналитик трендов в digital-маркетинге. Для ниши "${trendNiche}" дай анализ текущих трендов (март 2026):
         
-        1. **Актуальные тренды** — 5 трендов с описанием и рекомендациями
-        2. **Растущие форматы контента** — какие форматы набирают популярность
-        3. **Сезонные возможности** — что актуально в Q1-Q2 2026
-        4. **Хештег-тренды** — 10 трендовых хештегов для этой ниши
-        5. **Рекомендации по контент-стратегии** — 3 конкретных шага
+        1. **Актуальные тренды** - 5 трендов с описанием и рекомендациями
+        2. **Растущие форматы контента** - какие форматы набирают популярность
+        3. **Сезонные возможности** - что актуально в Q1-Q2 2026
+        4. **Хештег-тренды** - 10 трендовых хештегов для этой ниши
+        5. **Рекомендации по контент-стратегии** - 3 конкретных шага
         
         Формат: markdown с заголовками и списками.`
       );
@@ -191,13 +192,13 @@ export function HashtagSEO() {
   });
 
   return (
-    <div className="p-5 max-w-[1440px] mx-auto space-y-5">
+    <div className="p-4 md:p-5 max-w-[1440px] mx-auto space-y-4 md:space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center">
-              <Hash className="w-4.5 h-4.5 text-white" />
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center shrink-0">
+              <Hash className="w-4 h-4 text-white" />
             </div>
             Хештеги и SEO
           </h1>
@@ -213,7 +214,7 @@ export function HashtagSEO() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 bg-muted/50 rounded-lg p-1 w-fit">
+      <div className="flex items-center gap-1 bg-muted/50 rounded-lg p-1 overflow-x-auto scrollbar-none">
         {[
           { key: "hashtags", label: "Хештеги", icon: Hash },
           { key: "keywords", label: "Ключевые слова", icon: Search },

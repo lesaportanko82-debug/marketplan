@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useModal } from "../hooks/useModal";
 
 /**
- * ModalOverlay — a11y-ready modal backdrop with:
+ * ModalOverlay - a11y-ready modal backdrop with:
  *  - role="dialog", aria-modal, aria-label
  *  - Escape key closes via useModal
  *  - Focus trap via useModal
@@ -14,7 +14,7 @@ interface ModalOverlayProps {
   children: ReactNode;
   /** Extra classes on the outer overlay div */
   className?: string;
-  /** If true, clicking the backdrop does NOT close (default: true — clicking closes) */
+  /** If true, clicking the backdrop does NOT close (default: true - clicking closes) */
   backdropClose?: boolean;
 }
 

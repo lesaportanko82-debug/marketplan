@@ -16,14 +16,6 @@ export function AuthPages() {
   const [showResetHint, setShowResetHint] = useState(false);
   const { signUp, signIn } = useAuth();
 
-  // Demo credentials helper
-  const fillDemoCredentials = () => {
-    setEmail("demo@marketplan.com");
-    setPassword("demo123");
-    setName("Demo User");
-    toast.info("Демо-данные заполнены. Если аккаунта нет, создайте его.", { duration: 4000 });
-  };
-
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) { toast.error("Заполните email и пароль"); return; }
@@ -140,188 +132,227 @@ export function AuthPages() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-background">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl"
-          style={{ background: "radial-gradient(circle, #d4a373 0%, transparent 70%)" }}
-        />
-        <div
-          className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-[0.08] blur-3xl"
-          style={{ background: "radial-gradient(circle, #c0854a 0%, transparent 70%)" }}
-        />
+    <div className="min-h-screen w-full flex bg-background">
+      {/* Left panel - feature showcase (desktop only) */}
+      <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] flex-col justify-between relative overflow-hidden shrink-0 p-10"
+        style={{ background: "linear-gradient(160deg, #0e1f1b 0%, #1a3028 50%, #0e2820 100%)" }}>
+        {/* Decorative blobs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-20 blur-3xl"
+            style={{ background: "radial-gradient(circle, #d4a373 0%, transparent 60%)", transform: "translate(-30%, -30%)" }} />
+          <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full opacity-15 blur-3xl"
+            style={{ background: "radial-gradient(circle, #1a7a6d 0%, transparent 60%)", transform: "translate(20%, 20%)" }} />
+        </div>
+        <div className="relative z-10">
+          {/* Brand */}
+          <div className="flex items-center gap-3 mb-12">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #d4a373 0%, #b87a45 100%)" }}>
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-white text-[17px] font-bold tracking-tight">MarketPlan</span>
+          </div>
+          {/* Heading */}
+          <h2 className="text-white text-[28px] font-bold leading-tight mb-4">
+            Всё для маркетолога<br />
+            <span style={{ color: "#d4a373" }}>в одном месте</span>
+          </h2>
+          <p className="text-white/60 text-[14px] leading-relaxed mb-8">
+            Планируйте, создавайте и анализируйте - с AI-помощником Марком на каждом шаге.
+          </p>
+          {/* Feature list */}
+          <div className="space-y-3">
+            {[
+              { emoji: "🤖", text: "6 AI-инструментов на GPT-4o-mini" },
+              { emoji: "📅", text: "Контент-план и маркетинговый календарь" },
+              { emoji: "🎯", text: "OKR, персоны, CJM и конкуренты" },
+              { emoji: "📊", text: "Unit-экономика и A/B тесты" },
+              { emoji: "🦊", text: "Маскот Марк - ваш маркетинг-коуч" },
+            ].map((f, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <span className="text-[18px]">{f.emoji}</span>
+                <span className="text-white/75 text-[13px]">{f.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="relative z-10">
+          <p className="text-white/30 text-[11px]">© 2026 MarketPlan · Все права защищены</p>
+        </div>
       </div>
 
-      <div className="relative z-10 w-full max-w-md px-6">
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <Mascot emotion={mode === "reset" ? "think" : mode === "login" ? "wave" : "celebrate"} size={100} />
-          <h1
-            className="text-[28px] font-bold tracking-tight mt-1"
-            style={{
-              background: "linear-gradient(135deg, #d4a373 0%, #e0c4a8 50%, #c0854a 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            MarketPlan
-          </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
-            {mode === "reset" ? "Восстановление пароля" : mode === "login" ? "Войдите в свой аккаунт" : "Создайте аккаунт"}
-          </p>
+      {/* Right panel - auth form */}
+      <div className="flex-1 flex items-center justify-center relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl"
+            style={{ background: "radial-gradient(circle, #d4a373 0%, transparent 70%)" }} />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-[0.08] blur-3xl"
+            style={{ background: "radial-gradient(circle, #c0854a 0%, transparent 70%)" }} />
         </div>
 
-        {/* Reset password hint (shown after failed login) */}
-        {showResetHint && mode === "login" && (
-          <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-start gap-3">
-            <AlertCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <p className="text-[12px] text-emerald-700 font-medium">Аккаунт не найден</p>
-              <p className="text-[11px] text-emerald-600/80 mt-0.5">
-                Этот email ещё не зарегистрирован. Создайте новый аккаунт или используйте другой email.
-              </p>
-              <button
-                onClick={() => {
-                  setMode("signup");
-                  if (!name.trim()) setName("User");
-                }}
-                className="mt-2 flex items-center gap-1.5 text-[12px] text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-lg font-medium transition-colors"
-              >
-                <User className="w-3.5 h-3.5" />
-                Создать аккаунт
-              </button>
-            </div>
+        <div className="relative z-10 w-full max-w-md px-6">
+          {/* Logo */}
+          <div className="flex flex-col items-center mb-8">
+            <Mascot emotion={mode === "reset" ? "think" : mode === "login" ? "wave" : "celebrate"} size={100} />
+            <h1
+              className="text-[28px] font-bold tracking-tight mt-1"
+              style={{
+                background: "linear-gradient(135deg, #d4a373 0%, #e0c4a8 50%, #c0854a 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              MarketPlan
+            </h1>
+            <p className="text-muted-foreground text-[13px] mt-1">
+              {mode === "reset" ? "Восстановление пароля" : mode === "login" ? "Войдите в свой аккаунт" : "Создайте аккаунт"}
+            </p>
           </div>
-        )}
 
-        {/* Login / Signup / Reset form */}
-        <form
-          onSubmit={mode === "reset" ? handlePasswordReset : mode === "signup" ? handleSignup : handleLogin}
-          className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xl"
-        >
-          {mode === "signup" && (
+          {/* Reset password hint (shown after failed login) */}
+          {showResetHint && mode === "login" && (
+            <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-start gap-3">
+              <AlertCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-[12px] text-emerald-700 font-medium">Аккаунт не найден</p>
+                <p className="text-[11px] text-emerald-600/80 mt-0.5">
+                  Этот email ещё не зарегистрирован. Создайте новый аккаунт или используйте другой email.
+                </p>
+                <button
+                  onClick={() => {
+                    setMode("signup");
+                    if (!name.trim()) setName("User");
+                  }}
+                  className="mt-2 flex items-center gap-1.5 text-[12px] text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-lg font-medium transition-colors"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  Создать аккаунт
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Login / Signup / Reset form */}
+          <form
+            onSubmit={mode === "reset" ? handlePasswordReset : mode === "signup" ? handleSignup : handleLogin}
+            className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xl"
+          >
+            {mode === "signup" && (
+              <div>
+                <label className="text-[12px] font-medium text-foreground mb-1.5 block">Имя</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <input
+                    type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Как вас зовут"
+                    className="w-full pl-10 pr-4 py-2.5 text-[13px] bg-input-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-[#d4a373]/40 placeholder:text-muted-foreground"
+                  />
+                </div>
+              </div>
+            )}
+
             <div>
-              <label className="text-[12px] font-medium text-foreground mb-1.5 block">Имя</label>
+              <label className="text-[12px] font-medium text-foreground mb-1.5 block">Email</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
-                  type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Как вас зовут"
+                  type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your@email.com"
                   className="w-full pl-10 pr-4 py-2.5 text-[13px] bg-input-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-[#d4a373]/40 placeholder:text-muted-foreground"
                 />
               </div>
             </div>
-          )}
 
-          <div>
-            <label className="text-[12px] font-medium text-foreground mb-1.5 block">Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your@email.com"
-                className="w-full pl-10 pr-4 py-2.5 text-[13px] bg-input-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-[#d4a373]/40 placeholder:text-muted-foreground"
-              />
-            </div>
-          </div>
-
-          {mode !== "reset" && (
-            <div>
-              <label className="text-[12px] font-medium text-foreground mb-1.5 block">Пароль</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <input
-                  type={showPw ? "text" : "password"}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder={mode === "signup" ? "Минимум 6 символов" : "Ваш пароль"}
-                  className="w-full pl-10 pr-12 py-2.5 text-[13px] bg-input-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-[#d4a373]/40 placeholder:text-muted-foreground"
-                />
-                <button
-                  type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+            {mode !== "reset" && (
+              <div>
+                <label className="text-[12px] font-medium text-foreground mb-1.5 block">Пароль</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <input
+                    type={showPw ? "text" : "password"}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder={mode === "signup" ? "Минимум 6 символов" : "Ваш пароль"}
+                    className="w-full pl-10 pr-12 py-2.5 text-[13px] bg-input-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-[#d4a373]/40 placeholder:text-muted-foreground"
+                  />
+                  <button
+                    type="button" onClick={() => setShowPw(!showPw)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {mode === "reset" && (
-            <div className="p-3 bg-muted/30 rounded-lg">
-              <p className="text-[11px] text-muted-foreground leading-relaxed">
-                Мы отправим письмо с инструкциями для сброса пароля на указанный email.
-              </p>
-            </div>
-          )}
+            {mode === "reset" && (
+              <div className="p-3 bg-muted/30 rounded-lg">
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  Мы отправим письмо с инструкциями для сброса пароля на указанный email.
+                </p>
+              </div>
+            )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 rounded-xl font-semibold text-[14px] text-white flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-            style={{
-              background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)",
-              boxShadow: "0 4px 16px rgba(212,163,115,0.3)",
-            }}
-          >
-            {loading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-xl font-semibold text-[14px] text-white flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+              style={{
+                background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)",
+                boxShadow: "0 4px 16px rgba(212,163,115,0.3)",
+              }}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  {mode === "reset" ? (
+                    <>
+                      <KeyRound className="w-4 h-4" />
+                      Отправить письмо
+                    </>
+                  ) : (
+                    <>
+                      {mode === "signup" ? "Создать аккаунт" : "Войти"}
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Switch mode */}
+          <div className="text-center mt-5">
+            {mode === "reset" ? (
+              <button
+                onClick={() => { 
+                  setMode("login"); 
+                  setPassword("");
+                  setShowResetHint(false);
+                }}
+                className="text-[13px] text-[#d4a373] hover:underline font-medium"
+              >
+                ← Назад к входу
+              </button>
             ) : (
               <>
-                {mode === "reset" ? (
-                  <>
-                    <KeyRound className="w-4 h-4" />
-                    Отправить письмо
-                  </>
-                ) : (
-                  <>
-                    {mode === "signup" ? "Создать аккаунт" : "Войти"}
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
+                <p className="text-[13px] text-muted-foreground">
+                  {mode === "login" ? "Нет аккаунта? " : "Уже есть аккаунт? "}
+                  <button
+                    onClick={() => { 
+                      setMode(mode === "login" ? "signup" : "login"); 
+                      setPassword("");
+                      setShowResetHint(false);
+                    }}
+                    className="text-[#d4a373] hover:underline font-medium"
+                  >
+                    {mode === "login" ? "Зарегистрируйтесь" : "Войдите"}
+                  </button>
+                </p>
+                
               </>
             )}
-          </button>
-        </form>
-
-        {/* Switch mode */}
-        <div className="text-center mt-5">
-          {mode === "reset" ? (
-            <button
-              onClick={() => { 
-                setMode("login"); 
-                setPassword("");
-                setShowResetHint(false);
-              }}
-              className="text-[13px] text-[#d4a373] hover:underline font-medium"
-            >
-              ← Назад к входу
-            </button>
-          ) : (
-            <>
-              <p className="text-[13px] text-muted-foreground">
-                {mode === "login" ? "Нет аккаунта? " : "Уже есть аккаунт? "}
-                <button
-                  onClick={() => { 
-                    setMode(mode === "login" ? "signup" : "login"); 
-                    setPassword("");
-                    setShowResetHint(false);
-                  }}
-                  className="text-[#d4a373] hover:underline font-medium"
-                >
-                  {mode === "login" ? "Зарегистрируйтесь" : "Войдите"}
-                </button>
-              </p>
-              
-              {/* Demo credentials button */}
-              <button
-                onClick={fillDemoCredentials}
-                className="mt-3 text-[11px] text-muted-foreground hover:text-foreground flex items-center justify-center gap-1.5 mx-auto transition-colors"
-              >
-                <Zap className="w-3 h-3" />
-                Заполнить демо-данными
-              </button>
-            </>
-          )}
+          </div>
         </div>
       </div>
     </div>

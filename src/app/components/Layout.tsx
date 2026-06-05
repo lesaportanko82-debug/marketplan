@@ -14,6 +14,7 @@ import { CommandPalette } from "./CommandPalette";
 import { PageTransition } from "./PageTransition";
 import { AIChatAssistant } from "./AIChatAssistant";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { AuthPages } from "./AuthPages";
 import { toast } from "sonner";
 import { useAuth } from "../lib/useAuth";
 import { MascotTipProvider } from "./MascotTips";
@@ -22,6 +23,15 @@ import { MascotReactionsProvider } from "./MascotReactions";
 import { MascotGamesProvider } from "./MascotGames";
 import { trackDailyVisit, checkMilestone } from "../lib/mascot-reactions";
 import { UsageLimitAlert } from "./UsageLimitAlert";
+
+/* ─── Mobile bottom nav items ─── */
+const MOBILE_NAV_ITEMS = [
+  { icon: FolderKanban, label: "Проекты", path: "/" },
+  { icon: CalendarRange, label: "Контент", path: "/smm/plan" },
+  { icon: Calendar, label: "Календарь", path: "/calendar" },
+  { icon: Wand2, label: "Студия", path: "/content-studio" },
+  { icon: Sparkles, label: "AI", path: "/tools/metrics" },
+];
 
 /* ─── Nav data ─── */
 interface NavItem {
@@ -105,6 +115,7 @@ const navSections: NavSection[] = [
     icon: Workflow,
     items: [
       { icon: Workflow, label: "Автоматизации", path: "/automations" },
+      { icon: Crown, label: "Тарифы", path: "/pricing" },
     ],
   },
 ];
@@ -118,13 +129,7 @@ interface Notification {
   read: boolean;
 }
 
-const DEMO_NOTIFICATIONS: Notification[] = [
-  { id: "1", text: "Кампания «Яндекс Директ» превысила ROI 300%", type: "success", time: "2 часа назад", read: false },
-  { id: "2", text: "A/B тест «CTA Landing» завершён — вариант B победил", type: "success", time: "5 часов назад", read: false },
-  { id: "3", text: "Бюджет проекта E-commerce использован на 80%", type: "warn", time: "вчера", read: true },
-  { id: "4", text: "Добавлен новый конкурент в систему", type: "info", time: "2 дня назад", read: true },
-  { id: "5", text: "3 поста запланированы на завтра", type: "info", time: "3 дня назад", read: true },
-];
+const DEMO_NOTIFICATIONS: Notification[] = [];
 
 const NOTIF_ICONS = { info: Info, success: CheckCircle2, warn: AlertTriangle };
 const NOTIF_COLORS = { info: "text-teal-400", success: "text-emerald-400", warn: "text-amber-400" };
@@ -200,11 +205,11 @@ export function Layout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [notifications, setNotifications] = useState(DEMO_NOTIFICATIONS);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const { theme, setTheme } = useTheme();
   const notifRef = useRef<HTMLDivElement>(null);
   const mainContentRef = useRef<HTMLElement>(null);
-  const { user, hasAccess, signOut } = useAuth();
+  const { user, loading, hasAccess, signOut } = useAuth();
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -283,8 +288,9 @@ export function Layout() {
   const renderItem = (item: NavItem, compact = false) => {
     const active = isActive(item.path);
     const blocked = !hasAccess(item.path);
+    const iconOnly = sidebarCollapsed && !isMobile;
     return (
-      <Tooltip key={item.path} text={blocked ? `${item.label} (требуется апгрейд)` : item.label} show={sidebarCollapsed}>
+      <Tooltip key={item.path} text={blocked ? `${item.label} (требуется апгрейд)` : item.label} show={iconOnly}>
         <button
           onClick={() => startTransition(() => navigate(item.path))}
           onContextMenu={e => {
@@ -293,13 +299,9 @@ export function Layout() {
             toast(favorites.isFav(item.path) ? "Убрано из избранного" : "Добавлено в избранное", { duration: 1500 });
           }}
           className={`group/item w-full flex items-center rounded-lg transition-all duration-150 ${
-            sidebarCollapsed
-              ? "justify-center p-3" /* FIXED: was p-2, now min 44px touch target */
-              : "gap-2.5 px-2.5 py-2" /* FIXED: was py-[7px], now py-2 for better touch target */
+            iconOnly ? "justify-center p-3" : "gap-2.5 px-2.5 py-2.5"
           }`}
-          style={{
-            background: active ? "var(--sidebar-accent)" : undefined,
-          }}
+          style={{ background: active ? "var(--sidebar-accent)" : undefined }}
           onMouseEnter={e => { if (!active) e.currentTarget.style.background = "var(--sidebar-hover)"; }}
           onMouseLeave={e => { if (!active) e.currentTarget.style.background = "transparent"; }}
         >
@@ -308,7 +310,7 @@ export function Layout() {
               className="w-[18px] h-[18px] transition-colors"
               style={{ color: active ? "var(--sidebar-active)" : blocked ? "var(--sidebar-text-muted)" : "var(--sidebar-icon)" }}
             />
-            {blocked && !sidebarCollapsed && (
+            {blocked && !iconOnly && (
               <Lock className="absolute -right-1 -bottom-1 w-2.5 h-2.5" style={{ color: "var(--sidebar-text-muted)" }} />
             )}
             {active && (
@@ -318,7 +320,7 @@ export function Layout() {
               />
             )}
           </div>
-          {!sidebarCollapsed && (
+          {!iconOnly && (
             <>
               <span
                 className="flex-1 text-[13px] text-left truncate transition-colors"
@@ -333,10 +335,7 @@ export function Layout() {
               {item.badge && (
                 <span
                   className="text-[9px] font-bold px-1.5 py-0.5 rounded-md tracking-wide"
-                  style={{
-                    background: "var(--sidebar-accent)",
-                    color: "var(--sidebar-active)",
-                  }}
+                  style={{ background: "var(--sidebar-accent)", color: "var(--sidebar-active)" }}
                 >
                   {item.badge}
                 </span>
@@ -369,7 +368,7 @@ export function Layout() {
     const isSectionCollapsed = sectionState.collapsed[section.id];
     const hasActiveChild = accessible.some(i => isActive(i.path));
 
-    if (sidebarCollapsed) {
+    if (sidebarCollapsed && !isMobile) {
       return (
         <div key={section.id} className="space-y-0.5 py-1">
           {accessible.map(item => renderItem(item))}
@@ -413,12 +412,35 @@ export function Layout() {
     );
   };
 
+  // Auth guard: show loading or auth pages
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-background gap-4">
+        <div
+          className="w-12 h-12 rounded-xl flex items-center justify-center"
+          style={{
+            background: "linear-gradient(135deg, #d4a373 0%, #c0854a 50%, #a87040 100%)",
+            boxShadow: "0 4px 20px rgba(212,163,115,0.3)",
+          }}
+        >
+          <Zap className="w-6 h-6 text-white" />
+        </div>
+        <Loader2 className="w-5 h-5 text-[#d4a373] animate-spin" />
+        <p className="text-[13px] text-muted-foreground">Загрузка...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthPages />;
+  }
+
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden">
       {/* Mobile menu overlay */}
-      {isMobile && mobileMenuOpen && (
+      {mobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -427,13 +449,13 @@ export function Layout() {
       <aside
         className={`${
           isMobile 
-            ? `fixed top-0 left-0 bottom-0 w-[280px] z-50 transform transition-transform duration-300 ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}` 
+            ? `fixed top-0 left-0 bottom-0 w-[285px] z-50 transform transition-transform duration-300 ease-out ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}` 
             : `${sidebarCollapsed ? "w-[60px]" : "w-[240px]"} relative`
         } flex flex-col transition-all duration-300 ease-out shrink-0 overflow-hidden`}
         style={{
           background: "var(--sidebar-bg)",
           borderRight: "1px solid var(--sidebar-border)",
-          willChange: isMobile ? "transform" : "width", /* Performance optimization */
+          willChange: isMobile ? "transform" : "width",
         }}
       >
         {/* Subtle warm glow */}
@@ -447,7 +469,7 @@ export function Layout() {
 
         <div className="relative z-10 flex flex-col h-full">
           {/* ─ Logo ─ */}
-          <div className={`h-[56px] flex items-center ${sidebarCollapsed ? "justify-center" : "px-4"} gap-3 shrink-0`}>
+          <div className={`h-[56px] flex items-center ${sidebarCollapsed && !isMobile ? "justify-center" : "px-4"} gap-3 shrink-0`}>
             <div
               className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
               style={{
@@ -457,8 +479,8 @@ export function Layout() {
             >
               <Zap className="w-4 h-4 text-white drop-shadow-sm" />
             </div>
-            {!sidebarCollapsed && (
-              <div className="flex flex-col">
+            {!(sidebarCollapsed && !isMobile) && (
+              <div className="flex flex-col flex-1 min-w-0">
                 <span
                   className="text-[15px] font-bold tracking-tight leading-none"
                   style={{ color: "var(--sidebar-text)" }}
@@ -473,11 +495,21 @@ export function Layout() {
                 </span>
               </div>
             )}
+            {/* Mobile close button */}
+            {isMobile && (
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1.5 rounded-lg ml-auto shrink-0"
+                style={{ color: "var(--sidebar-fg)" }}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
 
           {/* ─ Search ─ */}
-          <div className={`${sidebarCollapsed ? "px-2" : "px-3"} mb-3`}>
-            {sidebarCollapsed ? (
+          <div className={`${sidebarCollapsed && !isMobile ? "px-2" : "px-3"} mb-3`}>
+            {sidebarCollapsed && !isMobile ? (
               <Tooltip text="Поиск  ⌘K" show>
                 <button
                   onClick={() => setCmdOpen(true)}
@@ -515,8 +547,8 @@ export function Layout() {
 
           {/* ─ Favorites ─ */}
           {favItems.length > 0 && (
-            <div className={`${sidebarCollapsed ? "px-2" : "px-3"} mb-1`}>
-              {!sidebarCollapsed && (
+            <div className={`${sidebarCollapsed && !isMobile ? "px-2" : "px-3"} mb-1`}>
+              {!(sidebarCollapsed && !isMobile) && (
                 <div className="flex items-center gap-1.5 px-2.5 mb-1">
                   <Star className="w-3 h-3" style={{ color: "var(--sidebar-active)", fill: "var(--sidebar-active)", opacity: 0.5 }} />
                   <span
@@ -535,7 +567,7 @@ export function Layout() {
           )}
 
           {/* ─ Navigation sections ─ */}
-          <nav className={`flex-1 overflow-y-auto ${sidebarCollapsed ? "px-2" : "px-3"} space-y-0.5 sidebar-scroll`}>
+          <nav className={`flex-1 overflow-y-auto ${sidebarCollapsed && !isMobile ? "px-2" : "px-3"} space-y-0.5 sidebar-scroll`}>
             {navSections.map(renderSection)}
           </nav>
 
@@ -543,20 +575,20 @@ export function Layout() {
           <div className="mx-4 h-[1px]" style={{ background: "var(--sidebar-border)" }} />
 
           {/* ─ Bottom actions ─ */}
-          <div className={`${sidebarCollapsed ? "px-2" : "px-3"} py-2 space-y-0.5`}>
+          <div className={`${sidebarCollapsed && !isMobile ? "px-2" : "px-3"} py-2 space-y-0.5`}>
             {/* Settings */}
-            <Tooltip text="Настройки" show={sidebarCollapsed}>
+            <Tooltip text="Настройки" show={sidebarCollapsed && !isMobile}>
               <button
                 onClick={() => navigate("/settings")}
                 className={`w-full flex items-center rounded-lg transition-all duration-150 ${
-                  sidebarCollapsed ? "justify-center p-2" : "gap-2.5 px-2.5 py-[7px]"
+                  sidebarCollapsed && !isMobile ? "justify-center p-2" : "gap-2.5 px-2.5 py-[7px]"
                 }`}
                 style={{ background: isActive("/settings") ? "var(--sidebar-accent)" : undefined }}
                 onMouseEnter={e => { if (!isActive("/settings")) e.currentTarget.style.background = "var(--sidebar-hover)"; }}
                 onMouseLeave={e => { if (!isActive("/settings")) e.currentTarget.style.background = "transparent"; }}
               >
                 <Settings className="w-[18px] h-[18px]" style={{ color: isActive("/settings") ? "var(--sidebar-active)" : "var(--sidebar-icon)" }} />
-                {!sidebarCollapsed && (
+                {!(sidebarCollapsed && !isMobile) && (
                   <span className="text-[13px]" style={{ color: isActive("/settings") ? "var(--sidebar-text)" : "var(--sidebar-text-muted)", fontWeight: isActive("/settings") ? 600 : 400 }}>
                     Настройки
                   </span>
@@ -564,33 +596,35 @@ export function Layout() {
               </button>
             </Tooltip>
 
-            {/* Collapse toggle */}
-            <Tooltip text={sidebarCollapsed ? "Развернуть" : "Свернуть"} show={sidebarCollapsed}>
-              <button
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className={`w-full flex items-center rounded-lg transition-all duration-150 ${
-                  sidebarCollapsed ? "justify-center p-2" : "gap-2.5 px-2.5 py-[7px]"
-                }`}
-                onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
-              >
-                {sidebarCollapsed
-                  ? <PanelLeft className="w-[18px] h-[18px]" style={{ color: "var(--sidebar-fg)" }} />
-                  : <PanelLeftClose className="w-[18px] h-[18px]" style={{ color: "var(--sidebar-fg)" }} />
-                }
-                {!sidebarCollapsed && <span className="text-[13px]" style={{ color: "var(--sidebar-text-muted)" }}>Свернуть</span>}
-              </button>
-            </Tooltip>
+            {/* Collapse toggle - desktop only */}
+            {!isMobile && (
+              <Tooltip text={sidebarCollapsed ? "Развернуть" : "Свернуть"} show={sidebarCollapsed}>
+                <button
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className={`w-full flex items-center rounded-lg transition-all duration-150 ${
+                    sidebarCollapsed ? "justify-center p-2" : "gap-2.5 px-2.5 py-[7px]"
+                  }`}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+                >
+                  {sidebarCollapsed
+                    ? <PanelLeft className="w-[18px] h-[18px]" style={{ color: "var(--sidebar-fg)" }} />
+                    : <PanelLeftClose className="w-[18px] h-[18px]" style={{ color: "var(--sidebar-fg)" }} />
+                  }
+                  {!sidebarCollapsed && <span className="text-[13px]" style={{ color: "var(--sidebar-text-muted)" }}>Свернуть</span>}
+                </button>
+              </Tooltip>
+            )}
           </div>
 
           {/* ─ User card ─ */}
           <div className="mx-4 h-[1px]" style={{ background: "var(--sidebar-border)" }} />
-          <div className={`${sidebarCollapsed ? "px-2" : "px-3"} py-3`} ref={userMenuRef}>
-            <Tooltip text={user?.name || "Профиль"} show={sidebarCollapsed}>
+          <div className={`${sidebarCollapsed && !isMobile ? "px-2" : "px-3"} py-3`} ref={userMenuRef}>
+            <Tooltip text={user?.name || "Профиль"} show={sidebarCollapsed && !isMobile}>
               <button
-                onClick={() => sidebarCollapsed ? navigate("/profile") : setUserMenuOpen(!userMenuOpen)}
+                onClick={() => (sidebarCollapsed && !isMobile) ? navigate("/profile") : setUserMenuOpen(!userMenuOpen)}
                 className={`w-full flex items-center rounded-xl transition-all duration-150 ${
-                  sidebarCollapsed ? "justify-center p-2" : "gap-2.5 px-2.5 py-2"
+                  sidebarCollapsed && !isMobile ? "justify-center p-2" : "gap-2.5 px-2.5 py-2"
                 }`}
                 onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
@@ -604,7 +638,7 @@ export function Layout() {
                 >
                   {user?.avatarInitials || "МП"}
                 </div>
-                {!sidebarCollapsed && (
+                {!(sidebarCollapsed && !isMobile) && (
                   <div className="flex-1 min-w-0 text-left">
                     <p className="text-[12px] font-medium truncate leading-tight" style={{ color: "var(--sidebar-text)" }}>
                       {user?.name || "Пользователь"}
@@ -614,7 +648,7 @@ export function Layout() {
                     </p>
                   </div>
                 )}
-                {!sidebarCollapsed && (
+                {!(sidebarCollapsed && !isMobile) && (
                   <ChevronDown
                     className={`w-3.5 h-3.5 transition-transform ${userMenuOpen ? "rotate-180" : ""}`}
                     style={{ color: "var(--sidebar-fg)" }}
@@ -624,7 +658,7 @@ export function Layout() {
             </Tooltip>
 
             {/* User dropdown */}
-            {userMenuOpen && !sidebarCollapsed && (
+            {userMenuOpen && !(sidebarCollapsed && !isMobile) && (
               <div
                 className="mt-1.5 rounded-xl overflow-hidden shadow-lg border"
                 style={{
@@ -658,7 +692,7 @@ export function Layout() {
       </aside>
 
       {/* ═══ MAIN CONTENT ═══ */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden" style={{ paddingBottom: isMobile ? "calc(56px + env(safe-area-inset-bottom))" : 0 }}>
         {/* Offline indicator */}
         {!isOnline && (
           <div className="bg-red-500/10 border-b border-red-500/20 px-4 py-2 flex items-center justify-center gap-2 shrink-0">
@@ -668,13 +702,17 @@ export function Layout() {
         )}
 
         {/* Header */}
-        <header className="h-[48px] border-b border-border bg-card flex items-center justify-between px-5 shrink-0">
-          <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+        <header className="h-[52px] border-b border-border flex items-center justify-between px-3 md:px-5 shrink-0 relative"
+          style={{ background: "linear-gradient(90deg, var(--card) 0%, var(--background) 100%)" }}
+        >
+          {/* Subtle glow line at bottom */}
+          <div className="absolute bottom-0 left-0 right-0 h-px opacity-40" style={{ background: "linear-gradient(90deg, transparent, var(--primary), transparent)" }} />
+          <div className="flex items-center gap-1 text-[13px] text-muted-foreground min-w-0">
             {/* Mobile menu button */}
             {isMobile && (
               <button
                 onClick={() => setMobileMenuOpen(true)}
-                className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors mr-2 md:hidden"
+                className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
                 aria-label="Открыть меню"
               >
                 <Menu className="w-4 h-4" />
@@ -682,7 +720,7 @@ export function Layout() {
             )}
             <Breadcrumbs />
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 md:gap-1 shrink-0">
             <button
               onClick={() => setCmdOpen(true)}
               className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors hidden sm:flex"
@@ -772,7 +810,7 @@ export function Layout() {
 
         <UsageLimitAlert />
 
-        <main className="flex-1 overflow-y-auto" ref={mainContentRef}>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden" ref={mainContentRef}>
           <PageTransition key={location.pathname}>
             <ErrorBoundary>
               <Suspense fallback={
@@ -789,6 +827,51 @@ export function Layout() {
 
       <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />
 
+      {/* ═══ Mobile Bottom Navigation ═══ */}
+      {isMobile && (
+        <nav
+          className="fixed bottom-0 left-0 right-0 z-30 flex items-stretch border-t border-border"
+          style={{
+            background: "var(--sidebar-bg)",
+            height: `calc(56px + env(safe-area-inset-bottom))`,
+            paddingBottom: "env(safe-area-inset-bottom)",
+          }}
+        >
+          {MOBILE_NAV_ITEMS.map(item => {
+            const active = isActive(item.path);
+            return (
+              <button
+                key={item.path}
+                onClick={() => startTransition(() => navigate(item.path))}
+                className="relative flex-1 flex flex-col items-center justify-center gap-0.5 pt-1.5 pb-1 transition-all"
+                style={{ color: active ? "var(--sidebar-active)" : "var(--sidebar-text-muted)" }}
+              >
+                <item.icon
+                  className="w-5 h-5 transition-all"
+                  style={{ color: active ? "var(--sidebar-active)" : "var(--sidebar-text-muted)" }}
+                />
+                <span className="text-[10px] font-medium leading-none" style={{ color: active ? "var(--sidebar-active)" : "var(--sidebar-text-muted)" }}>{item.label}</span>
+                {active && (
+                  <div
+                    className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full"
+                    style={{ background: "var(--sidebar-active)" }}
+                  />
+                )}
+              </button>
+            );
+          })}
+          {/* More/Menu button */}
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="flex-1 flex flex-col items-center justify-center gap-0.5 pt-1.5 pb-1 transition-all"
+            style={{ color: "var(--sidebar-text-muted)" }}
+          >
+            <Menu className="w-5 h-5" />
+            <span className="text-[10px] font-medium leading-none">Ещё</span>
+          </button>
+        </nav>
+      )}
+
       <style>{`
         .sidebar-scroll::-webkit-scrollbar { width: 3px; }
         .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -796,7 +879,7 @@ export function Layout() {
         .sidebar-scroll::-webkit-scrollbar-thumb:hover { background: var(--sidebar-fg); }
       `}</style>
 
-      <AIChatAssistant />
+      <AIChatAssistant isMobile={isMobile} />
       <MascotTipProvider />
       <OnboardingTour />
       <MascotReactionsProvider />
@@ -839,6 +922,8 @@ function Breadcrumbs() {
     "/campaign-storyline": "Campaign Storyline",
     "/profile": "Личный кабинет",
     "/metrics-tree": "Дерево метрик",
+    "/pricing": "Тарифы",
+    "/notion": "Notion Hub",
   };
 
   const isProjectDetail = path.startsWith("/project/");

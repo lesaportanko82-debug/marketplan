@@ -21,7 +21,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { getData } from "../lib/api";
-import { mockProjects, type Project } from "../data/mock-data";
+import { type Project } from "../data/mock-data";
 
 interface CommandPaletteProps {
   open: boolean;
@@ -35,10 +35,10 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   useEffect(() => {
     if (open) {
       getData<Project[]>("projects:list").then((d) => {
-        const list = (d && Array.isArray(d) && d.length > 0) ? d : mockProjects;
+        const list = (d && Array.isArray(d) && d.length > 0) ? d : [];
         setProjects(list.map((p) => ({ id: p.id, label: p.name })));
       }).catch(() => {
-        setProjects(mockProjects.map((p) => ({ id: p.id, label: p.name })));
+        setProjects([]);
       });
     }
   }, [open]);

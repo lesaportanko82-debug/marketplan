@@ -30,7 +30,7 @@ function cleanResponse(text: string): string {
   let cleaned = text
     .replace(/\b(GPT[-‑]?4o?[-‑]?mini|GPT[-‑]?\d[\w.-]*|ChatGPT|OpenAI|языков[а-я]+ модел[а-я]+|нейросет[а-я]*|искусственн[а-я]+ интеллект[а-я]*)\b/gi, "MarketPlan")
     .replace(/как (AI|ИИ|бот|модель),?\s*/gi, "")
-    .replace(/я\s*—\s*(AI|ИИ|бот|модель|нейросеть)[.,]?\s*/gi, "");
+    .replace(/я\s*-\s*(AI|ИИ|бот|модель|нейросеть)[.,]?\s*/gi, "");
 
   cleaned = cleaned.trim();
   if (
@@ -56,7 +56,7 @@ function detectEmotion(content: string): MascotEmotion {
   return "idle";
 }
 
-const SYSTEM_CONTEXT = `Ты — Марк 🦊, маскот и встроенный ассистент маркетингового планера MarketPlan. Ты дружелюбный лисёнок-эксперт в маркетинге. Помогай с маркетинговыми стратегиями, контент-планированием, расчётами ROI/CAC/LTV, A/B тестами, конкурентным анализом, SMM, брендингом, unit-экономикой. Отвечай кратко, структурированно, на русском. Используй маркдаун для форматирования. Давай конкретные, actionable советы. Иногда вставляй лёгкие «лисьи» ремарки или поддержку, но не перебарщивай — ты эксперт, а не клоун. ВАЖНО: Никогда не упоминай GPT, ChatGPT, OpenAI, языковую модель или искусственный интеллект. Не говори что ты AI, нейросеть или бот. Ты — Марк, лисёнок-маскот MarketPlan. Не используй фразы типа "как языковая модель", "я AI" и подобные. Просто давай полезные ответы от имени Марка.`;
+const SYSTEM_CONTEXT = `Ты - Марк 🦊, маскот и встроенный ассистент маркетингового планера MarketPlan. Ты дружелюбный лисёнок-эксперт в маркетинге. Помогай с маркетинговыми стратегиями, контент-планированием, расчётами ROI/CAC/LTV, A/B тестами, конкурентным анализом, SMM, брендингом, unit-экономикой. Отвечай кратко, структурированно, на русском. Используй маркдаун для форматирования. Давай конкретные, actionable советы. Иногда вставляй лёгкие «лисьи» ремарки или поддержку, но не перебарщивай - ты эксперт, а не клоун. ВАЖНО: Никогда не упоминай GPT, ChatGPT, OpenAI, языковую модель или искусственный интеллект. Не говори что ты AI, нейросеть или бот. Ты - Марк, лисёнок-маскот MarketPlan. Не используй фразы типа "как языковая модель", "я AI" и подобные. Просто давай полезные ответы от имени Марка.`;
 
 const QUICK_PROMPTS = [
   "Какие KPI отслеживать для e-commerce?",
@@ -113,7 +113,7 @@ function UserMessageTail() {
   );
 }
 
-export function AIChatAssistant() {
+export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
   const { canUse, increment } = useUsage();
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -125,7 +125,7 @@ export function AIChatAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  /** Mood-based idle emotion — updates after each assistant message */
+  /** Mood-based idle emotion - updates after each assistant message */
   const [moodEmotion, setMoodEmotion] = useState<MascotEmotion>(() => getMood());
   const moodLabel = getMoodLabel();
   const season = detectSeason();
@@ -256,8 +256,8 @@ export function AIChatAssistant() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const chatW = isExpanded ? "w-[520px]" : "w-[380px]";
-  const chatH = isExpanded ? "h-[600px]" : "h-[480px]";
+  const chatW = isMobile ? "w-full" : isExpanded ? "w-[520px]" : "w-[380px]";
+  const chatH = isMobile ? "h-full" : isExpanded ? "h-[600px]" : "h-[480px]";
 
   const formatTime = (iso: string) => {
     try {
@@ -267,7 +267,7 @@ export function AIChatAssistant() {
 
   return (
     <>
-      {/* ═══ FAB — Mini Марк ═══ */}
+      {/* ═══ FAB - Mini Марк ═══ */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
@@ -281,12 +281,14 @@ export function AIChatAssistant() {
               scale: { type: "spring", damping: 14, stiffness: 260 },
             }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-[56px] h-[56px] rounded-full flex items-center justify-center shadow-xl cursor-pointer group"
+            className="fixed z-50 w-[56px] h-[56px] rounded-full flex items-center justify-center shadow-xl cursor-pointer group"
             style={{
               background: "linear-gradient(145deg, #fdf6ee 0%, #f5e6d3 50%, #d4a373 100%)",
               boxShadow: "0 4px 24px rgba(212,163,115,0.45), 0 0 0 3px rgba(212,163,115,0.12)",
+              bottom: isMobile ? "calc(72px + env(safe-area-inset-bottom))" : "24px",
+              right: isMobile ? "16px" : "24px",
             }}
-            title="Марк — AI Ассистент (Ctrl+J)"
+            title="Марк - AI Ассистент (Ctrl+J)"
           >
             {/* Mascot in FAB */}
             <div className="relative">
@@ -325,12 +327,16 @@ export function AIChatAssistant() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            initial={{ opacity: 0, y: isMobile ? "100%" : 20, scale: isMobile ? 1 : 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            exit={{ opacity: 0, y: isMobile ? "100%" : 20, scale: isMobile ? 1 : 0.95 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className={`fixed bottom-6 right-6 z-50 ${chatW} ${chatH} bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-200`}
-            style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.05)" }}
+            className={`fixed z-50 ${chatW} ${chatH} bg-card border border-border flex flex-col overflow-hidden transition-all duration-200 ${
+              isMobile 
+                ? "inset-0 rounded-none" 
+                : "bottom-6 right-6 rounded-2xl shadow-2xl"
+            }`}
+            style={{ boxShadow: isMobile ? "none" : "0 8px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.05)" }}
           >
             {/* ─── Header with Марк ─── */}
             <div
@@ -420,7 +426,7 @@ export function AIChatAssistant() {
                     <SpeechBubble side="left" size="sm" accentColor="#d4a373" className="max-w-[280px]">
                       <p className="text-[13px] font-semibold text-foreground">Привет! Я Марк 🦊</p>
                       <p className="text-[11.5px] text-muted-foreground mt-0.5">
-                        Ваш маркетинг-ассистент. Стратегия, аналитика, контент — спрашивайте что угодно!
+                        Ваш маркетинг-ассистент. Стратегия, аналитика, контент - спрашивайте что угодно!
                       </p>
                     </SpeechBubble>
                   </motion.div>

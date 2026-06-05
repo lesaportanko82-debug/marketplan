@@ -28,13 +28,13 @@ function LoadingFallback() {
 function AuthGate() {
   const { user, loading } = useAuth();
 
+  // Show router immediately - Layout will handle auth checks for protected routes
   if (loading) {
     return <LoadingFallback />;
   }
 
-  if (!user) {
-    return <AuthPages />;
-  }
+  // Public routes like /onboarding are accessible without auth
+  // Layout component handles auth requirement for protected routes
   return <RouterProvider router={router} />;
 }
 

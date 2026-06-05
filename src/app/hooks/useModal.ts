@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 
 /**
- * useModal — a11y hook for modal dialogs.
+ * useModal - a11y hook for modal dialogs.
  *
  * Provides:
  * - Escape key closes the modal

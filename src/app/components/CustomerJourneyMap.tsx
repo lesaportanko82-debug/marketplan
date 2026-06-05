@@ -10,6 +10,7 @@ import { aiGenerate } from "../lib/api";
 import { AddToProjectButton } from "./AddToProjectModal";
 import { ModalOverlay } from "./ModalOverlay";
 import { useModal } from "../hooks/useModal";
+import { EmptyState } from "./EmptyState";
 
 interface Touchpoint {
   id: string;
@@ -171,17 +172,17 @@ export function CustomerJourneyMap() {
   };
 
   return (
-    <div className="p-5 max-w-[1440px] mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1440px] mx-auto space-y-4 sm:space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center">
-              <MapPin className="w-4.5 h-4.5 text-white" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center shrink-0">
+              <MapPin className="w-4 h-4 text-white" />
             </div>
             Customer Journey Map
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Визуальная карта пути клиента с точками контакта
           </p>
         </div>
@@ -329,18 +330,12 @@ export function CustomerJourneyMap() {
           </div>
         </div>
       ) : (
-        <div className="text-center py-20 text-muted-foreground">
-          <MapPin className="w-12 h-12 mx-auto mb-4 opacity-30" />
-          <p className="text-[16px] font-medium">Создайте первую CJM</p>
-          <p className="text-[13px] mt-1">Customer Journey Map поможет визуализировать путь клиента</p>
-          <button
-            onClick={() => setShowCreate(true)}
-            className="mt-4 flex items-center gap-2 px-4 py-2.5 rounded-lg text-[13px] font-medium text-white mx-auto"
-            style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
-          >
-            <Plus className="w-4 h-4" /> Создать карту
-          </button>
-        </div>
+        <EmptyState
+          title="Создайте первую CJM"
+          description="Customer Journey Map поможет визуализировать путь клиента и найти точки роста"
+          emotion="idle"
+          action={{ label: "Создать карту", onClick: () => setShowCreate(true), icon: <Plus className="w-4 h-4" /> }}
+        />
       )}
 
       {/* Create map modal */}

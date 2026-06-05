@@ -25,23 +25,15 @@ interface BrandVoiceConfig {
 }
 
 const DEFAULT_CONFIG: BrandVoiceConfig = {
-  tonality: ["Дружелюбный", "Экспертный"],
-  style: "Простой и понятный, без канцелярита. Короткие предложения. Активный залог.",
-  personality: "Бренд как умный друг, который разбирается в теме и готов помочь.",
-  values: ["Прозрачность", "Инновации", "Забота о клиенте"],
-  targetAudience: "Предприниматели и маркетологи 25-45 лет",
-  doExamples: [
-    "Мы поможем вам выбрать лучшее решение",
-    "Попробуйте — первые 14 дней бесплатно",
-    "Расскажем простым языком",
-  ],
-  dontExamples: [
-    "Наша компания является лидером рынка",
-    "В рамках данного предложения...",
-    "Вы не пожалеете о своём выборе!!!",
-  ],
-  bannedWords: ["уникальный", "инновационный", "лидер рынка", "не имеет аналогов", "революционный"],
-  preferredWords: ["простой", "удобный", "быстрый", "понятный", "надёжный"],
+  tonality: [],
+  style: "",
+  personality: "",
+  values: [],
+  targetAudience: "",
+  doExamples: [],
+  dontExamples: [],
+  bannedWords: [],
+  preferredWords: [],
   sampleTexts: [],
 };
 
@@ -75,7 +67,7 @@ export function BrandVoice() {
     setCheckLoading(true);
     try {
       const result = await aiGenerate("brand_voice_check",
-        `Ты — бренд-менеджер. Проверь текст на соответствие brand voice гайду.
+        `Ты - бренд-менеджер. Проверь текст на соответствие brand voice гайду.
 
 Tone of voice: ${config.tonality.join(", ")}
 Стиль: ${config.style}
@@ -142,17 +134,17 @@ Tone of voice: ${config.tonality.join(", ")}
   };
 
   return (
-    <div className="p-5 max-w-[1440px] mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1440px] mx-auto space-y-4 sm:space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center">
-              <Volume2 className="w-4.5 h-4.5 text-white" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center shrink-0">
+              <Volume2 className="w-4 h-4 text-white" />
             </div>
             Brand Voice
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Тон коммуникации, стиль и правила контента бренда
           </p>
         </div>
@@ -164,7 +156,8 @@ Tone of voice: ${config.tonality.join(", ")}
             style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
           >
             {genLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-            Сгенерировать гайд
+            <span className="hidden sm:inline">Сгенерировать гайд</span>
+            <span className="sm:hidden">Гайд</span>
           </button>
           <AddToProjectButton itemType="brand_voice" itemId="brand-voice" itemTitle="Brand Voice" />
         </div>
@@ -377,7 +370,7 @@ Tone of voice: ${config.tonality.join(", ")}
 
         {/* Right column: AI Check */}
         <div className="space-y-4">
-          <div className="bg-card border border-border rounded-xl p-5 space-y-3 sticky top-5">
+          <div className="bg-card border border-border rounded-xl p-5 space-y-3 lg:sticky lg:top-5">
             <h3 className="text-[14px] font-semibold text-foreground flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-[#d4a373]" /> Проверка текста
             </h3>

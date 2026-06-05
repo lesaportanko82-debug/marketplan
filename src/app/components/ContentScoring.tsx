@@ -10,6 +10,7 @@ import { copyToClipboard } from "../lib/clipboard";
 import { aiGenerate } from "../lib/api";
 import { useKV } from "../lib/useKV";
 import { AddToProjectButton } from "./AddToProjectModal";
+import { EmptyState } from "./EmptyState";
 
 /* ========== TYPES ========== */
 interface ScoreAxis {
@@ -224,22 +225,22 @@ ${text.slice(0, 3000)}
   };
 
   return (
-    <div className="p-6 space-y-5 animate-in fade-in duration-300">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold text-foreground flex items-center gap-2.5">
-            <Target className="w-6 h-6 text-[#d4a373]" />
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <Target className="w-5 h-5 text-[#d4a373] shrink-0" />
             Predictive Content Scoring
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Оценка контента до публикации по 5 осям + AI-рекомендации для буста метрик
           </p>
         </div>
         <AddToProjectButton itemType="content-studio" itemId="scoring" itemTitle="Content Scoring" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
         {/* Left: Input */}
         <div className="lg:col-span-2 space-y-4">
           {/* Platform */}
@@ -292,21 +293,30 @@ ${text.slice(0, 3000)}
           </button>
 
           {/* History mini */}
-          {scoringHistory.length > 0 && (
-            <div className="bg-card border border-border rounded-xl p-4 space-y-2">
-              <h3 className="text-[13px] font-semibold text-foreground">Последние оценки</h3>
-              {scoringHistory.slice(0, 5).map((h) => {
-                const g = getGrade(h.totalScore);
-                return (
-                  <div key={h.id} className="flex items-center gap-2 py-1.5 border-b border-border last:border-0">
-                    <span className={`text-[14px] font-bold ${g.color}`}>{h.grade}</span>
-                    <span className="text-[11px] text-foreground truncate flex-1">{h.text.slice(0, 40)}...</span>
-                    <span className="text-[10px] text-muted-foreground">{h.totalScore}/100</span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <div className="bg-card border border-border rounded-xl overflow-hidden">
+            {scoringHistory.length > 0 ? (
+              <div className="p-4 space-y-2">
+                <h3 className="text-[13px] font-semibold text-foreground">Последние оценки</h3>
+                {scoringHistory.slice(0, 5).map((h) => {
+                  const g = getGrade(h.totalScore);
+                  return (
+                    <div key={h.id} className="flex items-center gap-2 py-1.5 border-b border-border last:border-0">
+                      <span className={`text-[14px] font-bold ${g.color}`}>{h.grade}</span>
+                      <span className="text-[11px] text-foreground truncate flex-1">{h.text.slice(0, 40)}...</span>
+                      <span className="text-[10px] text-muted-foreground">{h.totalScore}/100</span>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <EmptyState
+                title="История пуста"
+                description="Оценённые контенты появятся здесь"
+                emotion="curious"
+                compact
+              />
+            )}
+          </div>
         </div>
 
         {/* Right: Results */}

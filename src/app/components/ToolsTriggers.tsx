@@ -111,7 +111,7 @@ export function ToolsTriggers() {
   const reviewCount = getAllReviews().split("\n").filter((l) => l.trim().length > 10).length;
 
   return (
-    <div className="p-5 max-w-[1000px] mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1000px] mx-auto space-y-4 sm:space-y-5">
       {/* Header */}
       <div>
         <h1 className="text-foreground flex items-center gap-3">

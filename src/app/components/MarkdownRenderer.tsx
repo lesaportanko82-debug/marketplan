@@ -101,7 +101,7 @@ function parseBlocks(raw: string): Block[] {
       continue;
     }
 
-    // Empty line — skip
+    // Empty line - skip
     if (line.trim() === "") {
       i++;
       continue;

@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router";
 import { Layout } from "./components/Layout";
 import { ProjectsList } from "./components/ProjectsList";
 import { NotFound } from "./components/NotFound";
+import { OnboardingPage } from "./components/OnboardingPage";
 
 // Lazy loaded components for better performance
 const ProjectDetail = lazy(() =>
@@ -145,8 +146,22 @@ const MetricsTreePage = lazy(() =>
     default: module.MetricsTreePage,
   }))
 );
+const PricingPage = lazy(() =>
+  import("./components/PricingPage").then((module) => ({
+    default: module.PricingPage,
+  }))
+);
+const NotionHub = lazy(() =>
+  import("./components/NotionHub").then((module) => ({
+    default: module.NotionHub,
+  }))
+);
 
 export const router = createBrowserRouter([
+  {
+    path: "/onboarding",
+    Component: OnboardingPage,
+  },
   {
     path: "/",
     Component: Layout,
@@ -180,6 +195,8 @@ export const router = createBrowserRouter([
       { path: "settings", Component: SettingsPage },
       { path: "profile", Component: ProfilePage },
       { path: "metrics-tree", Component: MetricsTreePage },
+      { path: "pricing", Component: PricingPage },
+      { path: "notion", Component: NotionHub },
       { path: "*", Component: NotFound },
     ],
   },

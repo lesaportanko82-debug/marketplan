@@ -1,5 +1,5 @@
 /**
- * 🦊 Марк — маскот MarketPlan
+ * 🦊 Марк - маскот MarketPlan
  * 
  * Хитрый лисёнок-маркетолог. Энергичный стратег с янтарной шерстью,
  * изумрудным шарфом и вечно горящими идеями.
@@ -160,7 +160,7 @@ function CostumeOverlay({ costume, s }: { costume: Exclude<MascotCostume, "auto"
   const hx = s * 0.35, hy = s * 0.37;
 
   if (costume === "newyear") {
-    // 🎅 Santa hat — red triangle with white pompom and white brim
+    // 🎅 Santa hat - red triangle with white pompom and white brim
     return (
       <g>
         {/* Hat body */}
@@ -433,7 +433,7 @@ export function Mascot({ emotion = "idle", size = 120, className = "", animate =
         <circle cx={s * 0.21} cy={s * 0.44} r={s * 0.03} fill={C.blush} opacity={emotion === "love" || emotion === "celebrate" ? 0.6 : 0.3} />
         <circle cx={s * 0.49} cy={s * 0.44} r={s * 0.03} fill={C.blush} opacity={emotion === "love" || emotion === "celebrate" ? 0.6 : 0.3} />
 
-        {/* Eyes — render ONLY for non-sunglasses costumes */}
+        {/* Eyes - render ONLY for non-sunglasses costumes */}
         {activeCostume !== "summer" && <Eyes emotion={emotion} s={s} />}
 
         {/* Nose */}
@@ -442,7 +442,7 @@ export function Mascot({ emotion = "idle", size = 120, className = "", animate =
         {/* Mouth */}
         <Mouth emotion={emotion} s={s} />
 
-        {/* Scarf (skip for valentine — bow tie replaces it) */}
+        {/* Scarf (skip for valentine - bow tie replaces it) */}
         {activeCostume !== "valentine" && (
           <g>
             <path d={`M${s * 0.2},${s * 0.5} Q${s * 0.35},${s * 0.54} ${s * 0.5},${s * 0.5}`}

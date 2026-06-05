@@ -498,22 +498,22 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
   const activePlatformConfig = PLATFORMS.find((p) => p.id === activePlatform);
 
   return (
-    <div className="p-6 space-y-5 animate-in fade-in duration-300">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold text-foreground flex items-center gap-2.5">
-            <Wand2 className="w-6 h-6 text-[#d4a373]" />
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <Wand2 className="w-5 h-5 text-[#d4a373] shrink-0" />
             AI Content Studio
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Один бриф - контент для всех платформ с проверкой Brand Voice и генерацией визуалов
           </p>
         </div>
         <AddToProjectButton itemType="content-studio" itemId="studio" itemTitle="Content Studio" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
         {/* Left: Brief input */}
         <div className="lg:col-span-2 space-y-4">
           {/* Project / Company context */}
@@ -647,7 +647,7 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
               </div>
             </button>
             <p className="text-[10px] text-muted-foreground mt-1.5 pl-6">
-              {useEmoji ? "AI буде�� добавлять уместные эмодзи" : "Тексты будут без эмодзи"}
+              {useEmoji ? "AI будет добавлять уместные эмодзи" : "Тексты будут без эмодзи"}
             </p>
           </div>
 

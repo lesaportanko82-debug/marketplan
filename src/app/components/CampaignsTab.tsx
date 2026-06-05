@@ -112,7 +112,7 @@ function DraggableCampaignRow({
     }),
   });
 
-  // Compose refs properly — drop() and preview() return void in react-dnd v16
+  // Compose refs properly - drop() and preview() return void in react-dnd v16
   const composedRef = useCallback(
     (el: HTMLTableRowElement | null) => {
       (ref as React.MutableRefObject<HTMLTableRowElement | null>).current = el;

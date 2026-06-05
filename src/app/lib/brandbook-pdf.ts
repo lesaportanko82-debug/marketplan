@@ -183,7 +183,7 @@ export async function generateBrandbookPDF(
                   </div>
                 </div>
                 <div style="padding:6px 12px;background:#fff;font-size:10px;color:${GRAY};">
-                  ${esc(c.name)} — ${c.value.toUpperCase()}
+                  ${esc(c.name)} - ${c.value.toUpperCase()}
                 </div>
               </div>
             `).join("")}
@@ -260,7 +260,7 @@ export async function generateBrandbookPDF(
                   <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px;">
                     <span style="font-size:10px;color:${GRAY};width:40px;text-align:right;flex-shrink:0;">${s}px</span>
                     <span style="font-family:'${f.value}',sans-serif;font-size:${s}px;color:${DARK};font-weight:600;">
-                      ${esc(config.brandName)} — Brand
+                      ${esc(config.brandName)} - Brand
                     </span>
                   </div>
                 `).join("")}

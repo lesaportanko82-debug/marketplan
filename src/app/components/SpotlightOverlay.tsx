@@ -1,5 +1,5 @@
 /**
- * SpotlightOverlay — fullscreen overlay that highlights a real UI element
+ * SpotlightOverlay - fullscreen overlay that highlights a real UI element
  * by creating a rectangular cutout with pulsing ring glow.
  *
  * Activated by clicking a hotspot dot inside mascot tips.
@@ -233,7 +233,7 @@ export function SpotlightOverlay({ target, onClose }: SpotlightOverlayProps) {
   );
 }
 
-/* ═══ HotspotDot — clickable dot inside speech bubbles ═══ */
+/* ═══ HotspotDot - clickable dot inside speech bubbles ═══ */
 interface HotspotDotProps {
   target: SpotlightTarget;
   onClick: (target: SpotlightTarget) => void;

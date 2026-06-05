@@ -14,6 +14,7 @@ import { showMascotReaction, checkMilestone } from "../lib/mascot-reactions";
 import { triggerMilestoneCheck } from "./MascotGames";
 import { useUsage } from "../lib/useUsage";
 import { checkServerUsage } from "../lib/api";
+import { EmptyState } from "./EmptyState";
 
 interface Variant {
   name: string;
@@ -128,11 +129,11 @@ export function AbTests() {
   if (loading) return <div className="flex items-center justify-center h-64"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
 
   return (
-    <div className="p-5 max-w-[1440px] mx-auto space-y-5">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <div className="p-4 md:p-5 max-w-[1440px] mx-auto space-y-4 md:space-y-5">
+      <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center"><FlaskConical className="w-4.5 h-4.5 text-white" /></div>
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center shrink-0"><FlaskConical className="w-4 h-4 text-white" /></div>
             A/B Тесты
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1">{tests.length} экспериментов · {counts.running} активных</p>
@@ -143,13 +144,13 @@ export function AbTests() {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-[240px] max-w-md">
+      <div className="space-y-2 md:space-y-0 md:flex md:items-center md:gap-3">
+        <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Поиск тестов..."
             className="w-full bg-card border border-border rounded-lg pl-10 pr-4 py-2.5 text-foreground text-[13px] placeholder:text-muted-foreground" />
         </div>
-        <div className="flex gap-1.5">
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
           {(["all", "running", "draft", "paused", "completed"] as const).map(s => (
             <button key={s} onClick={() => setStatusFilter(s)}
               className={`px-3 py-1.5 rounded-lg text-[12px] transition-colors ${statusFilter === s ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
@@ -161,19 +162,12 @@ export function AbTests() {
 
       {/* Tests list */}
       {tests.length === 0 ? (
-        <div className="text-center py-16">
-          <MascotMessage
-            emotion="think"
-            message="Нет экспериментов"
-            subtext="Создайте A/B тест, чтобы оптимизировать кампании и принимать решения на данных!"
-            size={100}
-            action={
-              <button onClick={() => setShowAdd(true)} className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px]">
-                <Plus className="w-4 h-4 inline mr-1" /> Создать тест
-              </button>
-            }
-          />
-        </div>
+        <EmptyState
+          title="Нет экспериментов"
+          description="Создайте A/B тест, чтобы оптимизировать кампании и принимать решения на данных!"
+          emotion="think"
+          action={{ label: "Создать тест", onClick: () => setShowAdd(true), icon: <Plus className="w-4 h-4" /> }}
+        />
       ) : (
         <div className="space-y-3">
           {filtered.map(test => {

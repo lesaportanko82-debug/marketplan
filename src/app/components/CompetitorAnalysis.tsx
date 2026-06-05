@@ -9,6 +9,7 @@ import { triggerMilestoneCheck } from "./MascotGames";
 import { getData, saveData } from "../lib/api";
 import { AddToProjectButton } from "./AddToProjectModal";
 import { MascotMessage } from "./Mascot";
+import { EmptyState } from "./EmptyState";
 
 interface Competitor {
   id: string;
@@ -55,6 +56,14 @@ export function CompetitorAnalysis() {
   const [editing, setEditing] = useState<Competitor | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     getData<Competitor[]>(STORAGE_KEY).then(d => {
@@ -87,82 +96,79 @@ export function CompetitorAnalysis() {
   if (loading) return <div className="flex items-center justify-center h-64"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
 
   return (
-    <div className="p-5 max-w-[1440px] mx-auto space-y-5">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <div className="p-4 md:p-5 max-w-[1440px] mx-auto space-y-4 md:space-y-5">
+      <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center"><Swords className="w-4.5 h-4.5 text-white" /></div>
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shrink-0"><Swords className="w-4 h-4 text-white" /></div>
             Конкуренты
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1">{competitors.length} конкурентов · Отслеживайте рынок и позиционирование</p>
         </div>
         <button onClick={() => setShowAdd(true)} className="flex items-center gap-2 bg-primary text-primary-foreground px-3.5 py-2 rounded-lg text-[13px] hover:opacity-90">
-          <Plus className="w-4 h-4" /> Добавить конкурента
+          <Plus className="w-4 h-4" /><span className="hidden sm:inline"> Добавить конкурента</span><span className="sm:hidden"> Добавить</span>
         </button>
       </div>
 
       {/* Search */}
-      <div className="relative max-w-md">
+      <div className="relative">
         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Поиск конкурентов..."
           className="w-full bg-card border border-border rounded-lg pl-10 pr-4 py-2.5 text-foreground text-[13px] placeholder:text-muted-foreground" />
       </div>
 
       {competitors.length === 0 ? (
-        <div className="text-center py-16">
-          <MascotMessage
-            emotion="think"
-            message="Ещё нет конкурентов"
-            subtext="Добавьте первого конкурента для анализа рынка. Марк поможет найти их слабые места!"
-            size={100}
-            action={
-              <button onClick={() => setShowAdd(true)} className="mt-4 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px]">
-                <Plus className="w-4 h-4 inline mr-1" /> Добавить
-              </button>
-            }
-          />
-        </div>
+        <EmptyState
+          title="Нет конкурентов"
+          description="Добавьте первого конкурента для анализа рынка. Марк поможет найти их слабые места!"
+          emotion="think"
+          action={{ label: "Добавить конкурента", onClick: () => setShowAdd(true), icon: <Plus className="w-4 h-4" /> }}
+        />
       ) : (
-        <div className="flex gap-4">
+        <div className={`flex gap-4 ${isMobile ? "flex-col" : ""}`}>
           {/* List */}
           <div className="flex-1 space-y-2 min-w-0">
-            {filtered.map(c => (
-              <div key={c.id} onClick={() => setSelectedId(selectedId === c.id ? null : c.id)}
-                className={`bg-card border rounded-xl p-4 cursor-pointer transition-all ${selectedId === c.id ? "border-primary/40 shadow-sm" : "border-border hover:border-primary/20"}`}>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <h3 className="text-foreground">{c.name}</h3>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] ${THREAT_COLORS[c.threat]}`}>
-                        Угроза: {THREAT_LABELS[c.threat]}
-                      </span>
-                      {c.industry && <span className="text-[11px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full">{c.industry}</span>}
+            {filtered.length === 0 ? (
+              <EmptyState title="Конкуренты не найдены" description="Попробуйте изменить поисковый запрос" emotion="think" compact />
+            ) : (
+              filtered.map(c => (
+                <div key={c.id} onClick={() => setSelectedId(selectedId === c.id ? null : c.id)}
+                  className={`bg-card border rounded-xl p-4 cursor-pointer transition-all ${selectedId === c.id ? "border-primary/40 shadow-sm" : "border-border hover:border-primary/20"}`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <h3 className="text-foreground">{c.name}</h3>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] ${THREAT_COLORS[c.threat]}`}>
+                          Угроза: {THREAT_LABELS[c.threat]}
+                        </span>
+                        {c.industry && <span className="text-[11px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full">{c.industry}</span>}
+                      </div>
+                      {c.description && <p className="text-[12px] text-muted-foreground line-clamp-1">{c.description}</p>}
+                      <div className="flex items-center gap-4 mt-2 text-[11px] text-muted-foreground">
+                        <span className="flex items-center gap-1"><Users className="w-3 h-3" />{fmt(totalFollowers(c))} подписчиков</span>
+                        <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{fmt(c.metrics.traffic)} трафик</span>
+                        {c.url && (
+                          <a href={c.url.startsWith("http") ? c.url : `https://${c.url}`} target="_blank" rel="noopener noreferrer"
+                            onClick={e => e.stopPropagation()} className="flex items-center gap-1 text-primary hover:underline">
+                            <ExternalLink className="w-3 h-3" />{c.url.replace(/https?:\/\//, "").slice(0, 30)}
+                          </a>
+                        )}
+                      </div>
                     </div>
-                    {c.description && <p className="text-[12px] text-muted-foreground line-clamp-1">{c.description}</p>}
-                    <div className="flex items-center gap-4 mt-2 text-[11px] text-muted-foreground">
-                      <span className="flex items-center gap-1"><Users className="w-3 h-3" />{fmt(totalFollowers(c))} подписчиков</span>
-                      <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{fmt(c.metrics.traffic)} трафик</span>
-                      {c.url && (
-                        <a href={c.url.startsWith("http") ? c.url : `https://${c.url}`} target="_blank" rel="noopener noreferrer"
-                          onClick={e => e.stopPropagation()} className="flex items-center gap-1 text-primary hover:underline">
-                          <ExternalLink className="w-3 h-3" />{c.url.replace(/https?:\/\//, "").slice(0, 30)}
-                        </a>
-                      )}
+                    <div className="flex items-center gap-1 shrink-0">
+                      <AddToProjectButton itemType="competitor" itemId={c.id} itemTitle={c.name} />
+                      <button onClick={e => { e.stopPropagation(); setEditing(c); }} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"><Edit3 className="w-3.5 h-3.5" /></button>
+                      <button onClick={e => { e.stopPropagation(); handleDelete(c.id); }} className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-md"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <AddToProjectButton itemType="competitor" itemId={c.id} itemTitle={c.name} />
-                    <button onClick={e => { e.stopPropagation(); setEditing(c); }} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"><Edit3 className="w-3.5 h-3.5" /></button>
-                    <button onClick={e => { e.stopPropagation(); handleDelete(c.id); }} className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-md"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
-          {/* Detail panel */}
+          {/* Detail panel - on mobile: full-width below list, on desktop: fixed right column */}
           {selected && (
-            <div className="w-[380px] shrink-0">
+            <div className={isMobile ? "w-full" : "w-[380px] shrink-0"}>
               <div className="bg-card border border-border rounded-xl p-5 sticky top-0 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-foreground">{selected.name}</h3>

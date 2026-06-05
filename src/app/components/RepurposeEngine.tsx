@@ -10,6 +10,7 @@ import { copyToClipboard } from "../lib/clipboard";
 import { aiGenerate } from "../lib/api";
 import { useKV } from "../lib/useKV";
 import { AddToProjectButton } from "./AddToProjectModal";
+import { EmptyState } from "./EmptyState";
 
 /* ========== TYPES ========== */
 interface OutputFormat {
@@ -221,49 +222,60 @@ ${formatNames.map((f, i) => `${i + 1}. ${f}`).join("\n")}
   const activeFormatConfig = OUTPUT_FORMATS.find((f) => f.id === activeFormat);
 
   return (
-    <div className="p-6 space-y-5 animate-in fade-in duration-300">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold text-foreground flex items-center gap-2.5">
-            <Recycle className="w-6 h-6 text-[#d4a373]" />
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <Recycle className="w-5 h-5 text-[#d4a373] shrink-0" />
             Content Repurpose Engine
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Один контент - десять форматов. Введите текст и получите готовый контент-план на неделю
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className="px-3 py-1.5 text-[12px] border border-border rounded-lg hover:bg-muted/50 text-muted-foreground transition-colors"
+            className="px-2.5 py-1.5 text-[12px] border border-border rounded-lg hover:bg-muted/50 text-muted-foreground transition-colors whitespace-nowrap"
           >
-            История ({history.length})
+            <span className="hidden sm:inline">История </span>({history.length})
           </button>
           <AddToProjectButton itemType="content-studio" itemId="repurpose" itemTitle="Repurpose Engine" />
         </div>
       </div>
 
       {/* History panel */}
-      {showHistory && history.length > 0 && (
-        <div className="bg-card border border-border rounded-xl p-4 space-y-2">
-          <h3 className="text-[13px] font-semibold text-foreground mb-2">Последние сессии</h3>
-          {history.slice(0, 5).map((s) => (
-            <button
-              key={s.id}
-              onClick={() => loadFromHistory(s)}
-              className="w-full flex items-center gap-3 p-2.5 rounded-lg border border-border hover:bg-muted/30 transition-colors text-left"
-            >
-              <Recycle className="w-4 h-4 text-[#d4a373] shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-medium text-foreground truncate">{s.sourceTitle}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  {s.outputs.length} форматов - {new Date(s.createdAt).toLocaleDateString("ru")}
-                </p>
-              </div>
-              <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
-            </button>
-          ))}
+      {showHistory && (
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
+          {history.length > 0 ? (
+            <div className="p-4 space-y-2">
+              <h3 className="text-[13px] font-semibold text-foreground mb-2">Последние сессии</h3>
+              {history.slice(0, 5).map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => loadFromHistory(s)}
+                  className="w-full flex items-center gap-3 p-2.5 rounded-lg border border-border hover:bg-muted/30 transition-colors text-left"
+                >
+                  <Recycle className="w-4 h-4 text-[#d4a373] shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12px] font-medium text-foreground truncate">{s.sourceTitle}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {s.outputs.length} форматов - {new Date(s.createdAt).toLocaleDateString("ru")}
+                    </p>
+                  </div>
+                  <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
+                </button>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="История пуста"
+              description="Адаптированные контенты появятся здесь после первой генерации"
+              emotion="curious"
+              compact
+            />
+          )}
         </div>
       )}
 
@@ -304,7 +316,11 @@ ${formatNames.map((f, i) => `${i + 1}. ${f}`).join("\n")}
               rows={10}
               className="w-full bg-input-background border border-border rounded-lg px-3 py-2.5 text-[13px] text-foreground resize-none focus:outline-none focus:ring-1 focus:ring-[#d4a373]/50 placeholder:text-muted-foreground"
             />
-            <p className="text-[11px] text-muted-foreground">{sourceText.length} симв. (мин. 50)</p>
+            <p className={`text-[11px] transition-colors ${sourceText.trim().length < 50 ? "text-amber-500 font-medium" : "text-muted-foreground"}`}>
+              {sourceText.trim().length < 50
+                ? `Введите ещё ${50 - sourceText.trim().length} симв. для запуска`
+                : `${sourceText.length} симв. - готово к адаптации ✓`}
+            </p>
           </div>
 
           {/* Output formats */}
@@ -343,17 +359,26 @@ ${formatNames.map((f, i) => `${i + 1}. ${f}`).join("\n")}
           </div>
 
           {/* Generate */}
-          <button
-            onClick={handleGenerate}
-            disabled={generating || sourceText.trim().length < 50}
-            className="w-full py-3 bg-[#d4a373] hover:bg-[#c0854a] text-white rounded-xl font-medium text-[14px] flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
-          >
-            {generating ? (
-              <><Loader2 className="w-4 h-4 animate-spin" />Адаптация в {selectedFormats.size} форматов...</>
-            ) : (
-              <><Recycle className="w-4 h-4" />Repurpose контент</>
+          <div className="space-y-1.5">
+            <button
+              onClick={handleGenerate}
+              disabled={generating || sourceText.trim().length < 50 || selectedFormats.size === 0}
+              className="w-full py-3 bg-[#d4a373] hover:bg-[#c0854a] text-white rounded-xl font-medium text-[14px] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {generating ? (
+                <><Loader2 className="w-4 h-4 animate-spin" />Адаптация в {selectedFormats.size} форматов...</>
+              ) : (
+                <><Recycle className="w-4 h-4" />Repurpose контент</>
+              )}
+            </button>
+            {!generating && (sourceText.trim().length < 50 || selectedFormats.size === 0) && (
+              <p className="text-[11px] text-center text-amber-500">
+                {sourceText.trim().length < 50
+                  ? "Вставьте исходный текст (мин. 50 символов) в поле выше"
+                  : "Выберите хотя бы один формат на выходе"}
+              </p>
             )}
-          </button>
+          </div>
         </div>
 
         {/* Right: Results */}

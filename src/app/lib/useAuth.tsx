@@ -75,9 +75,25 @@ function getInitials(name: string, email: string): string {
   return email.slice(0, 2).toUpperCase();
 }
 
+/** Decode the JWT exp claim without verifying signature. Returns ms timestamp. */
+function jwtExpiresAt(token: string): number {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return (payload.exp || 0) * 1000;
+  } catch {
+    return 0;
+  }
+}
+
+/** True if the token has expired or will expire within `bufferMs` (default 2 min). */
+function isTokenStale(token: string, bufferMs = 120_000): boolean {
+  const exp = jwtExpiresAt(token);
+  return exp === 0 || exp < Date.now() + bufferMs;
+}
+
 async function serverFetch(path: string, token: string, opts?: RequestInit) {
   const maxRetries = 3;
-  let delayMs = 2000; // Увеличен с 1000 до 2000 для cold start
+  let delayMs = 2000;
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const url = `${BASE_URL}${path}`;
@@ -93,14 +109,27 @@ async function serverFetch(path: string, token: string, opts?: RequestInit) {
       
       if (!res.ok) {
         const text = await res.text();
+        // 4xx errors are permanent - never retry (retrying won't fix auth/client errors)
+        if (res.status >= 400 && res.status < 500) {
+          // Use debug level for 401 - callers handle auth errors gracefully
+          if (res.status === 401) {
+            console.debug(`[serverFetch] HTTP 401 for ${path} (not retrying):`, text);
+          } else {
+            console.warn(`[serverFetch] HTTP ${res.status} for ${path} (not retrying):`, text);
+          }
+          throw Object.assign(new Error(`HTTP ${res.status}: ${text}`), { permanent: true, statusCode: res.status });
+        }
         console.error(`[serverFetch] HTTP ${res.status} for ${path}:`, text);
         throw new Error(`HTTP ${res.status}: ${text}`);
       }
       
       const json = await res.json();
       return json;
-    } catch (err) {
+    } catch (err: any) {
       const errMsg = err instanceof Error ? err.message : String(err);
+      
+      // Never retry permanent 4xx errors
+      if (err.permanent) throw err;
       
       // Only log if it's not a network/fetch error on first attempts (cold start is expected)
       if (attempt === 0 && errMsg.includes("Failed to fetch")) {
@@ -180,19 +209,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const loadProfile = useCallback(async (session: Session) => {
-    const token = session.access_token;
-    
+    let token = session.access_token;
+    let activeSession = session;
+
     // Ensure we have a valid session
     if (!session || !token) {
       console.warn("[Auth] loadProfile called with invalid session");
       setState(s => ({ ...s, loading: false }));
       return;
     }
-    
+
+    // Proactively refresh if the token is expired or expiring within 2 minutes.
+    // This prevents a certain 401 from the server when loading with a stale cached token.
+    if (isTokenStale(token)) {
+      try {
+        console.debug("[Auth] Token is stale, refreshing before /auth/me call");
+        const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+        if (!refreshErr && refreshed.session?.access_token) {
+          token = refreshed.session.access_token;
+          activeSession = refreshed.session;
+          console.debug("[Auth] Token refreshed successfully");
+        } else {
+          console.debug("[Auth] Proactive refresh failed:", refreshErr?.message);
+        }
+      } catch {
+        // Use the original token and let the server decide
+      }
+    }
+
+    // Helper: call /auth/me and return profile data or null
+    const tryFetchProfile = async (t: string) => {
+      const json = await serverFetch("/auth/me", t);
+      if (json.success && json.data) return json.data;
+      return null;
+    };
+
+    // --- Attempt: call /auth/me with the (possibly refreshed) token ---
     try {
-      const json = await serverFetch("/auth/me", token);
-      if (json.success && json.data) {
-        const p = json.data;
+      const p = await tryFetchProfile(token);
+      if (p) {
         setState({
           user: {
             id: p.id,
@@ -203,30 +258,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             access: p.access || "all",
             avatarInitials: getInitials(p.name || "", p.email),
           },
-          session,
+          session: activeSession,
           loading: false,
           accessToken: token,
         });
-        // Auto-migrate legacy data in background
         triggerMigration(token).catch(err => {
           console.warn("[Auth] Background migration failed (non-critical):", err);
         });
         return;
       }
-    } catch (err) {
-      console.warn("[Auth] loadProfile fetch failed (cold start?), using fallback:", err);
-      // Continue to fallback instead of failing completely
+    } catch (err: any) {
+      if (err?.statusCode === 401) {
+        // Token was refreshed but server still returns 401 - likely a server-side config issue.
+        // Try one more explicit refresh as a last resort.
+        try {
+          const { data: retry, error: retryErr } = await supabase.auth.refreshSession();
+          if (!retryErr && retry.session?.access_token) {
+            token = retry.session.access_token;
+            activeSession = retry.session;
+            const p2 = await tryFetchProfile(token).catch(() => null);
+            if (p2) {
+              setState({
+                user: {
+                  id: p2.id,
+                  email: p2.email,
+                  name: p2.name || "",
+                  role: p2.role || "owner",
+                  workspaceId: p2.workspaceId || p2.id,
+                  access: p2.access || "all",
+                  avatarInitials: getInitials(p2.name || "", p2.email),
+                },
+                session: activeSession,
+                loading: false,
+                accessToken: token,
+              });
+              triggerMigration(token).catch(() => {});
+              return;
+            }
+          }
+        } catch {
+          // Fall through to session fallback
+        }
+        console.debug("[Auth] /auth/me 401 after refresh - using session fallback");
+      } else {
+        console.warn("[Auth] loadProfile fetch failed (cold start?), using fallback:", err);
+      }
     }
     
-    // Fallback: use session user info
-    const u = session.user;
+    // Fallback: build profile from session data.
+    // Set accessToken: null so api.ts uses the anon-key /data/ route
+    // instead of /ws/data/ with a rejected token (which would cause KV saves to fail).
+    const u = activeSession.user;
     if (!u) {
       console.error("[Auth] No user in session, cannot create fallback profile");
       setState(s => ({ ...s, loading: false }));
       return;
     }
     
-    console.log("[Auth] Using fallback profile from session");
+    console.info("[Auth] Using session-only fallback profile (ws/ data temporarily unavailable)");
     setState({
       user: {
         id: u.id,
@@ -237,13 +326,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         access: "all",
         avatarInitials: getInitials(u.user_metadata?.name || "", u.email || ""),
       },
-      session,
+      session: activeSession,
       loading: false,
-      accessToken: token,
-    });
-    // Auto-migrate legacy data in background (fire and forget)
-    triggerMigration(token).catch(() => {
-      // Silently fail - not critical for auth flow
+      // null: prevents saveData from using /ws/data/ with a bad token
+      accessToken: null,
     });
   }, []);
 
@@ -251,7 +337,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) {
-        // Invalid refresh token — clear stale session and start fresh
+        // Invalid refresh token - clear stale session and start fresh
         console.warn("[Auth] getSession error (stale token?), signing out locally:", error.message);
         supabase.auth.signOut({ scope: "local" }).catch(() => {});
         setState(s => ({ ...s, loading: false }));
@@ -269,7 +355,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "TOKEN_REFRESHED" && !session) {
-        // Refresh failed — force local sign-out
+        // Refresh failed - force local sign-out
         console.warn("[Auth] Token refresh failed, signing out locally");
         supabase.auth.signOut({ scope: "local" }).catch(() => {});
         setState({ user: null, session: null, loading: false, accessToken: null });
@@ -303,7 +389,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     if (!json.success) throw new Error(json.error || "Sign up failed");
 
-    // User created — now sign in immediately
+    // User created - now sign in immediately
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     if (data.session) await loadProfile(data.session);

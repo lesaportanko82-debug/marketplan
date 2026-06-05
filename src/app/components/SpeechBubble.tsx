@@ -1,5 +1,5 @@
 /**
- * SpeechBubble — cloud-style thought bubble for Mascot «Марк» messages.
+ * SpeechBubble - cloud-style thought bubble for Mascot «Марк» messages.
  *
  * Semi-transparent frosted glass background using CSS custom properties
  * (--bubble-bg, --bubble-border, etc.) defined in theme.css for proper

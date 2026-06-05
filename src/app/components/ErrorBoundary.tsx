@@ -25,7 +25,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.error(
-      `[ErrorBoundary${this.props.moduleName ? ` — ${this.props.moduleName}` : ""}]`,
+      `[ErrorBoundary${this.props.moduleName ? ` - ${this.props.moduleName}` : ""}]`,
       error,
       info.componentStack
     );

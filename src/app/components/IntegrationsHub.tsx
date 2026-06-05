@@ -50,8 +50,8 @@ function EmailModal({ open, onClose }: { open: boolean; onClose: () => void }) {
       body: `<div style="font-family:Inter,system-ui,sans-serif;max-width:600px;margin:0 auto"><h2 style="color:#d4a373">Аналитический отчёт</h2><p>Добрый день!</p><p>Прикрепляем сводный отчёт по маркетинговой аналитике за текущий период.</p><ul><li>Общий бюджет: в рамках плана</li><li>ROI кампаний: положительная динамика</li><li>Конверсия воронки: рост</li></ul><p>Подробности доступны в <strong>MarketPlan</strong>.</p><p style="color:#888;font-size:12px">Отправлено из MarketPlan</p></div>`,
     },
     prd: {
-      subject: "PRD MarketPlan — Описание проекта",
-      body: `<div style="font-family:Inter,system-ui,sans-serif;max-width:600px;margin:0 auto"><h2 style="color:#d4a373">PRD — Product Requirements Document</h2><p>Прикрепляем актуальную версию PRD маркетингового планера MarketPlan.</p><p style="color:#888;font-size:12px">Отправлено из MarketPlan</p></div>`,
+      subject: "PRD MarketPlan - Описание проекта",
+      body: `<div style="font-family:Inter,system-ui,sans-serif;max-width:600px;margin:0 auto"><h2 style="color:#d4a373">PRD - Product Requirements Document</h2><p>Прикрепляем актуальную версию PRD маркетингового планера MarketPlan.</p><p style="color:#888;font-size:12px">Отправлено из MarketPlan</p></div>`,
     },
     brandbook: {
       subject: "Брендбук MarketPlan",
@@ -143,7 +143,7 @@ function DalleModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div className="bg-card border border-border rounded-xl w-full max-w-[600px] max-h-[85vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <div className="flex items-center gap-2"><ImagePlus className="w-4 h-4 text-[#d4a373]" /><h3 className="text-foreground font-medium text-[14px]">DALL-E 3 — Генерация изображений</h3></div>
+          <div className="flex items-center gap-2"><ImagePlus className="w-4 h-4 text-[#d4a373]" /><h3 className="text-foreground font-medium text-[14px]">DALL-E 3 - Генерация изображений</h3></div>
           <button onClick={onClose} className="p-1 rounded hover:bg-muted"><X className="w-4 h-4 text-muted-foreground" /></button>
         </div>
         <div className="p-5 space-y-4">
@@ -228,7 +228,7 @@ function WebhookModal({ open, onClose }: { open: boolean; onClose: () => void })
 }
 
 /* ===================================
-   Telegram Bot Modal — Setup + Send PDF
+   Telegram Bot Modal - Setup + Send PDF
    =================================== */
 function TelegramModal({ open, onClose, onConfigUpdate }: { open: boolean; onClose: () => void; onConfigUpdate: () => void }) {
   const [step, setStep] = useState<"loading" | "setup" | "connected">("loading");
@@ -341,7 +341,7 @@ function TelegramModal({ open, onClose, onConfigUpdate }: { open: boolean; onClo
           "KPI: положительная динамика по основным метрикам",
           "ROI: выше средних показателей по рынку",
           "Каналы: лидирует Telegram и Instagram",
-          "Воронка: конверсия из лида в клиента — стабильна",
+          "Воронка: конверсия из лида в клиента - стабильна",
           "Бюджет: 67% от запланированного освоено",
           "",
           "Подробная аналитика доступна в дашборде MarketPlan.",
@@ -349,7 +349,7 @@ function TelegramModal({ open, onClose, onConfigUpdate }: { open: boolean; onClo
         items.forEach((line) => { pdf.text(line, 20, y); y += 8; });
       } else {
         const items = [
-          "MarketPlan — AI-маркетинг планер",
+          "MarketPlan - AI-маркетинг планер",
           "Модули: Проекты, Аналитика, SMM, Конкуренты, A/B, Медиа",
           "AI-инструменты: Метрики, Бюджет, ЦА, Триггеры",
           "Интеграции: OpenAI, Resend, Pipedream, Telegram, DALL-E",
@@ -415,7 +415,7 @@ function TelegramModal({ open, onClose, onConfigUpdate }: { open: boolean; onClo
                   <li>Отправьте <code className="bg-muted px-1 rounded text-[11px]">/newbot</code> и следуйте инструкциям</li>
                   <li>Скопируйте полученный <strong>токен</strong> и вставьте ниже</li>
                   <li>Для Chat ID: напишите своему боту, затем откройте <code className="bg-muted px-1 rounded text-[11px]">https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code></li>
-                  <li>Найдите <code className="bg-muted px-1 rounded text-[11px]">"chat":{"{"}"id":...</code> — это ваш Chat ID</li>
+                  <li>Найдите <code className="bg-muted px-1 rounded text-[11px]">"chat":{"{"}"id":...</code> - это ваш Chat ID</li>
                 </ol>
               </div>
 
@@ -705,13 +705,13 @@ export function IntegrationsHub() {
   const connectedCount = integrations.filter((i) => i.connected).length;
 
   return (
-    <div className="p-5 max-w-[900px] mx-auto space-y-5">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-5 max-w-[900px] mx-auto space-y-4 sm:space-y-5">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-foreground flex items-center gap-3"><Plug className="w-6 h-6" /> Интеграции</h1>
+          <h1 className="text-foreground flex items-center gap-3"><Plug className="w-5 h-5 sm:w-6 sm:h-6" /> Интеграции</h1>
           <p className="text-muted-foreground text-[13px] mt-0.5">{connectedCount} из {integrations.length} подключено</p>
         </div>
-        <button onClick={handleRefresh} disabled={refreshing} className="flex items-center gap-1.5 px-3 py-2 bg-muted rounded-md text-[12px] text-muted-foreground hover:text-foreground transition-colors">
+        <button onClick={handleRefresh} disabled={refreshing} className="flex items-center gap-1.5 px-3 py-2 bg-muted rounded-md text-[12px] text-muted-foreground hover:text-foreground transition-colors shrink-0">
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin" : ""}`} /> Обновить
         </button>
       </div>
@@ -794,7 +794,7 @@ export function IntegrationsHub() {
             { id: "notion-mcp", name: "Notion", icon: FileText, color: "bg-gray-500/10 text-gray-600", description: "Двусторонняя синхронизация проектов, контент-планов и баз знаний", features: ["Notion Database", "Экспорт контент-плана", "AI-доступ к данным", "Страницы и блоки"], url: "https://notion.so", connected: true },
             { id: "asana", name: "Asana", icon: ClipboardList, color: "bg-amber-500/10 text-amber-600", description: "Управление задачами и проектами", features: ["Синхронизация задач", "Проекты и спринты", "Статусы и дедлайны"], url: "https://asana.com", connected: false },
             { id: "monday", name: "Monday.com", icon: Kanban, color: "bg-amber-500/10 text-amber-600", description: "Work OS для маркетинговых команд", features: ["Доски и колонки", "Автоматизации", "Дашборды"], url: "https://monday.com", connected: false },
-            { id: "atlassian", name: "Atlassian", icon: Layers, color: "bg-blue-500/10 text-blue-600", description: "Jira, Confluence — управление продуктом", features: ["Jira Issues", "Confluence Docs", "Спринты и бэклог"], url: "https://atlassian.com", connected: false },
+            { id: "atlassian", name: "Atlassian", icon: Layers, color: "bg-blue-500/10 text-blue-600", description: "Jira, Confluence - управление продуктом", features: ["Jira Issues", "Confluence Docs", "Спринты и бэклог"], url: "https://atlassian.com", connected: false },
             { id: "github", name: "GitHub", icon: GitBranch, color: "bg-gray-500/10 text-gray-600", description: "Репозитории, issues, CI/CD", features: ["Issues", "Pull Requests", "Actions"], url: "https://github.com", connected: false },
             { id: "linear", name: "Linear", icon: LayoutList, color: "bg-teal-500/10 text-teal-600", description: "Трекер задач для продуктовых команд", features: ["Issues и Projects", "Циклы", "Roadmap"], url: "https://linear.app", connected: false },
             { id: "box", name: "Box", icon: Box, color: "bg-sky-500/10 text-sky-600", description: "Облачное хранение и совместная работа", features: ["Файлы и папки", "Совместный доступ", "Версионирование"], url: "https://box.com", connected: false },

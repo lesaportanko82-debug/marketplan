@@ -1,5 +1,5 @@
 /**
- * 🔍 Hotspot Tours — управляемые туры по интерфейсу
+ * 🔍 Hotspot Tours - управляемые туры по интерфейсу
  * 
  * Расширение системы хотспотов с:
  * - Пошаговыми турами
@@ -57,7 +57,7 @@ export const TOUR_ONBOARDING: Tour = {
       id: "welcome",
       selector: "[data-hotspot='sidebar-logo']",
       label: "Добро пожаловать!",
-      description: "MarketPlan — ваш AI-помощник для маркетинга. Давайте начнём!",
+      description: "MarketPlan - ваш AI-помощник для маркетинга. Давайте начнём!",
       delay: 500,
     },
     {

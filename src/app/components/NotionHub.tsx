@@ -68,9 +68,9 @@ const SEED_DATA: NotionWorkspace = {
 
 ## Ключевые находки
 
-- **Основной барьер**: Пользователи теряются на этапе онбординга — 43% не завершают первую настройку
+- **Основной барьер**: Пользователи теряются на этапе онбординга - 43% не завершают первую настройку
 - **Возможность роста**: Интеграция с существующими инструментами повышает ретеншн на 28%
-- **Quick Win**: Упрощение навигации в боковой панели — ожидаемый рост вовлечённости +15%
+- **Quick Win**: Упрощение навигации в боковой панели - ожидаемый рост вовлечённости +15%
 
 ## Следующие шаги
 
@@ -83,7 +83,7 @@ const SEED_DATA: NotionWorkspace = {
       title: "User Persona",
       url: "https://www.notion.so/062d5c5ad2b74a4c819be8e8f94e0b0b",
       type: "page",
-      highlight: "Sarah Jones — Marketing Manager",
+      highlight: "Sarah Jones - Marketing Manager",
       timestamp: "2024-06-11T11:28:00.000Z",
       content: `# User Persona
 
@@ -149,11 +149,11 @@ What is the project? Why are we working on this?
 
 ## Problem Statement
 
-—
+-
 
 ## Proposed Solution
 
-—
+-
 
 ---
 
@@ -175,11 +175,11 @@ Define what will be done and what will not be done as part of this project.
 
 ## Requirements
 
-—
+-
 
 ## Non-Requirements
 
-—`,
+-`,
       properties: { Type: "Kickoff", Created: "2022-06-20" },
     },
     {
@@ -709,7 +709,7 @@ export function NotionHub() {
   /* ─── Loading ─── */
   if (loading) {
     return (
-      <div className="p-5 max-w-[900px] mx-auto space-y-5">
+      <div className="p-4 sm:p-5 max-w-[900px] mx-auto space-y-4 sm:space-y-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-muted animate-pulse" />
           <div className="space-y-2 flex-1">
@@ -725,7 +725,7 @@ export function NotionHub() {
 
   /* ─── List View ─── */
   return (
-    <div className="p-5 max-w-[900px] mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[900px] mx-auto space-y-4 sm:space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
@@ -765,7 +765,7 @@ export function NotionHub() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: "Всего страниц", value: workspace?.pages.length || 0, icon: FileText, color: "text-[#d4a373]" },
-          { label: "Пользователь", value: workspace?.user.name?.split(" ")[0] || "—", icon: User, color: "text-[#d4a373]" },
+          { label: "Пользователь", value: workspace?.user.name?.split(" ")[0] || "-", icon: User, color: "text-[#d4a373]" },
           { label: "Статус", value: "Подключено", icon: CheckCircle2, color: "text-emerald-500" },
           { label: "Протокол", value: "MCP", icon: Zap, color: "text-[#d4a373]" },
         ].map((stat) => (

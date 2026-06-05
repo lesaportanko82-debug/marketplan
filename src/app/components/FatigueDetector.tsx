@@ -222,22 +222,22 @@ ${contentInput.slice(0, 5000)}
   const activeCat = report?.categories.find(c => c.id === selectedCategory);
 
   return (
-    <div className="p-6 space-y-5 animate-in fade-in duration-300">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-5 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold text-foreground flex items-center gap-2.5">
-            <BatteryLow className="w-6 h-6 text-[#d4a373]" />
+          <h1 className="text-foreground flex items-center gap-2.5">
+            <BatteryLow className="w-5 h-5 text-[#d4a373] shrink-0" />
             Marketing Fatigue Detector
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1">
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Находит повторяющиеся паттерны и рекомендует свежие темы
           </p>
         </div>
         <AddToProjectButton itemType="content-studio" itemId="fatigue" itemTitle="Fatigue Detector" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
         {/* Left */}
         <div className="lg:col-span-2 space-y-4">
           <div className="bg-card border border-border rounded-xl p-4 space-y-3">

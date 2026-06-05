@@ -60,7 +60,7 @@ export function ToolsAudience() {
   };
 
   return (
-    <div className="p-5 max-w-[1000px] mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1000px] mx-auto space-y-4 sm:space-y-5">
       <div>
         <h1 className="text-foreground flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center">

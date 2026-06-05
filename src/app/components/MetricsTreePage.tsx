@@ -21,9 +21,10 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { getData, saveData } from "../lib/api";
-import { mockProjects, type MetricNode, type Project } from "../data/mock-data";
+import { type MetricNode, type Project } from "../data/mock-data";
 import { ModalOverlay } from "./ModalOverlay";
 import { useModal } from "../hooks/useModal";
+import { EmptyState } from "./EmptyState";
 
 const METRIC_DND_TYPE = "METRIC_TREE_NODE";
 const TREE_KEY = "metrics_tree:global";
@@ -33,15 +34,9 @@ interface DragItem {
   parentId: string | null;
 }
 
-/* ─── Default metrics (merge all projects) ─── */
+/* ─── Default metrics (empty by default) ─── */
 function getDefaultMetrics(): MetricNode[] {
-  const all: MetricNode[] = [];
-  mockProjects.forEach((p) => {
-    p.metrics.forEach((m) => {
-      all.push({ ...m, id: `${p.id}::${m.id}`, parentId: m.parentId ? `${p.id}::${m.parentId}` : null });
-    });
-  });
-  return all;
+  return [];
 }
 
 /* ─── Build tree from flat list ─── */
@@ -556,7 +551,7 @@ export function MetricsTreePage() {
     });
   }, [metrics]);
 
-  // Move — side effects are intentionally kept OUTSIDE the setMetrics updater
+  // Move - side effects are intentionally kept OUTSIDE the setMetrics updater
   // to avoid React Strict Mode double-invocation of the pure updater function.
   const handleMove = useCallback((dragId: string, dropId: string) => {
     const prev = metricsRef.current;
@@ -615,24 +610,24 @@ export function MetricsTreePage() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="p-5 max-w-[1440px] mx-auto space-y-5" data-hotspot="metrics-tree">
+      <div className="p-4 sm:p-5 max-w-[1440px] mx-auto space-y-4 sm:space-y-5" data-hotspot="metrics-tree">
         {/* Header */}
-        <div className="flex items-start justify-between flex-wrap gap-4">
-          <div>
+        <div className="flex items-start justify-between flex-wrap gap-3">
+          <div className="min-w-0">
             <h1 className="text-foreground flex items-center gap-2.5">
               <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0"
                 style={{
                   background: "linear-gradient(135deg, #1a7a6d 0%, #2eb8a4 100%)",
                   boxShadow: "0 2px 10px rgba(26,122,109,0.3)",
                 }}
               >
-                <GitBranch className="w-4.5 h-4.5 text-white" />
+                <GitBranch className="w-4 h-4 text-white" />
               </div>
               Дерево метрик
             </h1>
-            <p className="text-muted-foreground text-[14px] mt-1.5 ml-12">
-              Глобальное дерево всех метрик — перетаскивайте, добавляйте, симулируйте
+            <p className="text-muted-foreground text-[13px] mt-1 ml-11 hidden sm:block">
+              Глобальное дерево всех метрик - перетаскивайте, добавляйте, симулируйте
             </p>
           </div>
 
@@ -685,7 +680,7 @@ export function MetricsTreePage() {
         </div>
 
         {/* Stats strip */}
-        <div className="flex items-center gap-6 text-[13px]">
+        <div className="flex items-center gap-4 flex-wrap text-[13px]">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Layers className="w-4 h-4" />
             <span><b className="text-foreground">{rootCount}</b> корневых</span>
@@ -710,17 +705,18 @@ export function MetricsTreePage() {
                 <GripVertical className="w-3 h-3 inline-block align-middle opacity-60" />{" "}
                 чтобы перестроить дерево. Нажмите на метрику для деталей. Кнопка{" "}
                 <Trash2 className="w-3 h-3 inline-block align-middle opacity-60" />{" "}
-                (при наведении) — удалить.
+                (при наведении) - удалить.
               </span>
             </div>
 
             {/* Tree */}
             {tree.length === 0 ? (
-              <div className="text-center py-16 text-muted-foreground">
-                <GitBranch className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                <p className="text-[14px]">Нет метрик</p>
-                <p className="text-[12px] mt-1">Нажмите «Добавить», чтобы создать первую метрику</p>
-              </div>
+              <EmptyState
+                title="Нет метрик"
+                description="Нажмите «Добавить», чтобы создать первую метрику и начать строить дерево метрик"
+                emotion="idle"
+                action={{ label: "Добавить метрику", onClick: () => setShowAdd(true), icon: <Plus className="w-4 h-4" /> }}
+              />
             ) : (
               <div className="bg-card border border-border rounded-xl p-4 space-y-1 overflow-x-auto">
                 {tree.map((node, idx) => (

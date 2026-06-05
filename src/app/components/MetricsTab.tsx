@@ -3,7 +3,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import type { Project, MetricNode } from "../data/mock-data";
 import { toast } from "sonner";
 import { getData, saveData } from "../lib/api";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import {
   ArrowRight,
   BarChart3,
