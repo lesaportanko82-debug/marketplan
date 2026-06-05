@@ -490,7 +490,7 @@ export function PricingPage() {
             </button>
           </div>
         </div>
-      )}
+      }
       </div>
     </div>
   );
