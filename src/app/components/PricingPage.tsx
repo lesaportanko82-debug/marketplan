@@ -132,11 +132,11 @@ export function PricingPage() {
 
   const handleCta = (planId: string) => {
     if (planId === "demo") {
-      navigate("/");
+      navigate("/app");
     } else {
       // В реальном проекте - интеграция с платёжной системой
       // Доступ открывается ТОЛЬКО после payment.succeeded
-      navigate("/");
+      navigate("/app");
     }
   };
 
@@ -161,7 +161,7 @@ export function PricingPage() {
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/app")}
               className="px-6 py-3 rounded-xl text-white font-semibold text-[14px] transition-all hover:opacity-90 active:scale-[0.98] shadow-lg"
               style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
             >
@@ -416,7 +416,7 @@ export function PricingPage() {
               </h2>
             </div>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/app")}
               className="px-8 py-3.5 rounded-xl text-white font-semibold text-[15px] transition-all hover:opacity-90 active:scale-[0.98] shadow-lg mx-auto flex items-center gap-2"
               style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
             >

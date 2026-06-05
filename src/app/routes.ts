@@ -159,11 +159,11 @@ const NotionHub = lazy(() =>
 
 export const router = createBrowserRouter([
   {
-    path: "/onboarding",
+    path: "/",
     Component: OnboardingPage,
   },
   {
-    path: "/",
+    path: "/app",
     Component: Layout,
     children: [
       { index: true, Component: ProjectsList },
