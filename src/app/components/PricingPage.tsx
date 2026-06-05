@@ -491,6 +491,7 @@ export function PricingPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
