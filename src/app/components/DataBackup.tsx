@@ -218,7 +218,7 @@ function ConfirmImportDialog({
   return (
     <div
       ref={modalRef}
-      className="bg-card border border-border rounded-xl p-6 max-w-[440px] w-full shadow-2xl space-y-4"
+      className="bg-card border border-border rounded-xl p-4 md:p-6 max-w-[440px] w-full shadow-2xl space-y-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="confirm-import-title"

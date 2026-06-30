@@ -148,7 +148,7 @@ export function ToolsTriggers() {
           </label>
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary/30 hover:bg-muted/20 transition-all"
+            className="border-2 border-dashed border-border rounded-lg p-4 md:p-6 text-center cursor-pointer hover:border-primary/30 hover:bg-muted/20 transition-all"
           >
             <FileUp className="w-8 h-8 text-muted-foreground/40 mx-auto mb-2" />
             <p className="text-[13px] text-muted-foreground">

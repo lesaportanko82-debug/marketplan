@@ -246,7 +246,7 @@ ${text.slice(0, 3000)}
           {/* Platform */}
           <div className="bg-card border border-border rounded-xl p-4 space-y-3">
             <h3 className="text-[14px] font-semibold text-foreground">Платформа</h3>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {PLATFORMS.map((p) => {
                 const Icon = p.icon;
                 return (

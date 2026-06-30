@@ -552,7 +552,7 @@ export function ProfilePage() {
             </div>
           </div>
           {migrationStatus?.details && (
-            <div className="mt-3 pt-3 border-t border-border grid grid-cols-3 gap-3 text-center">
+            <div className="mt-3 pt-3 border-t border-border grid grid-cols-2 md:grid-cols-3 gap-3 text-center">
               <div>
                 <p className="text-[18px] font-bold text-foreground">{migrationStatus.details.count ?? migrationStatus.details.migrated ?? 0}</p>
                 <p className="text-[10px] text-muted-foreground">Перенесено</p>
@@ -596,7 +596,7 @@ export function ProfilePage() {
 
       {/* Team Management (owner only) */}
       {isOwner && (
-        <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+        <div className="bg-card border border-border rounded-2xl p-4 md:p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-[16px] font-semibold text-foreground flex items-center gap-2">

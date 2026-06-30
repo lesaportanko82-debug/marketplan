@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider, useAuth } from "./lib/useAuth";
 import { UsageProvider } from "./lib/useUsage";
+import { AccessProvider } from "./lib/useAccess";
 import { AuthPages } from "./components/AuthPages";
 import { Loader2, Zap } from "lucide-react";
 
@@ -42,6 +43,7 @@ export default function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
       <AuthProvider>
+        <AccessProvider>
         <UsageProvider>
           <AuthGate />
           <Toaster
@@ -92,6 +94,7 @@ export default function App() {
             richColors={false}
           />
         </UsageProvider>
+        </AccessProvider>
       </AuthProvider>
     </ThemeProvider>
   );

@@ -64,8 +64,8 @@ export class ErrorBoundary extends Component<Props, State> {
     }
 
     return (
-      <div className="flex items-center justify-center p-8 min-h-[300px]">
-        <div className="bg-card border border-border rounded-xl p-8 max-w-[520px] w-full text-center shadow-sm">
+      <div className="flex items-center justify-center p-4 md:p-8 min-h-[300px]">
+        <div className="bg-card border border-border rounded-xl p-4 md:p-8 max-w-[520px] w-full text-center shadow-sm">
           {/* Mascot */}
           <div className="flex justify-center mb-4">
             <Mascot emotion="oops" size={110} animate={false} />

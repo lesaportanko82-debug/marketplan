@@ -823,7 +823,7 @@ export function NotionHub() {
       {/* Pages list */}
       <div className="space-y-3">
         {filteredPages.length === 0 ? (
-          <div className="bg-card border border-border rounded-xl p-8 text-center">
+          <div className="bg-card border border-border rounded-xl p-4 md:p-8 text-center">
             <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
             <p className="text-foreground font-medium text-[14px]">{search ? "Ничего не найдено" : "Нет страниц"}</p>
             <p className="text-muted-foreground text-[12px] mt-1">

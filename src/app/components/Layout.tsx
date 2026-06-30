@@ -23,14 +23,16 @@ import { MascotReactionsProvider } from "./MascotReactions";
 import { MascotGamesProvider } from "./MascotGames";
 import { trackDailyVisit, checkMilestone } from "../lib/mascot-reactions";
 import { UsageLimitAlert } from "./UsageLimitAlert";
+import { useAccess, PLAN_CONFIG, AI_PATHS } from "../lib/useAccess";
+import { UpsellModal } from "./UpsellModal";
 
 /* ─── Mobile bottom nav items ─── */
 const MOBILE_NAV_ITEMS = [
-  { icon: FolderKanban, label: "Проекты", path: "/" },
-  { icon: CalendarRange, label: "Контент", path: "/smm/plan" },
-  { icon: Calendar, label: "Календарь", path: "/calendar" },
-  { icon: Wand2, label: "Студия", path: "/content-studio" },
-  { icon: Sparkles, label: "AI", path: "/tools/metrics" },
+  { icon: FolderKanban, label: "Проекты", path: "/app" },
+  { icon: CalendarRange, label: "Контент", path: "/app/smm/plan" },
+  { icon: Calendar, label: "Календарь", path: "/app/calendar" },
+  { icon: Wand2, label: "Студия", path: "/app/content-studio" },
+  { icon: Sparkles, label: "AI", path: "/app/tools/metrics" },
 ];
 
 /* ─── Nav data ─── */
@@ -54,8 +56,8 @@ const navSections: NavSection[] = [
     title: "Обзор",
     icon: LayoutDashboard,
     items: [
-      { icon: FolderKanban, label: "Проекты", path: "/" },
-      { icon: Calendar, label: "Календарь", path: "/calendar" },
+      { icon: FolderKanban, label: "Проекты", path: "/app" },
+      { icon: Calendar, label: "Календарь", path: "/app/calendar" },
     ],
   },
   {
@@ -63,12 +65,12 @@ const navSections: NavSection[] = [
     title: "Контент и SMM",
     icon: CalendarRange,
     items: [
-      { icon: CalendarRange, label: "Контент-план", path: "/smm/plan" },
-      { icon: Wand2, label: "Content Studio", path: "/content-studio", badge: "AI" },
-      { icon: Recycle, label: "Repurpose", path: "/repurpose", badge: "AI" },
-      { icon: Lightbulb, label: "Идеи", path: "/smm/ideas" },
-      { icon: Hash, label: "Хештеги и SEO", path: "/smm/hashtags" },
-      { icon: Users, label: "Инфлюенсеры", path: "/influencers" },
+      { icon: CalendarRange, label: "Контент-план", path: "/app/smm/plan" },
+      { icon: Wand2, label: "Content Studio", path: "/app/content-studio", badge: "AI" },
+      { icon: Recycle, label: "Repurpose", path: "/app/repurpose", badge: "AI" },
+      { icon: Lightbulb, label: "Идеи", path: "/app/smm/ideas" },
+      { icon: Hash, label: "Хештеги и SEO", path: "/app/smm/hashtags" },
+      { icon: Users, label: "Инфлюенсеры", path: "/app/influencers" },
     ],
   },
   {
@@ -76,13 +78,13 @@ const navSections: NavSection[] = [
     title: "Маркетинг",
     icon: Swords,
     items: [
-      { icon: Swords, label: "Конкуренты", path: "/competitors" },
-      { icon: Radar, label: "Competitor Spy", path: "/competitor-spy", badge: "AI" },
-      { icon: FlaskConical, label: "A/B Тесты", path: "/ab-tests" },
-      { icon: Calculator, label: "Unit-экономика", path: "/unit-economics" },
-      { icon: Palette, label: "Бренд-ассеты", path: "/media" },
-      { icon: Volume2, label: "Brand Voice", path: "/brand-voice", badge: "AI" },
-      { icon: BatteryLow, label: "Fatigue Detector", path: "/fatigue-detector", badge: "AI" },
+      { icon: Swords, label: "Конкуренты", path: "/app/competitors" },
+      { icon: Radar, label: "Competitor Spy", path: "/app/competitor-spy", badge: "AI" },
+      { icon: FlaskConical, label: "A/B Тесты", path: "/app/ab-tests" },
+      { icon: Calculator, label: "Unit-экономика", path: "/app/unit-economics" },
+      { icon: Palette, label: "Бренд-ассеты", path: "/app/media" },
+      { icon: Volume2, label: "Brand Voice", path: "/app/brand-voice", badge: "AI" },
+      { icon: BatteryLow, label: "Fatigue Detector", path: "/app/fatigue-detector", badge: "AI" },
     ],
   },
   {
@@ -90,11 +92,11 @@ const navSections: NavSection[] = [
     title: "Стратегия",
     icon: Target,
     items: [
-      { icon: Target, label: "OKR", path: "/okr" },
-      { icon: GitBranch, label: "Дерево метрик", path: "/metrics-tree" },
-      { icon: MapPin, label: "CJM", path: "/cjm" },
-      { icon: Users, label: "Personas", path: "/personas", badge: "AI" },
-      { icon: Film, label: "Storyline", path: "/campaign-storyline", badge: "AI" },
+      { icon: Target, label: "OKR", path: "/app/okr" },
+      { icon: GitBranch, label: "Дерево метрик", path: "/app/metrics-tree" },
+      { icon: MapPin, label: "CJM", path: "/app/cjm" },
+      { icon: Users, label: "Personas", path: "/app/personas", badge: "AI" },
+      { icon: Film, label: "Storyline", path: "/app/campaign-storyline", badge: "AI" },
     ],
   },
   {
@@ -102,11 +104,11 @@ const navSections: NavSection[] = [
     title: "AI Инструменты",
     icon: Sparkles,
     items: [
-      { icon: BarChart3, label: "Content Scoring", path: "/content-scoring", badge: "AI" },
-      { icon: BarChart3, label: "Метрики", path: "/tools/metrics", badge: "AI" },
-      { icon: DollarSign, label: "Прогноз бюджета", path: "/tools/budget", badge: "AI" },
-      { icon: Users, label: "ЦА и аватары", path: "/tools/audience", badge: "AI" },
-      { icon: MessageSquareQuote, label: "Триггеры", path: "/tools/triggers", badge: "AI" },
+      { icon: BarChart3, label: "Content Scoring", path: "/app/content-scoring", badge: "AI" },
+      { icon: BarChart3, label: "Метрики", path: "/app/tools/metrics", badge: "AI" },
+      { icon: DollarSign, label: "Прогноз бюджета", path: "/app/tools/budget", badge: "AI" },
+      { icon: Users, label: "ЦА и аватары", path: "/app/tools/audience", badge: "AI" },
+      { icon: MessageSquareQuote, label: "Триггеры", path: "/app/tools/triggers", badge: "AI" },
     ],
   },
   {
@@ -114,8 +116,8 @@ const navSections: NavSection[] = [
     title: "Система",
     icon: Workflow,
     items: [
-      { icon: Workflow, label: "Автоматизации", path: "/automations" },
-      { icon: Crown, label: "Тарифы", path: "/pricing" },
+      { icon: Workflow, label: "Автоматизации", path: "/app/automations" },
+      { icon: Crown, label: "Тарифы", path: "/app/pricing" },
     ],
   },
 ];
@@ -198,6 +200,100 @@ function Tooltip({ children, text, show }: { children: React.ReactNode; text: st
   );
 }
 
+/* ─── Sidebar plan badge ─── */
+function PlanBadge({ collapsed }: { collapsed: boolean }) {
+  const { hasAccess, plan, expiresAt, isExpired, daysLeft, loading } = useAccess();
+  const navigate = useNavigate();
+
+  if (loading || !plan) {
+    // Демо-режим: показываем "Тариф" ссылку
+    return (
+      <div className={`${collapsed ? "px-2" : "px-3"} py-2`}>
+        <Tooltip text="Выбрать тариф" show={collapsed}>
+          <button
+            onClick={() => navigate("/app/pricing")}
+            className={`w-full flex items-center rounded-lg transition-all duration-150 ${
+              collapsed ? "justify-center p-2" : "gap-2.5 px-2.5 py-[7px]"
+            }`}
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+          >
+            <Crown className="w-[18px] h-[18px]" style={{ color: "var(--sidebar-icon)", opacity: 0.6 }} />
+            {!collapsed && (
+              <span className="text-[12px] font-medium" style={{ color: "var(--sidebar-text-muted)" }}>
+                Выбрать тариф
+              </span>
+            )}
+          </button>
+        </Tooltip>
+      </div>
+    );
+  }
+
+  const cfg = PLAN_CONFIG[plan];
+  const expDate = expiresAt ? new Date(expiresAt).toLocaleDateString("ru-RU") : null;
+
+  if (collapsed) {
+    return (
+      <div className="px-2 py-2">
+        <Tooltip text={`${cfg.label} · ${daysLeft !== null ? `${daysLeft} дн.` : ""}`} show={true}>
+          <button
+            onClick={() => navigate("/app/pricing")}
+            className="w-full flex items-center justify-center p-1.5 rounded-lg transition-all"
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+          >
+            <span
+              className="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-white leading-tight"
+              style={{ background: cfg.gradient }}
+            >
+              {cfg.badge}
+            </span>
+          </button>
+        </Tooltip>
+      </div>
+    );
+  }
+
+  return (
+    <div className="px-3 py-2">
+      <button
+        onClick={() => navigate("/app/pricing")}
+        className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all text-left"
+        onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+      >
+        <span
+          className="text-[10px] font-bold px-2 py-0.5 rounded-md text-white shrink-0"
+          style={{ background: cfg.gradient }}
+        >
+          {cfg.badge}
+        </span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[12px] font-medium truncate" style={{ color: "var(--sidebar-text)" }}>
+              {cfg.label}
+            </span>
+            {isExpired ? (
+              <span className="text-[10px] text-red-500 font-medium shrink-0">истёк</span>
+            ) : (
+              <span className="text-[10px] text-emerald-600 font-medium shrink-0">активен</span>
+            )}
+          </div>
+          {expDate && daysLeft !== null && !isExpired && (
+            <p className="text-[10px] truncate" style={{ color: "var(--sidebar-text-muted)" }}>
+              {daysLeft} дн. · до {expDate}
+            </p>
+          )}
+          {isExpired && expDate && (
+            <p className="text-[10px] text-red-400 truncate">истёк {expDate}</p>
+          )}
+        </div>
+      </button>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════ LAYOUT ═══════════════════════════════ */
 export function Layout() {
   const navigate = useNavigate();
@@ -210,8 +306,32 @@ export function Layout() {
   const notifRef = useRef<HTMLDivElement>(null);
   const mainContentRef = useRef<HTMLElement>(null);
   const { user, loading, hasAccess, signOut } = useAuth();
+  const { plan: userPlan, loading: accessLoading } = useAccess();
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  // Preview mode: вошёл, но нет активного тарифа
+  const isPreview = !accessLoading && user != null && !userPlan;
+  // AI-страницы заблокированы для тарифа Старт
+  const isAIPage = AI_PATHS.some(p => location.pathname.startsWith(p));
+  const isAIBlocked = userPlan === "start" && isAIPage;
+
+  // Попап апселла
+  const [showUpsell, setShowUpsell] = useState(false);
+  const [upsellIsAI, setUpsellIsAI] = useState(false);
+  const upsellShownRef = useRef(false);
+
+  // 30-секундный таймер для preview-режима
+  useEffect(() => {
+    if (!isPreview) { upsellShownRef.current = false; return; }
+    if (upsellShownRef.current) return;
+    const t = setTimeout(() => {
+      upsellShownRef.current = true;
+      setUpsellIsAI(false);
+      setShowUpsell(true);
+    }, 30_000);
+    return () => clearTimeout(t);
+  }, [isPreview]);
   const userMenuRef = useRef<HTMLDivElement>(null);
   
   /* Mobile drawer state */
@@ -282,7 +402,7 @@ export function Layout() {
   const favItems = favorites.favs.map(p => allItems.find(i => i.path === p)).filter(Boolean) as NavItem[];
 
   const isActive = (path: string) =>
-    location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
+    location.pathname === path || (path !== "/app" && location.pathname.startsWith(path));
 
   /* ─── Render nav item ─── */
   const renderItem = (item: NavItem, compact = false) => {
@@ -436,11 +556,15 @@ export function Layout() {
   }
 
   return (
-    <div className="flex h-screen w-full bg-background overflow-hidden">
+    <div
+      className="flex bg-background overflow-hidden"
+      style={{ height: "100dvh", width: "100vw", maxWidth: "100vw", position: "relative" }}
+    >
       {/* Mobile menu overlay */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          className="fixed z-40"
+          style={{ inset: 0, width: "100vw", height: "100dvh", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", touchAction: "none" }}
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -574,22 +698,25 @@ export function Layout() {
           {/* ─ Bottom divider ─ */}
           <div className="mx-4 h-[1px]" style={{ background: "var(--sidebar-border)" }} />
 
+          {/* ─ Subscription badge ─ */}
+          <PlanBadge collapsed={sidebarCollapsed && !isMobile} />
+
           {/* ─ Bottom actions ─ */}
           <div className={`${sidebarCollapsed && !isMobile ? "px-2" : "px-3"} py-2 space-y-0.5`}>
             {/* Settings */}
             <Tooltip text="Настройки" show={sidebarCollapsed && !isMobile}>
               <button
-                onClick={() => navigate("/settings")}
+                onClick={() => navigate("/app/settings")}
                 className={`w-full flex items-center rounded-lg transition-all duration-150 ${
                   sidebarCollapsed && !isMobile ? "justify-center p-2" : "gap-2.5 px-2.5 py-[7px]"
                 }`}
-                style={{ background: isActive("/settings") ? "var(--sidebar-accent)" : undefined }}
-                onMouseEnter={e => { if (!isActive("/settings")) e.currentTarget.style.background = "var(--sidebar-hover)"; }}
-                onMouseLeave={e => { if (!isActive("/settings")) e.currentTarget.style.background = "transparent"; }}
+                style={{ background: isActive("/app/settings") ? "var(--sidebar-accent)" : undefined }}
+                onMouseEnter={e => { if (!isActive("/app/settings")) e.currentTarget.style.background = "var(--sidebar-hover)"; }}
+                onMouseLeave={e => { if (!isActive("/app/settings")) e.currentTarget.style.background = "transparent"; }}
               >
-                <Settings className="w-[18px] h-[18px]" style={{ color: isActive("/settings") ? "var(--sidebar-active)" : "var(--sidebar-icon)" }} />
+                <Settings className="w-[18px] h-[18px]" style={{ color: isActive("/app/settings") ? "var(--sidebar-active)" : "var(--sidebar-icon)" }} />
                 {!(sidebarCollapsed && !isMobile) && (
-                  <span className="text-[13px]" style={{ color: isActive("/settings") ? "var(--sidebar-text)" : "var(--sidebar-text-muted)", fontWeight: isActive("/settings") ? 600 : 400 }}>
+                  <span className="text-[13px]" style={{ color: isActive("/app/settings") ? "var(--sidebar-text)" : "var(--sidebar-text-muted)", fontWeight: isActive("/app/settings") ? 600 : 400 }}>
                     Настройки
                   </span>
                 )}
@@ -622,7 +749,7 @@ export function Layout() {
           <div className={`${sidebarCollapsed && !isMobile ? "px-2" : "px-3"} py-3`} ref={userMenuRef}>
             <Tooltip text={user?.name || "Профиль"} show={sidebarCollapsed && !isMobile}>
               <button
-                onClick={() => (sidebarCollapsed && !isMobile) ? navigate("/profile") : setUserMenuOpen(!userMenuOpen)}
+                onClick={() => (sidebarCollapsed && !isMobile) ? navigate("/app/profile") : setUserMenuOpen(!userMenuOpen)}
                 className={`w-full flex items-center rounded-xl transition-all duration-150 ${
                   sidebarCollapsed && !isMobile ? "justify-center p-2" : "gap-2.5 px-2.5 py-2"
                 }`}
@@ -667,7 +794,7 @@ export function Layout() {
                 }}
               >
                 <button
-                  onClick={() => { navigate("/profile"); setUserMenuOpen(false); }}
+                  onClick={() => { navigate("/app/profile"); setUserMenuOpen(false); }}
                   className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[12px] transition-colors"
                   style={{ color: "var(--sidebar-text-muted)" }}
                   onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; e.currentTarget.style.color = "var(--sidebar-text)"; }}
@@ -692,7 +819,13 @@ export function Layout() {
       </aside>
 
       {/* ═══ MAIN CONTENT ═══ */}
-      <div className="flex-1 flex flex-col overflow-hidden" style={{ paddingBottom: isMobile ? "calc(56px + env(safe-area-inset-bottom))" : 0 }}>
+      <div
+        className="flex-1 flex flex-col overflow-hidden"
+        style={{
+          minWidth: 0,
+          paddingBottom: isMobile ? "calc(56px + env(safe-area-inset-bottom))" : 0,
+        }}
+      >
         {/* Offline indicator */}
         {!isOnline && (
           <div className="bg-red-500/10 border-b border-red-500/20 px-4 py-2 flex items-center justify-center gap-2 shrink-0">
@@ -757,7 +890,7 @@ export function Layout() {
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 top-full mt-2 w-[360px] bg-card border border-border rounded-xl shadow-2xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-full mt-2 w-[min(360px,calc(100vw-1rem))] bg-card border border-border rounded-xl shadow-2xl z-50 overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-border">
                     <h4 className="text-foreground text-[13px] font-medium">Уведомления</h4>
                     {unreadCount > 0 && (
@@ -796,7 +929,7 @@ export function Layout() {
               <HelpCircle className="w-4 h-4" />
             </button>
             <button
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate("/app/profile")}
               title={user?.name || user?.email || "Профиль"}
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-medium ml-2 cursor-pointer hover:ring-2 hover:ring-[#d4a373]/40 transition-all"
               style={{
@@ -810,65 +943,159 @@ export function Layout() {
 
         <UsageLimitAlert />
 
-        <main className="flex-1 overflow-y-auto overflow-x-hidden" ref={mainContentRef}>
-          <PageTransition key={location.pathname}>
-            <ErrorBoundary>
-              <Suspense fallback={
-                <div className="flex items-center justify-center h-64">
-                  <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        {/* Preview mode banner */}
+        {isPreview && (
+          <div className="shrink-0 flex items-center gap-3 px-4 py-2 text-[12px] font-medium border-b border-amber-500/20"
+            style={{ background: "rgba(200,137,58,0.08)", color: "var(--foreground)" }}>
+            <span className="text-amber-600 font-semibold">Режим просмотра</span>
+            <span className="text-muted-foreground hidden sm:inline">Кнопки неактивны - выберите тариф для полного доступа</span>
+            <button
+              onClick={() => navigate("/app/pricing")}
+              className="ml-auto shrink-0 px-3 py-1 rounded-lg text-white text-[11px] font-semibold hover:opacity-90 transition-opacity"
+              style={{ background: "linear-gradient(135deg, #d4a373, #c08a40)" }}
+            >
+              Выбрать тариф
+            </button>
+          </div>
+        )}
+
+        {/* Start plan AI gate banner */}
+        {isAIBlocked && (
+          <div className="shrink-0 flex items-center gap-3 px-4 py-2 text-[12px] font-medium border-b border-primary/20"
+            style={{ background: "rgba(26,122,109,0.06)", color: "var(--foreground)" }}>
+            <span className="text-primary font-semibold">AI-инструменты</span>
+            <span className="text-muted-foreground hidden sm:inline">Доступны с тарифом Про или Про+</span>
+            <button
+              onClick={() => { setUpsellIsAI(true); setShowUpsell(true); }}
+              className="ml-auto shrink-0 px-3 py-1 rounded-lg text-white text-[11px] font-semibold hover:opacity-90 transition-opacity"
+              style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}
+            >
+              Перейти на Про
+            </button>
+          </div>
+        )}
+
+        <main
+          className="flex-1 overflow-y-auto overflow-x-hidden relative"
+          ref={mainContentRef}
+          style={{ overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" as any }}
+        >
+          {/* Preview overlay: перехватывает клики, показывает попап */}
+          {isPreview && (
+            <div
+              className="absolute inset-0 z-10 cursor-not-allowed"
+              style={{ background: "transparent" }}
+              onClick={() => { setUpsellIsAI(false); setShowUpsell(true); }}
+            />
+          )}
+
+          {/* AI gate overlay для тарифа Старт */}
+          {isAIBlocked && (
+            <div
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4"
+              style={{ background: "rgba(var(--background), 0.85)", backdropFilter: "blur(6px)" }}
+              onClick={() => { setUpsellIsAI(true); setShowUpsell(true); }}
+            >
+              <div className="text-center space-y-3 max-w-sm px-6">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto"
+                  style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}>
+                  <Crown className="w-7 h-7 text-white" />
                 </div>
-              }>
-                <Outlet />
-              </Suspense>
-            </ErrorBoundary>
-          </PageTransition>
+                <h3 className="text-[17px] font-bold text-foreground">Требуется тариф Про</h3>
+                <p className="text-[13px] text-muted-foreground leading-relaxed">
+                  AI-инструменты доступны с тарифом Про или Про+. Весь функционал за 700 ₽/мес.
+                </p>
+                <button
+                  onClick={e => { e.stopPropagation(); setUpsellIsAI(true); setShowUpsell(true); }}
+                  className="px-5 py-2.5 rounded-xl text-white text-[13px] font-semibold hover:opacity-90 transition-opacity shadow-md"
+                  style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}
+                >
+                  Перейти на Про
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Content — pointer-events disabled in preview mode */}
+          <div style={{ pointerEvents: isPreview ? "none" : "auto" }}>
+            <PageTransition key={location.pathname}>
+              <ErrorBoundary>
+                <Suspense fallback={
+                  <div className="flex items-center justify-center h-64">
+                    <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  </div>
+                }>
+                  <Outlet />
+                </Suspense>
+              </ErrorBoundary>
+            </PageTransition>
+          </div>
         </main>
       </div>
 
       <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />
 
+      {/* Upsell modal — preview mode & AI gate */}
+      {showUpsell && (
+        <UpsellModal
+          aiOnly={upsellIsAI}
+          onClose={() => setShowUpsell(false)}
+        />
+      )}
+
       {/* ═══ Mobile Bottom Navigation ═══ */}
       {isMobile && (
         <nav
-          className="fixed bottom-0 left-0 right-0 z-30 flex items-stretch border-t border-border"
+          className="fixed left-0 right-0 z-30 border-t border-border"
           style={{
+            bottom: 0,
             background: "var(--sidebar-bg)",
-            height: `calc(56px + env(safe-area-inset-bottom))`,
-            paddingBottom: "env(safe-area-inset-bottom)",
+            width: "100vw",
+            // fixed height for nav bar + safe area
+            paddingBottom: "env(safe-area-inset-bottom, 0px)",
+            // use will-change to prevent repaints on scroll
+            willChange: "transform",
+            // prevent the nav from being scrollable
+            touchAction: "none",
           }}
         >
-          {MOBILE_NAV_ITEMS.map(item => {
-            const active = isActive(item.path);
-            return (
-              <button
-                key={item.path}
-                onClick={() => startTransition(() => navigate(item.path))}
-                className="relative flex-1 flex flex-col items-center justify-center gap-0.5 pt-1.5 pb-1 transition-all"
-                style={{ color: active ? "var(--sidebar-active)" : "var(--sidebar-text-muted)" }}
-              >
-                <item.icon
-                  className="w-5 h-5 transition-all"
-                  style={{ color: active ? "var(--sidebar-active)" : "var(--sidebar-text-muted)" }}
-                />
-                <span className="text-[10px] font-medium leading-none" style={{ color: active ? "var(--sidebar-active)" : "var(--sidebar-text-muted)" }}>{item.label}</span>
-                {active && (
-                  <div
-                    className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full"
-                    style={{ background: "var(--sidebar-active)" }}
-                  />
-                )}
-              </button>
-            );
-          })}
-          {/* More/Menu button */}
-          <button
-            onClick={() => setMobileMenuOpen(true)}
-            className="flex-1 flex flex-col items-center justify-center gap-0.5 pt-1.5 pb-1 transition-all"
-            style={{ color: "var(--sidebar-text-muted)" }}
-          >
-            <Menu className="w-5 h-5" />
-            <span className="text-[10px] font-medium leading-none">Ещё</span>
-          </button>
+          <div className="flex items-stretch" style={{ height: 56 }}>
+            {MOBILE_NAV_ITEMS.map(item => {
+              const active = isActive(item.path);
+              return (
+                <button
+                  key={item.path}
+                  onClick={() => startTransition(() => navigate(item.path))}
+                  className="relative flex-1 flex flex-col items-center justify-center gap-0.5"
+                  style={{
+                    color: active ? "var(--sidebar-active)" : "var(--sidebar-text-muted)",
+                    minHeight: 44,
+                    touchAction: "manipulation",
+                  }}
+                >
+                  {active && (
+                    <div
+                      className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[2px] rounded-full"
+                      style={{ background: "var(--sidebar-active)" }}
+                    />
+                  )}
+                  <item.icon className="w-[22px] h-[22px]" style={{ color: active ? "var(--sidebar-active)" : "var(--sidebar-text-muted)" }} />
+                  <span className="text-[10px] font-medium leading-none mt-0.5" style={{ color: active ? "var(--sidebar-active)" : "var(--sidebar-text-muted)" }}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+            {/* More/Menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="flex-1 flex flex-col items-center justify-center gap-0.5"
+              style={{ color: "var(--sidebar-text-muted)", minHeight: 44, touchAction: "manipulation" }}
+            >
+              <Menu className="w-[22px] h-[22px]" />
+              <span className="text-[10px] font-medium leading-none mt-0.5">Ещё</span>
+            </button>
+          </div>
         </nav>
       )}
 
@@ -894,39 +1121,39 @@ function Breadcrumbs() {
   const path = location.pathname;
 
   const labels: Record<string, string> = {
-    "/": "Проекты",
-    "/smm/plan": "Контент-план",
-    "/smm/ideas": "Идеи и заметки",
-    "/smm/hashtags": "Хештеги и SEO",
-    "/influencers": "Инфлюенс-маркетинг",
-    "/competitors": "Конкуренты",
-    "/competitor-spy": "Competitor Spy",
-    "/ab-tests": "A/B Тесты",
-    "/unit-economics": "Unit-экономика",
-    "/media": "Бренд-ассеты",
-    "/tools/metrics": "Проработка метрик",
-    "/tools/budget": "Прогноз бюджета",
-    "/tools/audience": "ЦА и аватары",
-    "/tools/triggers": "Триггеры из отзывов",
-    "/settings": "Настройки",
-    "/brand-voice": "Brand Voice",
-    "/okr": "OKR-трекинг",
-    "/cjm": "Customer Journey Map",
-    "/calendar": "Маркетинговый календарь",
-    "/content-studio": "Content Studio",
-    "/automations": "Автоматизации",
-    "/repurpose": "Repurpose Engine",
-    "/content-scoring": "Content Scoring",
-    "/personas": "Persona Builder",
-    "/fatigue-detector": "Fatigue Detector",
-    "/campaign-storyline": "Campaign Storyline",
-    "/profile": "Личный кабинет",
-    "/metrics-tree": "Дерево метрик",
-    "/pricing": "Тарифы",
-    "/notion": "Notion Hub",
+    "/app/": "Проекты",
+    "/app/smm/plan": "Контент-план",
+    "/app/smm/ideas": "Идеи и заметки",
+    "/app/smm/hashtags": "Хештеги и SEO",
+    "/app/influencers": "Инфлюенс-маркетинг",
+    "/app/competitors": "Конкуренты",
+    "/app/competitor-spy": "Competitor Spy",
+    "/app/ab-tests": "A/B Тесты",
+    "/app/unit-economics": "Unit-экономика",
+    "/app/media": "Бренд-ассеты",
+    "/app/tools/metrics": "Проработка метрик",
+    "/app/tools/budget": "Прогноз бюджета",
+    "/app/tools/audience": "ЦА и аватары",
+    "/app/tools/triggers": "Триггеры из отзывов",
+    "/app/settings": "Настройки",
+    "/app/brand-voice": "Brand Voice",
+    "/app/okr": "OKR-трекинг",
+    "/app/cjm": "Customer Journey Map",
+    "/app/calendar": "Маркетинговый календарь",
+    "/app/content-studio": "Content Studio",
+    "/app/automations": "Автоматизации",
+    "/app/repurpose": "Repurpose Engine",
+    "/app/content-scoring": "Content Scoring",
+    "/app/personas": "Persona Builder",
+    "/app/fatigue-detector": "Fatigue Detector",
+    "/app/campaign-storyline": "Campaign Storyline",
+    "/app/profile": "Личный кабинет",
+    "/app/metrics-tree": "Дерево метрик",
+    "/app/pricing": "Тарифы",
+    "/app/notion": "Notion Hub",
   };
 
-  const isProjectDetail = path.startsWith("/project/");
+  const isProjectDetail = path.startsWith("/app/project/");
   const label = isProjectDetail ? "Проект" : labels[path] || path;
 
   return (

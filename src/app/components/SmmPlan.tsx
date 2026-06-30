@@ -375,7 +375,7 @@ export function SmmPlan() {
           </div>
           {/* Ideas Panel */}
           {showIdeasPanel && (
-            <div className="w-[280px] shrink-0">
+            <div className="w-full md:w-[280px] md:shrink-0">
               <div className="bg-card border border-border rounded-xl sticky top-0">
                 <div className="p-3 border-b border-border">
                   <h3 className="text-foreground text-[13px] font-medium flex items-center gap-2"><Lightbulb className="w-4 h-4 text-amber-500" /> Банк идей</h3>
@@ -437,7 +437,7 @@ function DashboardView({ allPosts, platformStats, calcMetrics, periodMetrics, ac
         </div>
 
         {/* Plan overview by status */}
-        <div className="grid grid-cols-4 gap-3 mb-5">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
           {(["planned", "in_progress", "published", "cancelled"] as const).map((s) => {
             const count = allPosts.filter((p) => p.status === s).length;
             return (
@@ -474,7 +474,7 @@ function DashboardView({ allPosts, platformStats, calcMetrics, periodMetrics, ac
                     </div>
                   </div>
                   {metricsCalculated && s.published > 0 && (
-                    <div className="grid grid-cols-3 gap-3 mt-2">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
                       <MiniMetric label="Охват" value={fmtNum(s.reach)} pct={reachPct} />
                       <MiniMetric label="ER" value={er.toFixed(1) + "%"} pct={erPct} />
                       <MiniMetric label="Клики" value={fmtNum(s.clicks)} pct={periodMetrics.targetClicks > 0 ? Math.round(s.clicks / periodMetrics.targetClicks * 100 * activePlatforms.length) : 0} />
@@ -782,7 +782,7 @@ ${form.goals ? `Цель: ${form.goals}` : ""}
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <div><label className="text-[12px] text-muted-foreground block mb-1">Дата</label><input type="date" value={form.date} onChange={(e) => set("date", e.target.value)} className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-foreground text-[13px]" /></div>
             <div><label className="text-[12px] text-muted-foreground block mb-1">Тип контента</label>
               <select value={form.type} onChange={(e) => set("type", e.target.value)} className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-foreground text-[13px]">{POST_TYPES.map((t) => <option key={t}>{t}</option>)}</select></div>
@@ -833,7 +833,7 @@ ${form.goals ? `Цель: ${form.goals}` : ""}
           {form.status === "published" && (
             <div>
               <p className="text-[12px] text-muted-foreground mb-2 flex items-center gap-1"><BarChart3 className="w-3.5 h-3.5" /> Метрики</p>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {[{ key: "reach", label: "Охват" }, { key: "impressions", label: "Показы" }, { key: "likes", label: "Лайки" }, { key: "comments", label: "Комменты" }, { key: "shares", label: "Репосты" }, { key: "clicks", label: "Клики" }, { key: "saves", label: "Сохранения" }, { key: "followers_gained", label: "Подписки" }].map((m) => (
                   <div key={m.key}><label className="text-[11px] text-muted-foreground">{m.label}</label>
                     <input type="number" value={(form as any)[m.key]} onChange={(e) => set(m.key, Number(e.target.value))} className="w-full bg-muted/30 border border-border rounded-lg px-2 py-1.5 text-foreground text-[13px]" /></div>

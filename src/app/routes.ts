@@ -1,9 +1,10 @@
 import React, { lazy } from "react";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, redirect } from "react-router";
 import { Layout } from "./components/Layout";
 import { ProjectsList } from "./components/ProjectsList";
 import { NotFound } from "./components/NotFound";
 import { OnboardingPage } from "./components/OnboardingPage";
+import { PaymentSuccessPage } from "./components/PaymentSuccessPage";
 
 // Lazy loaded components for better performance
 const ProjectDetail = lazy(() =>
@@ -161,6 +162,14 @@ export const router = createBrowserRouter([
   {
     path: "/",
     Component: OnboardingPage,
+  },
+  {
+    path: "/onboarding",
+    loader: () => redirect("/"),
+  },
+  {
+    path: "/payment/success",
+    Component: PaymentSuccessPage,
   },
   {
     path: "/app",

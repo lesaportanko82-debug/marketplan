@@ -254,38 +254,73 @@
   /* ── Mobile / touch improvements ── */
   @media (max-width: 767px) {
     html {
-      /* Prevent text size adjust on orientation change */
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      /* Prevent entire page horizontal scroll */
+      overflow-x: hidden;
     }
-    /* Prevent horizontal scroll leakage */
-    body, #root {
+
+    body {
       overflow-x: hidden;
       max-width: 100vw;
+      width: 100%;
+      /* Prevent pull-to-refresh / overscroll bounce shifting layout */
+      overscroll-behavior-y: contain;
+      overscroll-behavior-x: none;
+      /* Use dynamic viewport height so address bar doesn't shift layout */
+      min-height: 100dvh;
+      position: relative;
     }
-    /* Larger touch targets on mobile */
-    button, [role="button"] {
-      min-height: 40px;
+
+    #root {
+      overflow-x: hidden;
+      max-width: 100vw;
+      width: 100%;
     }
+
+    /* All flex/grid containers must not overflow their parent */
+    * {
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    /* Larger touch targets */
+    button, [role="button"], a {
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+
     /* Mobile heading scale */
-    h1 {
-      font-size: 1.25rem;
+    h1 { font-size: 1.25rem; }
+    h2 { font-size: 1rem; }
+    h3 { font-size: 0.875rem; }
+
+    /* Thin scrollbars */
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
+
+    /* Input font ≥16px prevents iOS zoom on focus */
+    input, textarea, select { font-size: 16px !important; }
+
+    /* Tables: allow horizontal scroll within container, not the whole page */
+    table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      max-width: 100%;
     }
-    h2 {
-      font-size: 1rem;
+
+    /* Images never overflow */
+    img, svg, video { max-width: 100%; height: auto; }
+
+    /* Cards and panels: full width, no min-width */
+    [class*="bg-card"], [class*="rounded-xl"], [class*="rounded-2xl"] {
+      max-width: 100%;
     }
-    h3 {
-      font-size: 0.875rem;
-    }
-    /* Thin scrollbars on mobile */
-    ::-webkit-scrollbar {
-      width: 3px;
-      height: 3px;
-    }
-    /* Input font size ≥16px prevents iOS zoom */
-    input, textarea, select {
-      font-size: 16px !important;
-    }
+  }
+
+  /* Prevent horizontal scroll globally on all screen sizes */
+  html, body {
+    overflow-x: hidden;
   }
 
   /* Safe area inset support */
@@ -356,18 +391,40 @@
       padding-right: 1rem;
       padding-top: 1rem;
     }
-    /* AI tool pages with p-6 */
-    main > * > div[class*="p-6"] {
-      padding: 1rem;
+
+    /* Main scroll container: contain overscroll within it */
+    main {
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
-    /* Modal dialogs - ensure they respect screen height */
+
+    /* Modal dialogs - respect screen height */
     .modal-mobile-full {
       max-height: 100dvh;
       border-radius: 1rem 1rem 0 0;
     }
-    /* Improve grid layouts on mobile */
-    .grid-cols-2:not([class*="sm:"]):not([class*="md:"]) {
-      grid-template-columns: repeat(1, minmax(0, 1fr));
+
+    /* Fixed overlays always cover full viewport */
+    .fixed.inset-0 {
+      width: 100vw;
+      height: 100dvh;
     }
+
+    /* Recharts container should not overflow */
+    .recharts-wrapper, .recharts-surface {
+      max-width: 100% !important;
+      overflow: hidden;
+    }
+
+    /* Horizontal-scrollable containers: isolate their scroll */
+    .overflow-x-auto {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+  }
+
+  /* Touch-action: prevent accidental horizontal swipe interfering with scroll */
+  .overflow-y-auto, main, [data-scroll-container] {
+    touch-action: pan-y;
   }
 }

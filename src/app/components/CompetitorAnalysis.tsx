@@ -276,7 +276,7 @@ function CompetitorModal({ competitor, isNew, onSave, onClose }: { competitor: C
 
           <div>
             <label className="text-[12px] text-muted-foreground block mb-2">Подписчики</label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {(["instagram", "telegram", "vk", "youtube", "tiktok"] as const).map(key => (
                 <div key={key}>
                   <span className="text-[11px] text-muted-foreground">{SOCIAL_LABELS[key]}</span>
@@ -288,7 +288,7 @@ function CompetitorModal({ competitor, isNew, onSave, onClose }: { competitor: C
 
           <div>
             <label className="text-[12px] text-muted-foreground block mb-2">Метрики</label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               <div><span className="text-[11px] text-muted-foreground">Трафик/мес</span><input type="number" value={form.metrics.traffic} onChange={e => setMetric("traffic", Number(e.target.value))} className="w-full bg-muted/30 border border-border rounded-lg px-2 py-1.5 text-foreground text-[12px] mt-0.5" /></div>
               <div><span className="text-[11px] text-muted-foreground">DR</span><input type="number" value={form.metrics.dr} onChange={e => setMetric("dr", Number(e.target.value))} className="w-full bg-muted/30 border border-border rounded-lg px-2 py-1.5 text-foreground text-[12px] mt-0.5" /></div>
               <div><span className="text-[11px] text-muted-foreground">Рекл. бюджет</span><input type="number" value={form.metrics.adSpend} onChange={e => setMetric("adSpend", Number(e.target.value))} className="w-full bg-muted/30 border border-border rounded-lg px-2 py-1.5 text-foreground text-[12px] mt-0.5" /></div>

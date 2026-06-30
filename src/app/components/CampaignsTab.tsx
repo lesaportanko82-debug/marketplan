@@ -603,7 +603,7 @@ function AutoBudgetCalculator({
       : n.toString();
 
   return (
-    <div className="bg-gradient-to-r from-emerald-600/5 to-teal-600/5 border border-emerald-600/20 rounded-xl p-6">
+    <div className="bg-gradient-to-r from-emerald-600/5 to-teal-600/5 border border-emerald-600/20 rounded-xl p-4 md:p-6">
       <h3 className="text-foreground mb-1 flex items-center gap-2">
         <DollarSign className="w-5 h-5 text-emerald-700" />
         Автоматический расчёт бюджета
@@ -638,7 +638,7 @@ function AutoBudgetCalculator({
         </div>
       </div>
 
-      <div className="bg-card rounded-lg border border-border overflow-hidden">
+      <div className="bg-card rounded-lg border border-border overflow-x-auto">
         <table className="w-full text-[13px]">
           <thead>
             <tr className="border-b border-border">

@@ -1175,7 +1175,7 @@ function PlatformPreview({ platform, content, mode, onRegenerateImage, generatin
             </button>
           </div>
         ) : (
-          <div className="bg-gradient-to-r from-[#d4a373]/20 to-teal-600/20 p-6 text-center">
+          <div className="bg-gradient-to-r from-[#d4a373]/20 to-teal-600/20 p-4 md:p-6 text-center">
             <Zap className="w-8 h-8 text-[#d4a373] mx-auto mb-2" />
             <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Рекламный блок</p>
           </div>

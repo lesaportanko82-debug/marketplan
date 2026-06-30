@@ -266,7 +266,7 @@ function AbTestModal({ test, isNew, onSave, onClose }: { test: AbTest; isNew: bo
           <div><label className="text-[12px] text-muted-foreground block mb-1">Гипотеза</label>
             <textarea value={form.hypothesis} onChange={e => set("hypothesis", e.target.value)} placeholder="Если изменить CTA с 'Купить' на 'Попробовать бесплатно', то конверсия вырастет на 20%..." rows={2} className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-foreground text-[13px] resize-none" /></div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <div><label className="text-[12px] text-muted-foreground block mb-1">Канал</label>
               <select value={form.channel} onChange={e => set("channel", e.target.value)} className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-foreground text-[13px]">
                 {CHANNELS.map(c => <option key={c}>{c}</option>)}</select></div>
@@ -276,7 +276,7 @@ function AbTestModal({ test, isNew, onSave, onClose }: { test: AbTest; isNew: bo
             <div><label className="text-[12px] text-muted-foreground block mb-1">Ключевая етрика</label>
               <input value={form.metric} onChange={e => set("metric", e.target.value)} className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-foreground text-[13px]" /></div>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <div><label className="text-[12px] text-muted-foreground block mb-1">Дата начала</label>
               <input type="date" value={form.startDate} onChange={e => set("startDate", e.target.value)} className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-foreground text-[13px]" /></div>
             <div><label className="text-[12px] text-muted-foreground block mb-1">Дата окончания</label>
@@ -299,7 +299,7 @@ function AbTestModal({ test, isNew, onSave, onClose }: { test: AbTest; isNew: bo
                     {form.variants.length > 2 && <button onClick={() => removeVariant(i)} className="text-muted-foreground hover:text-red-500"><X className="w-3.5 h-3.5" /></button>}
                   </div>
                   <input value={v.description} onChange={e => setVariant(i, "description", e.target.value)} placeholder="Описание варианта..." className="w-full bg-muted/30 border border-border rounded-lg px-2 py-1.5 text-foreground text-[12px] mb-2" />
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {(["impressions", "clicks", "conversions", "revenue"] as const).map(key => (
                       <div key={key}><span className="text-[10px] text-muted-foreground">{key === "impressions" ? "Покзы" : key === "clicks" ? "Клики" : key === "conversions" ? "Конверсии" : "Выручка"}</span>
                         <input type="number" value={v[key]} onChange={e => setVariant(i, key, Number(e.target.value))} className="w-full bg-muted/30 border border-border rounded px-2 py-1 text-foreground text-[12px] mt-0.5" /></div>

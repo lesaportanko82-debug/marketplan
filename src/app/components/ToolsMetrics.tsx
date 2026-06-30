@@ -386,7 +386,7 @@ function CalculatorCard({ group }: { group: FormulaGroup }) {
           {hasInput && (
             <div className="px-5 pb-5">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Результаты</p>
-              <div className="border border-border rounded-lg overflow-hidden">
+              <div className="border border-border rounded-lg overflow-x-auto">
                 <table className="w-full text-[13px]">
                   <thead>
                     <tr className="bg-muted/40">

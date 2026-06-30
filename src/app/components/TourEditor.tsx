@@ -202,7 +202,7 @@ export function TourEditor({ tour, onSave, onCancel, onPreview }: TourEditorProp
         {/* Content */}
         <div className="flex-1 overflow-hidden flex">
           {/* Left panel: Tour settings */}
-          <div className="w-80 border-r border-border p-6 overflow-y-auto">
+          <div className="w-80 border-r border-border p-4 md:p-6 overflow-y-auto">
             <h3 className="text-[14px] font-bold text-foreground mb-4 flex items-center gap-2">
               <Settings className="w-4 h-4" />
               Настройки тура
@@ -324,7 +324,7 @@ export function TourEditor({ tour, onSave, onCancel, onPreview }: TourEditorProp
             </div>
 
             {/* Steps list */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6">
               {steps.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
                   <Mascot emotion="think" size={80} />

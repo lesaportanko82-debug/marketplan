@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { useModal } from "../hooks/useModal";
 
 /**
@@ -26,6 +27,13 @@ export function ModalOverlay({
   backdropClose = true,
 }: ModalOverlayProps) {
   const ref = useModal(onClose);
+
+  // Lock body scroll while modal is open (critical for mobile)
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, []);
 
   return (
     <div

@@ -5,7 +5,7 @@ import { Mascot } from "./Mascot";
 export function NotFound() {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+    <div className="flex flex-col items-center justify-center h-full p-4 md:p-6 text-center">
       <Mascot emotion="oops" size={130} />
       <p className="text-[56px] font-bold text-muted-foreground/20 mt-2 mb-1 leading-none">404</p>
       <h2 className="text-foreground mb-1">Ой, такой страницы нет!</h2>

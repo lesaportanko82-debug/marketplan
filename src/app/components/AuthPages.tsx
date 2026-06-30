@@ -236,7 +236,7 @@ export function AuthPages() {
           {/* Login / Signup / Reset form */}
           <form
             onSubmit={mode === "reset" ? handlePasswordReset : mode === "signup" ? handleSignup : handleLogin}
-            className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xl"
+            className="bg-card border border-border rounded-2xl p-4 md:p-6 space-y-4 shadow-xl"
           >
             {mode === "signup" && (
               <div>

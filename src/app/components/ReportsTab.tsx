@@ -244,7 +244,7 @@ export function ReportsTab({ project }: { project: Project }) {
       {generated && (
         <div className="space-y-6">
           {/* Report Header with Actions */}
-          <div className="bg-card border border-border rounded-xl p-6">
+          <div className="bg-card border border-border rounded-xl p-4 md:p-6">
             <div className="flex items-center gap-2 text-green-600 mb-3">
               <CheckCircle2 className="w-5 h-5" />
               <span className="text-[14px]">Отчёт сгенерирован</span>
@@ -306,9 +306,9 @@ export function ReportsTab({ project }: { project: Project }) {
           )}
 
           {/* Report Content (captured for PDF) */}
-          <div ref={reportRef} className={showPreview ? "bg-white p-6 rounded-xl shadow-lg" : ""}>
+          <div ref={reportRef} className={showPreview ? "bg-white p-4 md:p-6 rounded-xl shadow-lg" : ""}>
             {/* Executive Summary */}
-            <div className={`${showPreview ? "" : "bg-card border border-border"} rounded-xl p-6`}>
+            <div className={`${showPreview ? "" : "bg-card border border-border"} rounded-xl p-4 md:p-6`}>
               <h3 className="text-foreground mb-4">Executive Summary</h3>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div className="bg-accent/30 rounded-lg p-4">
@@ -485,7 +485,7 @@ export function ReportsTab({ project }: { project: Project }) {
             </div>
 
             {/* Campaign Breakdown */}
-            <div className={`${showPreview ? "" : "bg-card border border-border"} rounded-xl p-6 mt-6`}>
+            <div className={`${showPreview ? "" : "bg-card border border-border"} rounded-xl p-4 md:p-6 mt-6`}>
               <h3 className="text-foreground mb-4">Детализация по кампаниям</h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-[13px]">
@@ -568,7 +568,7 @@ export function ReportsTab({ project }: { project: Project }) {
             </div>
 
             {/* Recommendations */}
-            <div className="bg-gradient-to-r from-green-500/5 to-teal-500/5 border border-green-500/20 rounded-xl p-6 mt-6">
+            <div className="bg-gradient-to-r from-green-500/5 to-teal-500/5 border border-green-500/20 rounded-xl p-4 md:p-6 mt-6">
               <h3 className="text-foreground mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-green-600" />
                 Рекомендации

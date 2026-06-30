@@ -347,7 +347,7 @@ export function ProjectsList() {
       {/* Delete Confirm */}
       {deleteConfirm && (
         <ModalOverlay onClose={() => setDeleteConfirm(null)} label="Удалить проект">
-          <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-2xl p-6">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-2xl p-4 md:p-6">
             <div className="flex items-start gap-4 mb-5">
               <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center shrink-0">
                 <AlertTriangle className="w-6 h-6 text-red-500" />

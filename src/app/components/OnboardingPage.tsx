@@ -1,13 +1,17 @@
 /**
  * OnboardingPage - публичная страница онбординга и тарифов MarketPlan
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import {
   Check, X, Zap, Crown, Eye, ChevronRight,
-  LayoutDashboard, Target, Gauge, PlayCircle, FolderKanban, Sparkles,
+  LayoutDashboard, Target, Gauge, PlayCircle, FolderKanban, Sparkles, Loader2,
 } from "lucide-react";
 import { Mascot } from "./Mascot";
+import { useAuth } from "../lib/useAuth";
+import { useAccess } from "../lib/useAccess";
+import { usePayment } from "../lib/usePayment";
+import { PaymentAuthModal } from "./PaymentAuthModal";
 
 /* ─── Types ─── */
 interface Plan {
@@ -32,20 +36,20 @@ const PLANS: Plan[] = [
     name: "Старт",
     price: 500,
     period: "/ месяц",
-    description: "Базовый доступ для тех, кто хочет начать планировать маркетинг без AI-функций.",
+    description: "Все базовые инструменты без AI",
     icon: Zap,
     color: "#d4a373",
     gradient: "from-[#d4a373] to-[#c08a40]",
-    badge: "Хороший старт",
+    badge: "Попробовать",
     popular: true,
     features: [
-      "до 2 проектов",
+      "проекты и задачи",
       "маркетинговый календарь",
-      "планирование задач и идей",
+      "контент-план",
       "аналитика и экспорт",
     ],
     limitations: [
-      "без AI-инструментов",
+      "AI-инструменты недоступны",
     ],
     cta: "Выбрать Старт",
   },
@@ -54,13 +58,13 @@ const PLANS: Plan[] = [
     name: "Про",
     price: 700,
     period: "/ месяц",
-    description: "Полный доступ ко всем функциям, включая AI-инструменты и командную работу.",
+    description: "Весь функционал в течение месяца",
     icon: Crown,
     color: "#1a7a6d",
     gradient: "from-[#1a7a6d] to-[#0d7377]",
     badge: "Лучший выбор",
     features: [
-      "безлимит проектов",
+      "весь функционал платформы",
       "все AI-инструменты",
       "командная работа",
       "приоритетная поддержка",
@@ -69,19 +73,20 @@ const PLANS: Plan[] = [
     cta: "Перейти на Про",
   },
   {
-    id: "pro-plus",
+    id: "pro_plus",
     name: "Про+",
     price: 1500,
     period: "/ 3 месяца",
-    description: "Всё из Про, но оплата раз в квартал. Экономия 600 ₽ по сравнению с ежемесячной оплатой.",
+    description: "Весь функционал в течение 3 месяцев",
     icon: Sparkles,
     color: "#7c3aed",
     gradient: "from-[#7c3aed] to-[#5b21b6]",
     badge: "Выгода 600 ₽",
     features: [
-      "всё из тарифа Про",
-      "оплата раз в 3 месяца",
-      "≈ 500 ₽ в месяц",
+      "весь функционал платформы",
+      "все AI-инструменты",
+      "доступ на 3 месяца",
+      "≈ 500 ₽/мес вместо 700 ₽",
     ],
     limitations: [],
     cta: "Взять Про+ на квартал",
@@ -148,15 +153,27 @@ const FOR_WHO = [
 
 /* ─── Component ─── */
 export function OnboardingPage() {
+  const { user } = useAuth();
+  const { plan: currentPlan } = useAccess();
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const { loadingPlan, pendingPlanId, setPendingPlanId, pay, payPending } = usePayment();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
-  const handleCta = (planId: string) => {
+  // После успешного входа — автоматически запустить отложенный платёж
+  useEffect(() => {
+    if (user && pendingPlanId && !showAuthModal) {
+      payPending(user.id, user.email);
+    }
+  }, [user?.id, pendingPlanId]);
+
+  const handleCta = async (planId: string) => {
     if (planId === "demo") {
       window.location.href = "/app";
-    } else {
-      // В реальном проекте - интеграция с платёжной системой
-      // Доступ открывается ТОЛЬКО после payment.succeeded
-      window.location.href = "/app";
+      return;
+    }
+    const proceeded = await pay(planId);
+    if (!proceeded && !user) {
+      setShowAuthModal(true);
     }
   };
 
@@ -203,7 +220,7 @@ export function OnboardingPage() {
           transition={{ delay: 0.1 }}
           className="max-w-[780px] mx-auto"
         >
-          <div className="bg-card border border-border rounded-2xl p-8 md:p-10 space-y-5">
+          <div className="bg-card border border-border rounded-2xl p-4 md:p-8 space-y-5">
             <h2 className="text-[20px] md:text-[24px] font-bold text-foreground text-center">
               Marketing Planer помогает:
             </h2>
@@ -239,7 +256,7 @@ export function OnboardingPage() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* Before */}
-            <div className="bg-card border border-border rounded-2xl p-6 md:p-7 space-y-4">
+            <div className="bg-card border border-border rounded-2xl p-4 md:p-6 md:p-7 space-y-4">
               <div className="flex items-center gap-2">
                 <X className="w-5 h-5 text-red-500/80" />
                 <h3 className="text-[16px] font-semibold text-foreground">Было</h3>
@@ -261,7 +278,7 @@ export function OnboardingPage() {
             </div>
 
             {/* After */}
-            <div className="bg-card border border-border rounded-2xl p-6 md:p-7 space-y-4">
+            <div className="bg-card border border-border rounded-2xl p-4 md:p-6 md:p-7 space-y-4">
               <div className="flex items-center gap-2">
                 <Check className="w-5 h-5 text-primary" />
                 <h3 className="text-[16px] font-semibold text-foreground">Стало</h3>
@@ -389,7 +406,7 @@ export function OnboardingPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.1 }}
                   className={`relative bg-card border rounded-2xl overflow-hidden flex flex-col ${
-                    plan.popular ? "border-[#d4a373] shadow-lg shadow-[#d4a373]/15 scale-[1.03]" : "border-border"
+                    plan.popular ? "border-[#d4a373] shadow-lg shadow-[#d4a373]/15 md:scale-[1.03]" : "border-border"
                   }`}
                 >
                   {plan.badge && (
@@ -446,24 +463,33 @@ export function OnboardingPage() {
                     ))}
                   </div>
 
-                  <div className="p-6 pt-3">
-                    <button
-                      onClick={() => handleCta(plan.id)}
-                      className={`w-full py-3 rounded-xl text-[14px] font-semibold transition-all hover:opacity-90 active:scale-[0.98] ${
-                        plan.popular
-                          ? "text-white shadow-md"
-                          : plan.id === "demo"
-                          ? "bg-muted text-foreground hover:bg-muted/80"
-                          : "text-white"
-                      }`}
-                      style={
-                        plan.id !== "demo"
-                          ? { background: `linear-gradient(135deg, ${plan.color}, ${plan.color}dd)` }
-                          : undefined
-                      }
-                    >
-                      {plan.cta}
-                    </button>
+                  <div className="p-4 md:p-6 pt-3">
+                    {currentPlan === plan.id ? (
+                      <div className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-center border"
+                        style={{ borderColor: `${plan.color}40`, color: plan.color, background: `${plan.color}08` }}>
+                        ✓ Ваш текущий тариф
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleCta(plan.id)}
+                        disabled={loadingPlan !== null}
+                        className={`w-full py-3 rounded-xl text-[14px] font-semibold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+                          plan.popular
+                            ? "text-white shadow-md"
+                            : plan.id === "demo"
+                            ? "bg-muted text-foreground hover:bg-muted/80"
+                            : "text-white"
+                        }`}
+                        style={
+                          plan.id !== "demo"
+                            ? { background: `linear-gradient(135deg, ${plan.color}, ${plan.color}dd)` }
+                            : undefined
+                        }
+                      >
+                        {loadingPlan === plan.id && <Loader2 className="w-4 h-4 animate-spin" />}
+                        {loadingPlan === plan.id ? "Создаём платёж..." : plan.cta}
+                      </button>
+                    )}
                   </div>
                 </motion.div>
               );
@@ -494,7 +520,7 @@ export function OnboardingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-card border border-border rounded-2xl p-8 md:p-10 text-center space-y-6"
+            className="bg-card border border-border rounded-2xl p-4 md:p-8 text-center space-y-6"
           >
             <Mascot emotion="wave" size={80} className="mx-auto" />
             <div className="space-y-3">
@@ -531,10 +557,19 @@ export function OnboardingPage() {
         </p>
       </footer>
 
+      {/* Auth Modal for payment flow */}
+      {showAuthModal && pendingPlanId && (
+        <PaymentAuthModal
+          planName={PLANS.find(p => p.id === pendingPlanId)?.name ?? pendingPlanId}
+          onClose={() => { setShowAuthModal(false); setPendingPlanId(null); }}
+          onAuthSuccess={() => setShowAuthModal(false)}
+        />
+      )}
+
       {/* Privacy Policy Modal */}
       {showPrivacy && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowPrivacy(false)}>
-          <div className="bg-card border border-border rounded-2xl max-w-[600px] w-full max-h-[80vh] overflow-y-auto p-8 space-y-5" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-card border border-border rounded-2xl max-w-[600px] w-full max-h-[80dvh] overflow-y-auto p-4 md:p-6 space-y-5" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <h2 className="text-[18px] font-bold text-foreground">Политика конфиденциальности</h2>
               <button onClick={() => setShowPrivacy(false)} className="text-muted-foreground hover:text-foreground text-[20px] leading-none">×</button>

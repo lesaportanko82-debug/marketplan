@@ -194,7 +194,7 @@ function Verdict({ tone, text }: { tone: Tone; text: string }) {
 
 function TableWrapper({ headers, children }: { headers: string[]; children: React.ReactNode }) {
   return (
-    <div className="border border-border rounded-lg overflow-hidden">
+    <div className="border border-border rounded-lg overflow-x-auto">
       <table className="w-full text-[13px]">
         <thead>
           <tr className="bg-muted/40">

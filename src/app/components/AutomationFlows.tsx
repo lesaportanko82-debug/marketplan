@@ -370,7 +370,7 @@ export function AutomationFlows() {
         <div className="space-y-3">
           <h3 className="text-[13px] font-semibold text-muted-foreground uppercase tracking-wider">Мои автоматизации ({flows.length})</h3>
           {flows.length === 0 ? (
-            <div className="bg-card border border-border rounded-xl p-6 text-center">
+            <div className="bg-card border border-border rounded-xl p-4 md:p-6 text-center">
               <MascotMessage
                 emotion="work"
                 message="Нет автоматизаций"
@@ -647,7 +647,7 @@ export function AutomationFlows() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
                   { label: "Триггеров", val: activeFlow.nodes.filter((n) => n.type === "trigger").length },
                   { label: "Действий", val: activeFlow.nodes.filter((n) => n.type === "action").length },

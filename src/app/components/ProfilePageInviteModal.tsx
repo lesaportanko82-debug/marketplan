@@ -77,7 +77,7 @@ export function InviteModal({
   return (
     <div
       ref={modalRef}
-      className="bg-card border border-border rounded-2xl p-6 w-full max-w-md shadow-2xl"
+      className="bg-card border border-border rounded-2xl p-4 md:p-6 w-full max-w-md shadow-2xl"
       role="dialog"
       aria-modal="true"
       aria-labelledby="invite-modal-title"

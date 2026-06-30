@@ -228,7 +228,7 @@ ${formatNames.map((f, i) => `${i + 1}. ${f}`).join("\n")}
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
             <Recycle className="w-5 h-5 text-[#d4a373] shrink-0" />
-            Content Repurpose Engine
+            Движок адаптации контента
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Один контент - десять форматов. Введите текст и получите готовый контент-план на неделю

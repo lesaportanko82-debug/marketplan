@@ -717,7 +717,7 @@ export function IntegrationsHub() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {[
           { label: "Активных", count: connectedCount, color: "bg-emerald-500" },
           { label: "Ожидают", count: integrations.length - connectedCount, color: "bg-amber-500" },

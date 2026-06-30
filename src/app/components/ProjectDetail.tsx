@@ -75,7 +75,7 @@ export function ProjectDetail() {
 
   if (!project) {
     return (
-      <div className="p-6 flex flex-col items-center justify-center h-full">
+      <div className="p-4 md:p-6 flex flex-col items-center justify-center h-full">
         <p className="text-muted-foreground mb-4">Проект не найден</p>
         <button
           onClick={() => navigate("/")}
@@ -224,7 +224,7 @@ function SummaryContent({ project }: { project: Project }) {
   return (
     <div className="space-y-6">
       {/* KPI Summary Card */}
-      <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-xl p-6">
+      <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-xl p-4 md:p-6">
         <div className="flex items-start gap-3">
           <TrendingUp className="w-5 h-5 text-primary mt-0.5 shrink-0" />
           <div>
@@ -265,7 +265,7 @@ function SummaryContent({ project }: { project: Project }) {
       </div>
 
       {/* Funnel */}
-      <div className="bg-card border border-border rounded-xl p-6">
+      <div className="bg-card border border-border rounded-xl p-4 md:p-6">
         <h3 className="text-foreground mb-5">Воронка</h3>
         <div className="space-y-3">
           {project.funnel.map((stage, i) => {
@@ -304,7 +304,7 @@ function SummaryContent({ project }: { project: Project }) {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-card border border-border rounded-xl p-6">
+      <div className="bg-card border border-border rounded-xl p-4 md:p-6">
         <h3 className="text-foreground mb-4">Последняя активность</h3>
         <div className="space-y-3">
           {[

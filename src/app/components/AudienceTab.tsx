@@ -76,7 +76,7 @@ export function AudienceTab({ project }: { project: Project }) {
 
       {/* AI Insights Panel */}
       {showAIPanel && (
-        <div className="bg-gradient-to-r from-emerald-600/5 to-teal-600/5 border border-emerald-600/20 rounded-xl p-6">
+        <div className="bg-gradient-to-r from-emerald-600/5 to-teal-600/5 border border-emerald-600/20 rounded-xl p-4 md:p-6">
           <div className="flex items-start gap-3">
             <Sparkles className="w-5 h-5 text-emerald-700 mt-0.5 shrink-0" />
             <div>

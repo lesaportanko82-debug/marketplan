@@ -698,7 +698,7 @@ function ColorFullPreview({ value }: { value: string }) {
           <span className="text-white text-[18px] font-mono font-bold">{value.toUpperCase()}</span>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         <div className="bg-muted/20 rounded-lg p-3">
           <div className="text-[10px] text-muted-foreground mb-1">HEX</div>
           <div className="text-[13px] text-foreground font-mono">{value.toUpperCase()}</div>
@@ -735,7 +735,7 @@ function ColorFullPreview({ value }: { value: string }) {
 function FontFullPreview({ value }: { value: string }) {
   return (
     <div className="space-y-4">
-      <div className="bg-muted/20 rounded-xl p-6" style={{ fontFamily: `"${value}", sans-serif` }}>
+      <div className="bg-muted/20 rounded-xl p-4 md:p-6" style={{ fontFamily: `"${value}", sans-serif` }}>
         <div className="text-foreground text-[36px] font-bold leading-tight mb-2">Аа Бб Вв Гг</div>
         <div className="text-foreground/80 text-[24px] mb-2">АБВГДЕЖЗИКЛМН</div>
         <div className="text-foreground/70 text-[18px] mb-2">абвгдежзиклмнопрстуфхцчшщъыьэюя</div>
@@ -771,7 +771,7 @@ function LogoFullPreview({ value, name }: { value: string; name: string }) {
     <div className="space-y-4">
       <div>
         <div className="text-[11px] text-muted-foreground mb-1.5">На белом фоне</div>
-        <div className="bg-card rounded-xl p-8 flex items-center justify-center min-h-[140px] border border-border">
+        <div className="bg-card rounded-xl p-4 md:p-8 flex items-center justify-center min-h-[140px] border border-border">
           {!error ? (
             <img src={value} alt={name} className="max-h-[120px] max-w-full object-contain" onError={() => setError(true)} />
           ) : (
@@ -785,7 +785,7 @@ function LogoFullPreview({ value, name }: { value: string; name: string }) {
       {!error && (
         <div>
           <div className="text-[11px] text-muted-foreground mb-1.5">На тёмном фоне</div>
-          <div className="bg-[#1a1a1a] rounded-xl p-8 flex items-center justify-center min-h-[140px]">
+          <div className="bg-[#1a1a1a] rounded-xl p-4 md:p-8 flex items-center justify-center min-h-[140px]">
             <img src={value} alt={name} className="max-h-[120px] max-w-full object-contain" />
           </div>
         </div>
@@ -808,7 +808,7 @@ function TextFullPreview({ value }: { value: string }) {
 
 function CopyFullPreview({ value }: { value: string }) {
   return (
-    <div className="bg-orange-500/5 border border-orange-500/10 rounded-xl p-6">
+    <div className="bg-orange-500/5 border border-orange-500/10 rounded-xl p-4 md:p-6">
       <div className="text-[40px] text-orange-500/20 leading-none mb-1">&ldquo;</div>
       <p className="text-[15px] text-foreground leading-relaxed whitespace-pre-wrap -mt-4 pl-4">{value}</p>
       <div className="text-[40px] text-orange-500/20 leading-none text-right -mb-2">&rdquo;</div>
