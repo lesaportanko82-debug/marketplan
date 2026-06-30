@@ -4,6 +4,7 @@
  * и при клике на заблокированный контент.
  */
 import { useNavigate } from "react-router";
+import { startTransition } from "react";
 import { Crown, Sparkles, Zap, X, ArrowRight } from "lucide-react";
 import { Mascot } from "./Mascot";
 
@@ -18,13 +19,13 @@ export function UpsellModal({ onClose, aiOnly = false }: Props) {
 
   const handlePricing = () => {
     onClose();
-    navigate("/app/pricing");
+    startTransition(() => navigate("/app/pricing"));
   };
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}
+      className="fixed inset-0 flex items-center justify-center p-4"
+      style={{ zIndex: 9999, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
       <div

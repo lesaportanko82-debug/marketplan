@@ -2287,4 +2287,73 @@ app.post("/make-server-b80b3260/usage/decrement", async (c) => {
   }
 });
 
+// ─── GET /auth/access — проверка доступа MarketPlan через service role (обходит RLS) ───
+app.get("/make-server-b80b3260/auth/access", async (c) => {
+  try {
+    const user = await getUserFromToken(c.req.header("Authorization"));
+    if (!user) {
+      console.log("[/auth/access] unauthenticated request");
+      return c.json({ success: true, hasAccess: false, plan: null, reason: "unauthenticated" });
+    }
+
+    console.log(`[/auth/access] checking for user id=${user.id} email=${user.email}`);
+
+    const supabase = getAdminClient();
+
+    const findActive = (rows: any[]) => {
+      const now = new Date();
+      return rows.find((row: any) => {
+        if (row.status !== "active") return false;
+        if (!row.expires_at) return true;
+        return new Date(row.expires_at) > now;
+      });
+    };
+
+    // 1. Поиск по user_id (основной)
+    const { data: byId, error: err1 } = await supabase
+      .from("user_access")
+      .select("plan, status, expires_at, user_id, email")
+      .eq("user_id", user.id)
+      .eq("project", "marketplan")
+      .limit(10);
+
+    console.log(`[/auth/access] by user_id=${user.id}: rows=${byId?.length ?? 0} err=${err1?.message ?? "none"}`);
+
+    const activeById = byId && !err1 ? findActive(byId) : null;
+    if (activeById) {
+      return c.json({ success: true, hasAccess: true, plan: activeById.plan, expiresAt: activeById.expires_at ?? null });
+    }
+
+    // 2. Fallback: поиск по email (если webhook записал другой user_id)
+    const { data: byEmail, error: err2 } = await supabase
+      .from("user_access")
+      .select("plan, status, expires_at, user_id, email")
+      .eq("email", user.email)
+      .eq("project", "marketplan")
+      .limit(10);
+
+    console.log(`[/auth/access] by email=${user.email}: rows=${byEmail?.length ?? 0} err=${err2?.message ?? "none"} data=${JSON.stringify(byEmail)}`);
+
+    const activeByEmail = byEmail && !err2 ? findActive(byEmail) : null;
+    if (activeByEmail) {
+      // Исправляем user_id в таблице чтобы следующий раз нашёл по user_id
+      await supabase.from("user_access")
+        .update({ user_id: user.id })
+        .eq("email", user.email)
+        .eq("project", "marketplan");
+      console.log(`[/auth/access] fixed user_id for ${user.email}: ${activeByEmail.user_id} → ${user.id}`);
+      return c.json({ success: true, hasAccess: true, plan: activeByEmail.plan, expiresAt: activeByEmail.expires_at ?? null });
+    }
+
+    // Ничего не найдено
+    const reason = (byId?.length ?? 0) > 0 ? "all_expired_or_inactive" : "no_record";
+    console.log(`[/auth/access] no access for ${user.email}, reason=${reason}`);
+    return c.json({ success: true, hasAccess: false, plan: null, reason });
+
+  } catch (error) {
+    console.log(`[/auth/access] Error: ${error}`);
+    return c.json({ success: false, error: String(error) }, 500);
+  }
+});
+
 Deno.serve(app.fetch);

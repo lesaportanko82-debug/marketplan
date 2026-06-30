@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { supabase } from "./useAuth";
 import { useAuth } from "./useAuth";
+import { projectId, publicAnonKey } from "/utils/supabase/info";
 
 export type AccessPlan = "start" | "pro" | "pro_plus" | null;
 
@@ -78,6 +79,14 @@ export const PLAN_CONFIG = {
 } as const;
 
 // ─── Core check function ─────────────────────────────────────────────────────
+// Запрашивает через сервер (service role, обходит RLS), fallback — прямой запрос.
+
+const SERVER_BASE = `https://${projectId}.supabase.co/functions/v1/make-server-b80b3260`;
+
+async function getAuthToken(): Promise<string> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token || publicAnonKey;
+}
 
 export async function checkMarketPlanAccess(userId: string): Promise<{
   hasAccess: boolean;
@@ -85,37 +94,76 @@ export async function checkMarketPlanAccess(userId: string): Promise<{
   expiresAt: string | null;
   isExpired: boolean;
 }> {
+  const token = await getAuthToken();
+  const none = { hasAccess: false, plan: null as AccessPlan, expiresAt: null, isExpired: false };
+
+  const parseRows = (rows: any[]) => {
+    const now = new Date();
+    const active = rows.find(r => {
+      if (r.status !== "active") return false;
+      if (!r.expires_at) return true;
+      return new Date(r.expires_at) > now;
+    });
+    if (!active) return none;
+    return {
+      hasAccess: true,
+      plan: active.plan as AccessPlan,
+      expiresAt: active.expires_at as string | null,
+      isExpired: false,
+    };
+  };
+
+  // 1. Через сервер (service role, минует RLS) — основной путь
+  try {
+    const res = await fetch(`${SERVER_BASE}/auth/access`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) {
+      const json = await res.json();
+      console.log("[access] server:", json);
+      if (json.success && json.hasAccess) {
+        const expiresAt = json.expiresAt ?? null;
+        const isExpired = expiresAt ? new Date(expiresAt) < new Date() : false;
+        return { hasAccess: !isExpired, plan: isExpired ? null : json.plan as AccessPlan, expiresAt, isExpired };
+      }
+      if (json.success && !json.hasAccess) return none;
+    }
+  } catch (err) {
+    console.warn("[access] server failed, trying Supabase direct:", err);
+  }
+
+  // 2. Прямой запрос — фильтр по user_id (работает если RLS разрешает)
   try {
     const { data, error } = await supabase
       .from("user_access")
       .select("plan, status, expires_at")
       .eq("user_id", userId)
       .eq("project", "marketplan")
-      .eq("status", "active")
-      .maybeSingle();
+      .order("starts_at", { ascending: false })
+      .limit(10);
 
-    if (error) {
-      console.error("[checkMarketPlanAccess] query error:", error.message);
-      return { hasAccess: false, plan: null, expiresAt: null, isExpired: false };
-    }
-
-    if (!data) {
-      return { hasAccess: false, plan: null, expiresAt: null, isExpired: false };
-    }
-
-    const expiresAt = data.expires_at as string | null;
-    const isExpired = expiresAt ? new Date(expiresAt) < new Date() : false;
-
-    return {
-      hasAccess: !isExpired,
-      plan: isExpired ? null : (data.plan as AccessPlan),
-      expiresAt,
-      isExpired,
-    };
+    console.log("[access] direct by user_id:", { data, error: error?.message });
+    if (!error && data && data.length > 0) return parseRows(data as any[]);
   } catch (err) {
-    console.error("[checkMarketPlanAccess] unexpected error:", err);
-    return { hasAccess: false, plan: null, expiresAt: null, isExpired: false };
+    console.warn("[access] direct by user_id failed:", err);
   }
+
+  // 3. Fallback — запрос без user_id, RLS сам применит auth.uid()
+  try {
+    const { data, error } = await supabase
+      .from("user_access")
+      .select("plan, status, expires_at")
+      .eq("project", "marketplan")
+      .order("starts_at", { ascending: false })
+      .limit(10);
+
+    console.log("[access] direct by RLS only:", { data, error: error?.message });
+    if (!error && data && data.length > 0) return parseRows(data as any[]);
+  } catch (err) {
+    console.warn("[access] RLS-only query failed:", err);
+  }
+
+  return none;
 }
 
 // ─── Payment initiation ──────────────────────────────────────────────────────
@@ -230,6 +278,47 @@ export function AccessProvider({ children }: { children: ReactNode }) {
       refresh();
     }
   }, [user?.id, authLoading]);
+
+  // Realtime: слушаем изменения в user_access для текущего пользователя
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel(`user_access:${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "user_access",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          console.log("[AccessProvider] user_access changed:", payload);
+          refresh();
+        }
+      )
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          console.log("[AccessProvider] Realtime subscribed for user:", user.id);
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
+
+  // Polling как fallback: проверяем каждые 30 сек пока нет активного доступа
+  useEffect(() => {
+    if (!user || state.hasAccess) return;
+
+    const interval = setInterval(() => {
+      refresh();
+    }, 30_000);
+
+    return () => clearInterval(interval);
+  }, [user?.id, state.hasAccess]);
 
   return (
     <StableAccessContext.Provider value={{ ...state, refresh }}>

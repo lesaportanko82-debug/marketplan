@@ -211,7 +211,7 @@ function PlanBadge({ collapsed }: { collapsed: boolean }) {
       <div className={`${collapsed ? "px-2" : "px-3"} py-2`}>
         <Tooltip text="Выбрать тариф" show={collapsed}>
           <button
-            onClick={() => navigate("/app/pricing")}
+            onClick={() => startTransition(() => navigate("/app/pricing"))}
             className={`w-full flex items-center rounded-lg transition-all duration-150 ${
               collapsed ? "justify-center p-2" : "gap-2.5 px-2.5 py-[7px]"
             }`}
@@ -238,7 +238,7 @@ function PlanBadge({ collapsed }: { collapsed: boolean }) {
       <div className="px-2 py-2">
         <Tooltip text={`${cfg.label} · ${daysLeft !== null ? `${daysLeft} дн.` : ""}`} show={true}>
           <button
-            onClick={() => navigate("/app/pricing")}
+            onClick={() => startTransition(() => navigate("/app/pricing"))}
             className="w-full flex items-center justify-center p-1.5 rounded-lg transition-all"
             onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
@@ -258,7 +258,7 @@ function PlanBadge({ collapsed }: { collapsed: boolean }) {
   return (
     <div className="px-3 py-2">
       <button
-        onClick={() => navigate("/app/pricing")}
+        onClick={() => startTransition(() => navigate("/app/pricing"))}
         className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all text-left"
         onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; }}
         onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
@@ -706,7 +706,7 @@ export function Layout() {
             {/* Settings */}
             <Tooltip text="Настройки" show={sidebarCollapsed && !isMobile}>
               <button
-                onClick={() => navigate("/app/settings")}
+                onClick={() => startTransition(() => navigate("/app/settings"))}
                 className={`w-full flex items-center rounded-lg transition-all duration-150 ${
                   sidebarCollapsed && !isMobile ? "justify-center p-2" : "gap-2.5 px-2.5 py-[7px]"
                 }`}
@@ -749,7 +749,7 @@ export function Layout() {
           <div className={`${sidebarCollapsed && !isMobile ? "px-2" : "px-3"} py-3`} ref={userMenuRef}>
             <Tooltip text={user?.name || "Профиль"} show={sidebarCollapsed && !isMobile}>
               <button
-                onClick={() => (sidebarCollapsed && !isMobile) ? navigate("/app/profile") : setUserMenuOpen(!userMenuOpen)}
+                onClick={() => (sidebarCollapsed && !isMobile) ? startTransition(() => navigate("/app/profile")) : setUserMenuOpen(!userMenuOpen)}
                 className={`w-full flex items-center rounded-xl transition-all duration-150 ${
                   sidebarCollapsed && !isMobile ? "justify-center p-2" : "gap-2.5 px-2.5 py-2"
                 }`}
@@ -794,7 +794,7 @@ export function Layout() {
                 }}
               >
                 <button
-                  onClick={() => { navigate("/app/profile"); setUserMenuOpen(false); }}
+                  onClick={() => { startTransition(() => navigate("/app/profile")); setUserMenuOpen(false); }}
                   className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[12px] transition-colors"
                   style={{ color: "var(--sidebar-text-muted)" }}
                   onMouseEnter={e => { e.currentTarget.style.background = "var(--sidebar-hover)"; e.currentTarget.style.color = "var(--sidebar-text)"; }}
@@ -929,7 +929,7 @@ export function Layout() {
               <HelpCircle className="w-4 h-4" />
             </button>
             <button
-              onClick={() => navigate("/app/profile")}
+              onClick={() => startTransition(() => navigate("/app/profile"))}
               title={user?.name || user?.email || "Профиль"}
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-medium ml-2 cursor-pointer hover:ring-2 hover:ring-[#d4a373]/40 transition-all"
               style={{
@@ -950,7 +950,7 @@ export function Layout() {
             <span className="text-amber-600 font-semibold">Режим просмотра</span>
             <span className="text-muted-foreground hidden sm:inline">Кнопки неактивны - выберите тариф для полного доступа</span>
             <button
-              onClick={() => navigate("/app/pricing")}
+              onClick={() => startTransition(() => navigate("/app/pricing"))}
               className="ml-auto shrink-0 px-3 py-1 rounded-lg text-white text-[11px] font-semibold hover:opacity-90 transition-opacity"
               style={{ background: "linear-gradient(135deg, #d4a373, #c08a40)" }}
             >
@@ -976,27 +976,25 @@ export function Layout() {
         )}
 
         <main
-          className="flex-1 overflow-y-auto overflow-x-hidden relative"
+          className="flex-1 overflow-y-auto overflow-x-hidden"
           ref={mainContentRef}
           style={{ overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" as any }}
+          // В preview-режиме клики по контенту (который pointer-events:none) всплывают сюда
+          onClick={isPreview && location.pathname !== "/app/pricing"
+            ? () => { setUpsellIsAI(false); setShowUpsell(true); }
+            : undefined}
         >
-          {/* Preview overlay: перехватывает клики, показывает попап */}
-          {isPreview && (
-            <div
-              className="absolute inset-0 z-10 cursor-not-allowed"
-              style={{ background: "transparent" }}
-              onClick={() => { setUpsellIsAI(false); setShowUpsell(true); }}
-            />
-          )}
-
-          {/* AI gate overlay для тарифа Старт */}
+          {/* AI gate overlay для тарифа Старт на AI-страницах */}
           {isAIBlocked && (
             <div
-              className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4"
-              style={{ background: "rgba(var(--background), 0.85)", backdropFilter: "blur(6px)" }}
+              className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-4"
+              style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(6px)" }}
               onClick={() => { setUpsellIsAI(true); setShowUpsell(true); }}
             >
-              <div className="text-center space-y-3 max-w-sm px-6">
+              <div
+                className="bg-card border border-border rounded-2xl p-8 text-center space-y-4 max-w-sm mx-4 shadow-2xl"
+                onClick={e => e.stopPropagation()}
+              >
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto"
                   style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}>
                   <Crown className="w-7 h-7 text-white" />
@@ -1006,8 +1004,8 @@ export function Layout() {
                   AI-инструменты доступны с тарифом Про или Про+. Весь функционал за 700 ₽/мес.
                 </p>
                 <button
-                  onClick={e => { e.stopPropagation(); setUpsellIsAI(true); setShowUpsell(true); }}
-                  className="px-5 py-2.5 rounded-xl text-white text-[13px] font-semibold hover:opacity-90 transition-opacity shadow-md"
+                  onClick={() => { setUpsellIsAI(true); setShowUpsell(true); }}
+                  className="w-full px-5 py-2.5 rounded-xl text-white text-[13px] font-semibold hover:opacity-90 transition-opacity shadow-md"
                   style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}
                 >
                   Перейти на Про
@@ -1016,8 +1014,10 @@ export function Layout() {
             </div>
           )}
 
-          {/* Content — pointer-events disabled in preview mode */}
-          <div style={{ pointerEvents: isPreview ? "none" : "auto" }}>
+          {/* Content — pointer-events:none в preview (кроме страницы тарифов) */}
+          <div style={{
+            pointerEvents: (isPreview && location.pathname !== "/app/pricing") ? "none" : "auto"
+          }}>
             <PageTransition key={location.pathname}>
               <ErrorBoundary>
                 <Suspense fallback={
