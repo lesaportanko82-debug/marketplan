@@ -3,6 +3,7 @@ import { createBrowserRouter, redirect } from "react-router";
 import { Layout } from "./components/Layout";
 import { ProjectsList } from "./components/ProjectsList";
 import { NotFound } from "./components/NotFound";
+import { AdminPage } from "./components/AdminPage";
 import { OnboardingPage } from "./components/OnboardingPage";
 
 // Lazy loaded components for better performance
@@ -165,6 +166,10 @@ export const router = createBrowserRouter([
   {
     path: "/onboarding",
     loader: () => redirect("/"),
+  },
+  {
+    path: "/admin",
+    Component: AdminPage,
   },
   {
     path: "/app",

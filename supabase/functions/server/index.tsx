@@ -5,6 +5,7 @@ import * as kv from "./kv_store.tsx";
 import { sendWebhook } from "./webhook.tsx";
 import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
 import * as usageLimits from "./usage_limits.tsx";
+import { registerAdminRoutes } from "./admin.tsx";
 
 const app = new Hono();
 
@@ -81,7 +82,7 @@ app.use(
   "/*",
   cors({
     origin: "*",
-    allowHeaders: ["Content-Type", "Authorization"],
+    allowHeaders: ["Content-Type", "Authorization", "X-Admin-Password"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     exposeHeaders: ["Content-Length"],
     maxAge: 600,
@@ -103,6 +104,9 @@ async function appendActivityLog(entry: { type: string; action: string; details?
     console.log(`appendActivityLog error (non-critical): ${e}`);
   }
 }
+
+// Admin panel routes (/admin/*, protected by ADMIN_PASSWORD)
+registerAdminRoutes(app);
 
 // Health check endpoint
 app.get("/make-server-b80b3260/health", (c) => {
