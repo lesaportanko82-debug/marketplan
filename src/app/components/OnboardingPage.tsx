@@ -159,7 +159,7 @@ export function OnboardingPage() {
   const { loadingPlan, pendingPlanId, setPendingPlanId, pay, payPending } = usePayment();
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // После успешного входа — автоматически запустить отложенный платёж
+  // После успешного входа — автоматически отправить отложенную заявку
   useEffect(() => {
     if (user && pendingPlanId && !showAuthModal) {
       payPending(user.id, user.email);
@@ -487,7 +487,7 @@ export function OnboardingPage() {
                         }
                       >
                         {loadingPlan === plan.id && <Loader2 className="w-4 h-4 animate-spin" />}
-                        {loadingPlan === plan.id ? "Создаём платёж..." : plan.cta}
+                        {loadingPlan === plan.id ? "Отправляем заявку..." : plan.cta}
                       </button>
                     )}
                   </div>

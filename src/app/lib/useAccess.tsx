@@ -166,43 +166,6 @@ export async function checkMarketPlanAccess(userId: string): Promise<{
   return none;
 }
 
-// ─── Payment initiation ──────────────────────────────────────────────────────
-
-const PAYMENT_URL =
-  `https://${projectId}.supabase.co/functions/v1/create-payment-marketplan`;
-
-export async function initiatePayment(
-  userId: string,
-  email: string,
-  plan: string
-): Promise<{ confirmationUrl: string; paymentId: string }> {
-  const res = await fetch(PAYMENT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, email, plan }),
-  });
-
-  let json: any;
-  try {
-    json = await res.json();
-  } catch {
-    throw new Error(`Ошибка сервера (${res.status})`);
-  }
-
-  if (!res.ok || !json.success) {
-    throw new Error(json.error || `Ошибка создания платежа (${res.status})`);
-  }
-
-  const confirmationUrl: string =
-    json.confirmationUrl ?? json.data?.confirmationUrl ?? json.data?.confirmation_url;
-
-  if (!confirmationUrl) {
-    throw new Error("Сервер не вернул ссылку на оплату");
-  }
-
-  return { confirmationUrl, paymentId: json.paymentId ?? json.data?.paymentId ?? "" };
-}
-
 // ─── Context ─────────────────────────────────────────────────────────────────
 
 const AccessContext = createContext<AccessState | null>(null);
