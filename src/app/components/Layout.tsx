@@ -1,3 +1,5 @@
+import { seedDemoIfNeeded } from "../lib/demoSeed";
+import { getAuthToken } from "../lib/api";
 import { useState, useEffect, useRef, useCallback, Suspense, startTransition } from "react";
 import { useNavigate, useLocation, Outlet } from "react-router";
 import { useTheme } from "next-themes";
@@ -308,6 +310,23 @@ export function Layout() {
   const mainContentRef = useRef<HTMLElement>(null);
   const { user, loading, hasAccess, signOut } = useAuth();
   const { plan: userPlan, loading: accessLoading } = useAccess();
+
+  // Демо-проект для нового аккаунта: один раз, до показа разделов
+  const [demoReady, setDemoReady] = useState(() => !!sessionStorage.getItem("mp_demo_checked"));
+  useEffect(() => {
+    if (!user || demoReady) return;
+    let cancelled = false;
+    (async () => {
+      for (let i = 0; i < 30 && !getAuthToken(); i++) await new Promise((r) => setTimeout(r, 100));
+      if (getAuthToken()) {
+        const created = await seedDemoIfNeeded();
+        if (created && !cancelled) toast.success("Добавили демо-проект — посмотрите, как всё устроено. Его можно удалить.", { duration: 6000 });
+      }
+      sessionStorage.setItem("mp_demo_checked", "1");
+      if (!cancelled) setDemoReady(true);
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id, demoReady]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
@@ -1026,7 +1045,11 @@ export function Layout() {
                     <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   </div>
                 }>
-                  <Outlet />
+                  {user && !demoReady ? (
+                    <div className="flex items-center justify-center h-64">
+                      <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  ) : <Outlet />}
                 </Suspense>
               </ErrorBoundary>
             </PageTransition>
