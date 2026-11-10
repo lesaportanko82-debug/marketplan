@@ -64,7 +64,7 @@ export function CustomerJourneyMap() {
   const [editingTP, setEditingTP] = useState<{ stageId: string; tp: Touchpoint } | null>(null);
   const [addingToStage, setAddingToStage] = useState<string | null>(null);
 
-  const currentMap = maps.find((m) => m.id === selectedMap);
+  const currentMap = maps.find((m) => m.id === selectedMap) ?? (selectedMap === null ? maps[0] : undefined);
 
   const saveMap = useCallback(
     (updated: JourneyMap) => {
@@ -215,7 +215,7 @@ export function CustomerJourneyMap() {
               key={m.id}
               onClick={() => setSelectedMap(m.id)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] border transition-colors group ${
-                selectedMap === m.id
+                currentMap?.id === m.id
                   ? "bg-[#d4a373]/10 text-[#d4a373] border-[#d4a373]/30 font-medium"
                   : "bg-card text-muted-foreground border-border hover:border-[#d4a373]/20"
               }`}
@@ -240,9 +240,9 @@ export function CustomerJourneyMap() {
       {/* Journey Map visualization */}
       {currentMap ? (
         <div className="overflow-x-auto">
-          <div className="flex gap-3 min-w-[1200px] pb-4">
+          <div className="flex gap-3 w-max sm:w-auto sm:min-w-[1200px] pb-4 snap-x snap-mandatory sm:snap-none">
             {currentMap.stages.map((stage, idx) => (
-              <div key={stage.id} className="flex-1 min-w-[190px] flex flex-col">
+              <div key={stage.id} className="w-[78vw] max-w-[300px] shrink-0 snap-start sm:w-auto sm:max-w-none sm:shrink sm:flex-1 sm:min-w-[190px] flex flex-col">
                 {/* Stage header */}
                 <div
                   className="rounded-t-xl p-3 text-center border border-b-0"

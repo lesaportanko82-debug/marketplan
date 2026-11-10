@@ -44,7 +44,7 @@ type ViewMode = "month" | "week";
 /* ========== COMPONENT ========== */
 export function MarketingCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState<ViewMode>("month");
+  const [viewMode, setViewMode] = useState<ViewMode>(() => (typeof window !== "undefined" && window.innerWidth < 640 ? "week" : "month"));
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [search, setSearch] = useState("");
   const [visibleModules, setVisibleModules] = useState<Set<ModuleType>>(
@@ -422,7 +422,7 @@ export function MarketingCalendar() {
         </button>
         <h2 className="text-[16px] font-semibold text-foreground">
           {viewMode === "month"
-            ? format(currentDate, "LLLL yyyy", { locale: ru })
+            ? (() => { const t = format(currentDate, "LLLL yyyy", { locale: ru }); return t.charAt(0).toUpperCase() + t.slice(1); })()
             : `${format(startOfWeek(currentDate, { weekStartsOn: 1 }), "d MMM", { locale: ru })} - ${format(endOfWeek(currentDate, { weekStartsOn: 1 }), "d MMM yyyy", { locale: ru })}`
           }
         </h2>
@@ -431,8 +431,43 @@ export function MarketingCalendar() {
         </button>
       </div>
 
+      {/* Телефон, неделя: список дней вместо узкой сетки */}
+      {viewMode === "week" && (
+        <div className="sm:hidden bg-card border border-border rounded-xl divide-y divide-border">
+          {calendarDays.map((day, idx) => {
+            const dayEvents = eventsForDay(day);
+            const _isToday = isToday(day);
+            return (
+              <div key={idx} className="p-3" onClick={() => setSelectedDay(day)}>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className={`text-[13px] font-semibold ${_isToday ? "text-[#c0854a]" : "text-foreground"}`}>
+                    {format(day, "EEEE, d MMMM", { locale: ru }).replace(/^./, (c) => c.toUpperCase())}
+                  </span>
+                  {_isToday && <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#c0854a]/10 text-[#c0854a]">сегодня</span>}
+                </div>
+                {dayEvents.length === 0 ? (
+                  <p className="text-[12px] text-muted-foreground">Нет событий</p>
+                ) : (
+                  <div className="space-y-1">
+                    {dayEvents.map((evt) => {
+                      const cfg = MODULE_CONFIG[evt.module];
+                      return (
+                        <div key={evt.id} className={`flex items-center gap-1.5 text-[12px] px-2 py-1.5 rounded-md border ${cfg.bg} ${cfg.color}`}>
+                          <cfg.icon className="w-3 h-3 shrink-0" />
+                          <span className="truncate">{evt.title}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {/* Calendar Grid */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className={`bg-card border border-border rounded-xl overflow-hidden ${viewMode === "week" ? "hidden sm:block" : ""}`}>
         {/* Weekday header */}
         <div className="grid grid-cols-7 border-b border-border">
           {WEEKDAYS.map((d) => (

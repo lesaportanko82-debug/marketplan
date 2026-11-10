@@ -281,18 +281,17 @@ export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
               scale: { type: "spring", damping: 14, stiffness: 260 },
             }}
             onClick={() => setIsOpen(true)}
-            className="fixed z-50 w-[56px] h-[56px] rounded-full flex items-center justify-center shadow-xl cursor-pointer group"
+            className={`fixed z-50 ${isMobile ? "w-[46px] h-[46px]" : "w-[52px] h-[52px]"} rounded-full flex items-center justify-center cursor-pointer group border border-border bg-card`}
             style={{
-              background: "linear-gradient(145deg, #fdf6ee 0%, #f5e6d3 50%, #d4a373 100%)",
-              boxShadow: "0 4px 24px rgba(212,163,115,0.45), 0 0 0 3px rgba(212,163,115,0.12)",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
               bottom: isMobile ? "calc(72px + env(safe-area-inset-bottom))" : "24px",
               right: isMobile ? "16px" : "24px",
             }}
-            title="Марк - AI Ассистент (Ctrl+J)"
+            title="Марк — помощник (Ctrl+J)"
           >
             {/* Mascot in FAB */}
             <div className="relative">
-              <Mascot emotion={moodEmotion} size={40} animate={false} />
+              <Mascot emotion={moodEmotion} size={isMobile ? 32 : 36} animate={false} />
               {/* Online indicator */}
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#f5e6d3]" />
               {/* Seasonal costume badge */}

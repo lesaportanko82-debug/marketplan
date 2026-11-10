@@ -1,3 +1,4 @@
+import { useAuth } from "../lib/useAuth";
 import { useState, useEffect } from "react";
 import {
   Settings, User, Bell, Save, Loader2,
@@ -27,10 +28,10 @@ interface UserSettings {
 }
 
 const defaultSettings: UserSettings = {
-  name: "Маркетолог",
-  email: "marketer@company.com",
-  company: "MarketPlan Inc.",
-  role: "Head of Marketing",
+  name: "",
+  email: "",
+  company: "",
+  role: "",
   notifications: {
     email: true,
     push: true,
@@ -40,6 +41,7 @@ const defaultSettings: UserSettings = {
 };
 
 export function SettingsPage() {
+  const { user } = useAuth();
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,9 +54,10 @@ export function SettingsPage() {
   useEffect(() => {
     getData<UserSettings>("user_settings").then((saved) => {
       if (saved) setSettings(saved);
+      else setSettings((s) => ({ ...s, name: user?.name || "", email: user?.email || "" }));
       setIsLoading(false);
     });
-  }, []);
+  }, [user?.email]);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -206,12 +209,12 @@ export function SettingsPage() {
               </div>
               <button
                 onClick={() => updateNotification(item.key)}
-                className={`w-10 h-5.5 rounded-full transition-colors relative ${
+                className={`shrink-0 w-10 h-[22px] rounded-full transition-colors relative ${
                   settings.notifications[item.key] ? "bg-primary" : "bg-muted"
                 }`}
               >
                 <span
-                  className={`absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white transition-transform shadow-sm ${
+                  className={`absolute top-[2px] left-0 w-[18px] h-[18px] rounded-full bg-white transition-transform shadow-sm ${
                     settings.notifications[item.key]
                       ? "translate-x-5"
                       : "translate-x-0.5"
@@ -243,9 +246,9 @@ export function SettingsPage() {
             </div>
             <button
               onClick={() => { const next = !soundOn; setSoundOn(next); setSoundEnabled(next); toast.success(next ? "Звуки включены" : "Звуки выключены"); }}
-              className={`w-10 h-5.5 rounded-full transition-colors relative ${soundOn ? "bg-primary" : "bg-muted"}`}
+              className={`shrink-0 w-10 h-[22px] rounded-full transition-colors relative ${soundOn ? "bg-primary" : "bg-muted"}`}
             >
-              <span className={`absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white transition-transform shadow-sm ${soundOn ? "translate-x-5" : "translate-x-0.5"}`} />
+              <span className={`absolute top-[2px] left-0 w-[18px] h-[18px] rounded-full bg-white transition-transform shadow-sm ${soundOn ? "translate-x-5" : "translate-x-0.5"}`} />
             </button>
           </div>
           <div className="flex items-start sm:items-center justify-between gap-3">

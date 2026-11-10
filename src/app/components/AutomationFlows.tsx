@@ -436,7 +436,7 @@ export function AutomationFlows() {
         {/* Right: Flow editor */}
         <div className="lg:col-span-2">
           {!activeFlow ? (
-            <div className="bg-card border border-border rounded-xl p-10 flex flex-col items-center justify-center text-center h-full min-h-[400px]">
+            <div className="hidden lg:flex bg-card border border-border rounded-xl p-10 flex-col items-center justify-center text-center h-full min-h-[400px]">
               <Workflow className="w-14 h-14 text-muted-foreground/20 mb-3" />
               <p className="text-[15px] font-medium text-muted-foreground">Выберите автоматизацию</p>
               <p className="text-[12px] text-muted-foreground/60 mt-1">Или создайте новую из шаблона</p>

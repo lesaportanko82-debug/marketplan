@@ -34,7 +34,7 @@ import { toast } from "sonner";
 const PROJECTS_KEY = "projects:list";
 
 const tabs = [
-  { id: "summary", label: "Саммари", icon: Info },
+  { id: "summary", label: "Обзор", icon: Info },
   { id: "metrics", label: "Метрики", icon: BarChart3 },
   { id: "campaigns", label: "Кампании", icon: Megaphone },
   { id: "audience", label: "Аудитория", icon: Users },
@@ -162,20 +162,19 @@ export function ProjectDetail() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-0.5 mt-3 -mb-3 overflow-x-auto scrollbar-none">
+          <div className="flex gap-1 mt-3 -mb-3 overflow-x-auto scrollbar-none -mx-1 px-1">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3 py-2 border-b-2 transition-colors whitespace-nowrap text-[13px] ${
+                className={`shrink-0 flex items-center gap-1.5 px-3 py-2 border-b-2 transition-colors whitespace-nowrap text-[13px] ${
                   activeTab === tab.id
                     ? "border-primary text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <tab.icon className="w-3.5 h-3.5 shrink-0" />
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className="sm:hidden">{tab.label.slice(0, 6)}</span>
+                <span>{tab.label}</span>
               </button>
             ))}
           </div>

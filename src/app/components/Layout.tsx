@@ -951,7 +951,7 @@ export function Layout() {
             <button
               onClick={() => startTransition(() => navigate("/app/profile"))}
               title={user?.name || user?.email || "Профиль"}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-medium ml-2 cursor-pointer hover:ring-2 hover:ring-[#d4a373]/40 transition-all"
+              className="w-8 h-8 min-w-8 min-h-8 max-h-8 shrink-0 aspect-square rounded-full flex items-center justify-center text-white text-[11px] font-medium ml-2 cursor-pointer hover:ring-2 hover:ring-[#d4a373]/40 transition-all"
               style={{
                 background: "#c0854a",
               }}

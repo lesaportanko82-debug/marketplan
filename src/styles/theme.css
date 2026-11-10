@@ -278,15 +278,12 @@
       width: 100%;
     }
 
-    /* All flex/grid containers must not overflow their parent */
     * {
-      min-width: 0;
       box-sizing: border-box;
     }
 
-    /* Larger touch targets */
+    /* Отклик на касание без задержки (размер кнопок задаётся в самих компонентах) */
     button, [role="button"], a {
-      min-height: 44px;
       touch-action: manipulation;
     }
 

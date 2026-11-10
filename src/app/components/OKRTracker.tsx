@@ -230,7 +230,7 @@ export function OKRTracker() {
             </div>
             <span className="text-[12px] font-medium text-foreground">{overallProgress}%</span>
           </div>
-          <span className="text-[12px] text-muted-foreground">{filtered.length} целей</span>
+          <span className="text-[12px] text-muted-foreground">{filtered.length} {ruPlural(filtered.length, "цель", "цели", "целей")}</span>
         </div>
       </div>
 
@@ -244,7 +244,7 @@ export function OKRTracker() {
             <div key={obj.id} className="bg-card border border-border rounded-xl overflow-hidden">
               {/* Objective header */}
               <div
-                className="flex items-center gap-3 p-4 cursor-pointer hover:bg-muted/30 transition-colors"
+                className="flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-2 p-4 cursor-pointer hover:bg-muted/30 transition-colors"
                 onClick={() => setExpandedOKR(isExpanded ? null : obj.id)}
               >
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" /> : <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />}
@@ -259,9 +259,9 @@ export function OKRTracker() {
                     <p className="text-[12px] text-muted-foreground mt-0.5 line-clamp-1">{obj.description}</p>
                   )}
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  <div className="flex items-center gap-2">
-                    <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
+                <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto pl-7 sm:pl-0">
+                  <div className="flex items-center gap-2 flex-1 sm:flex-none">
+                    <div className="flex-1 sm:flex-none sm:w-20 h-2 bg-muted rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all"
                         style={{
@@ -461,4 +461,11 @@ function AddOKRModal({ quarter, onSave, onClose }: { quarter: string; onSave: (o
       </div>
     </div>
   );
+}
+
+function ruPlural(n: number, one: string, few: string, many: string) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
 }
