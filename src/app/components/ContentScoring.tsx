@@ -312,7 +312,7 @@ ${text.slice(0, 3000)}
               <EmptyState
                 title="История пуста"
                 description="Оценённые контенты появятся здесь"
-                emotion="curious"
+                emotion="think"
                 compact
               />
             )}

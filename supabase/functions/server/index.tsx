@@ -62,6 +62,17 @@ async function resolveWsPrefix(authHeader: string | undefined): Promise<{ prefix
   return { prefix: "mp:", userId: null };
 }
 
+// Helper: authenticated user + workspace KV prefix (null if not signed in)
+async function requireWs(authHeader: string | undefined): Promise<{ user: { id: string; email: string }; wsId: string; prefix: string; role: string } | null> {
+  const user = await getUserFromToken(authHeader);
+  if (!user) return null;
+  const membership = await kv.get(`mp:user_workspace:${user.id}`) as any;
+  const wsId = membership?.workspaceId || user.id;
+  return { user, wsId, prefix: `mp:ws:${wsId}:`, role: membership?.role || "owner" };
+}
+
+const UNAUTH = { success: false, error: "Not authenticated" };
+
 // Enable logger
 app.use("*", logger(console.log));
 
@@ -102,72 +113,56 @@ app.get("/make-server-b80b3260/health", (c) => {
 // KV Data Persistence Routes
 // ============================================
 
-// GET data by key
+// Legacy data routes: now always scoped to the signed-in user's workspace.
+// Without a session nothing is read or written (previously any visitor could read/write any key).
 app.get("/make-server-b80b3260/data/:key", async (c) => {
   try {
-    const key = c.req.param("key");
-    const value = await kv.get(`mp:${key}`);
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json({ success: true, data: null });
+    const value = await kv.get(`${ws.prefix}${c.req.param("key")}`);
     return c.json({ success: true, data: value });
   } catch (error) {
     console.log(`Error getting data: ${error}`);
-    return c.json(
-      { success: false, error: `Failed to get data: ${error}` },
-      500
-    );
+    return c.json({ success: false, error: `Failed to get data: ${error}` }, 500);
   }
 });
 
-// PUT data by key
 app.put("/make-server-b80b3260/data/:key", async (c) => {
   try {
-    const key = c.req.param("key");
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
+    if (ws.role === "viewer") return c.json({ success: false, error: "Viewers cannot modify data" }, 403);
     const body = await c.req.json();
-    await kv.set(`mp:${key}`, body.value);
-
-    // Webhook: notify Pipedream about data change
-    sendWebhook("data.saved", { key, preview: JSON.stringify(body.value).slice(0, 200) });
-    appendActivityLog({ type: "data", action: `Данные сохранены: ${key}`, details: { key } });
-
+    await kv.set(`${ws.prefix}${c.req.param("key")}`, body.value);
     return c.json({ success: true });
   } catch (error) {
     console.log(`Error saving data: ${error}`);
-    return c.json(
-      { success: false, error: `Failed to save data: ${error}` },
-      500
-    );
+    return c.json({ success: false, error: `Failed to save data: ${error}` }, 500);
   }
 });
 
-// DELETE data by key
 app.delete("/make-server-b80b3260/data/:key", async (c) => {
   try {
-    const key = c.req.param("key");
-    await kv.del(`mp:${key}`);
-
-    sendWebhook("data.deleted", { key });
-
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
+    if (ws.role === "viewer") return c.json({ success: false, error: "Viewers cannot delete data" }, 403);
+    await kv.del(`${ws.prefix}${c.req.param("key")}`);
     return c.json({ success: true });
   } catch (error) {
     console.log(`Error deleting data: ${error}`);
-    return c.json(
-      { success: false, error: `Failed to delete data: ${error}` },
-      500
-    );
+    return c.json({ success: false, error: `Failed to delete data: ${error}` }, 500);
   }
 });
 
-// GET data by prefix
 app.get("/make-server-b80b3260/data-prefix/:prefix", async (c) => {
   try {
-    const prefix = c.req.param("prefix");
-    const values = await kv.getByPrefix(`mp:${prefix}`);
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
+    const values = await kv.getByPrefix(`${ws.prefix}${c.req.param("prefix")}`);
     return c.json({ success: true, data: values });
   } catch (error) {
     console.log(`Error getting data by prefix: ${error}`);
-    return c.json(
-      { success: false, error: `Failed to get data by prefix: ${error}` },
-      500
-    );
+    return c.json({ success: false, error: `Failed to get data by prefix: ${error}` }, 500);
   }
 });
 
@@ -176,6 +171,7 @@ app.get("/make-server-b80b3260/data-prefix/:prefix", async (c) => {
 // ============================================
 app.post("/make-server-b80b3260/webhook/test", async (c) => {
   try {
+    if (!(await requireWs(c.req.header("Authorization")))) return c.json(UNAUTH, 401);
     const body = await c.req.json().catch(() => ({}));
     await sendWebhook("test.ping", {
       message: body.message || "Test ping from MarketPlan",
@@ -359,7 +355,9 @@ app.post("/make-server-b80b3260/ai/generate", async (c) => {
 
     // ── Server-side usage limit enforcement ──
     const usageKey = toolId === "chat-assistant" ? "aiChatPerDay" : "aiTextPerMonth";
-    const { prefix: wsPrefix } = await resolveWsPrefix(c.req.header("Authorization"));
+    const wsAuth = await requireWs(c.req.header("Authorization"));
+    if (!wsAuth) return c.json({ ...UNAUTH, error: "Войдите в аккаунт, чтобы пользоваться AI" }, 401);
+    const wsPrefix = wsAuth.prefix;
     const limitCheck = await usageLimits.canUse(wsPrefix, usageKey as usageLimits.UsageKey);
     if (!limitCheck.allowed) {
       console.log(`[USAGE LIMIT] AI generate blocked: ${usageKey}, current=${limitCheck.current}, limit=${limitCheck.limit}, wsPrefix=${wsPrefix}`);
@@ -421,7 +419,7 @@ app.post("/make-server-b80b3260/ai/generate", async (c) => {
     console.log(`[USAGE] AI generate incremented: ${usageKey}, new=${incrementResult.current}, remaining=${incrementResult.remaining}`);
 
     // Save to history
-    const historyKey = `mp:ai_history:${toolId}`;
+    const historyKey = `${wsPrefix}ai_history:${toolId}`;
     const existing = (await kv.get(historyKey)) as any[] | null;
     const history = existing || [];
     history.unshift({
@@ -470,8 +468,10 @@ app.post("/make-server-b80b3260/ai/generate", async (c) => {
 // GET AI history by tool
 app.get("/make-server-b80b3260/ai/history/:toolId", async (c) => {
   try {
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json({ success: true, data: [] });
     const toolId = c.req.param("toolId");
-    const historyKey = `mp:ai_history:${toolId}`;
+    const historyKey = `${ws.prefix}ai_history:${toolId}`;
     const history = (await kv.get(historyKey)) as any[] | null;
     return c.json({ success: true, data: history || [] });
   } catch (error) {
@@ -501,7 +501,9 @@ app.post("/make-server-b80b3260/ai/image", async (c) => {
     }
 
     // ── Server-side usage limit enforcement for DALL-E ──
-    const { prefix: wsPrefix } = await resolveWsPrefix(c.req.header("Authorization"));
+    const wsAuth = await requireWs(c.req.header("Authorization"));
+    if (!wsAuth) return c.json({ ...UNAUTH, error: "Войдите в аккаунт, чтобы пользоваться AI" }, 401);
+    const wsPrefix = wsAuth.prefix;
     const limitCheck = await usageLimits.canUse(wsPrefix, "aiImagePerMonth");
     if (!limitCheck.allowed) {
       console.log(`[USAGE LIMIT] DALL-E blocked: current=${limitCheck.current}, limit=${limitCheck.limit}, wsPrefix=${wsPrefix}`);
@@ -581,6 +583,7 @@ app.post("/make-server-b80b3260/email/send", async (c) => {
   }
 
   try {
+    if (!(await requireWs(c.req.header("Authorization")))) return c.json(UNAUTH, 401);
     const body = await c.req.json();
     const { to, subject, html, text, attachments } = body;
 
@@ -668,6 +671,7 @@ app.get("/make-server-b80b3260/ai/dalle-status", async (c) => {
 // ============================================
 app.post("/make-server-b80b3260/webhook/send", async (c) => {
   try {
+    if (!(await requireWs(c.req.header("Authorization")))) return c.json(UNAUTH, 401);
     const body = await c.req.json();
     const { event, data } = body;
 
@@ -688,7 +692,8 @@ app.post("/make-server-b80b3260/webhook/send", async (c) => {
 // ============================================
 app.get("/make-server-b80b3260/integrations/status", async (c) => {
   try {
-    const config = await kv.get("mp:integrations_config") as any;
+    const ws = await requireWs(c.req.header("Authorization"));
+    const config = ws ? await kv.get(`${ws.prefix}integrations_config`) as any : null;
     const resendKey = Deno.env.get("RESEND_API_KEY");
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
 
@@ -710,10 +715,12 @@ app.get("/make-server-b80b3260/integrations/status", async (c) => {
 
 app.put("/make-server-b80b3260/integrations/config", async (c) => {
   try {
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
     const body = await c.req.json();
-    const existing = await kv.get("mp:integrations_config") as any || {};
+    const existing = await kv.get(`${ws.prefix}integrations_config`) as any || {};
     const updated = { ...existing, ...body.value };
-    await kv.set("mp:integrations_config", updated);
+    await kv.set(`${ws.prefix}integrations_config`, updated);
 
     sendWebhook("integrations.config_updated", { keys: Object.keys(body.value) });
 
@@ -731,12 +738,14 @@ app.put("/make-server-b80b3260/integrations/config", async (c) => {
 // Save Telegram bot config (token + chat_id)
 app.put("/make-server-b80b3260/telegram/config", async (c) => {
   try {
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
     const body = await c.req.json();
     const { botToken, chatId, botUsername } = body;
     if (!botToken || !chatId) {
       return c.json({ success: false, error: "botToken and chatId are required" }, 400);
     }
-    await kv.set("mp:telegram_config", { botToken, chatId, botUsername, updatedAt: new Date().toISOString() });
+    await kv.set(`${ws.prefix}telegram_config`, { botToken, chatId, botUsername, updatedAt: new Date().toISOString() });
     sendWebhook("telegram.config_saved", { chatId });
     return c.json({ success: true });
   } catch (error) {
@@ -748,7 +757,9 @@ app.put("/make-server-b80b3260/telegram/config", async (c) => {
 // Get Telegram bot config (without exposing full token)
 app.get("/make-server-b80b3260/telegram/config", async (c) => {
   try {
-    const config = await kv.get("mp:telegram_config") as any;
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json({ success: true, data: null });
+    const config = await kv.get(`${ws.prefix}telegram_config`) as any;
     if (!config) {
       return c.json({ success: true, data: null });
     }
@@ -771,6 +782,7 @@ app.get("/make-server-b80b3260/telegram/config", async (c) => {
 // Verify Telegram bot token (calls getMe)
 app.post("/make-server-b80b3260/telegram/verify", async (c) => {
   try {
+    if (!(await requireWs(c.req.header("Authorization")))) return c.json(UNAUTH, 401);
     const body = await c.req.json();
     const { botToken } = body;
     if (!botToken) {
@@ -798,7 +810,9 @@ app.post("/make-server-b80b3260/telegram/verify", async (c) => {
 // Send a text message via Telegram bot
 app.post("/make-server-b80b3260/telegram/send-message", async (c) => {
   try {
-    const config = await kv.get("mp:telegram_config") as any;
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
+    const config = await kv.get(`${ws.prefix}telegram_config`) as any;
     if (!config?.botToken || !config?.chatId) {
       return c.json({ success: false, error: "Telegram bot not configured. Set token and chatId first." }, 400);
     }
@@ -833,7 +847,9 @@ app.post("/make-server-b80b3260/telegram/send-message", async (c) => {
 // Send a document (PDF as base64) via Telegram bot
 app.post("/make-server-b80b3260/telegram/send-document", async (c) => {
   try {
-    const config = await kv.get("mp:telegram_config") as any;
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
+    const config = await kv.get(`${ws.prefix}telegram_config`) as any;
     if (!config?.botToken || !config?.chatId) {
       return c.json({ success: false, error: "Telegram bot not configured. Set token and chatId first." }, 400);
     }
@@ -878,7 +894,9 @@ app.post("/make-server-b80b3260/telegram/send-document", async (c) => {
 // Delete Telegram config
 app.delete("/make-server-b80b3260/telegram/config", async (c) => {
   try {
-    await kv.del("mp:telegram_config");
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
+    await kv.del(`${ws.prefix}telegram_config`);
     return c.json({ success: true });
   } catch (error) {
     console.log(`Telegram config delete error: ${error}`);
@@ -891,6 +909,8 @@ app.delete("/make-server-b80b3260/telegram/config", async (c) => {
 // ============================================
 app.post("/make-server-b80b3260/automation/execute", async (c) => {
   try {
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
     const body = await c.req.json();
     const { flowId, flowName, nodes, connections } = body;
 
@@ -934,7 +954,7 @@ app.post("/make-server-b80b3260/automation/execute", async (c) => {
 
         // Action nodes — execute real integrations
         if (node.subtype === "send_telegram") {
-          const config = await kv.get("mp:telegram_config") as any;
+          const config = await kv.get(`${ws.prefix}telegram_config`) as any;
           if (!config?.botToken || !config?.chatId) {
             results.push({
               nodeId: node.id, subtype: node.subtype, label: node.label,
@@ -1013,7 +1033,7 @@ app.post("/make-server-b80b3260/automation/execute", async (c) => {
           });
         } else if (node.subtype === "notify") {
           // Save notification to KV
-          const notifKey = "mp:notifications";
+          const notifKey = `${ws.prefix}notifications`;
           const existing = (await kv.get(notifKey) as any[]) || [];
           existing.unshift({
             id: `notif-${Date.now()}`,
@@ -1058,7 +1078,7 @@ app.post("/make-server-b80b3260/automation/execute", async (c) => {
     }
 
     // Save execution log
-    const logKey = `mp:automation_log:${flowId}`;
+    const logKey = `${ws.prefix}automation_log:${flowId}`;
     const existingLogs = (await kv.get(logKey) as any[]) || [];
     existingLogs.unshift({
       executedAt: new Date().toISOString(),
@@ -1105,8 +1125,10 @@ app.post("/make-server-b80b3260/automation/execute", async (c) => {
 // GET automation execution log
 app.get("/make-server-b80b3260/automation/log/:flowId", async (c) => {
   try {
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json({ success: true, data: [] });
     const flowId = c.req.param("flowId");
-    const logs = (await kv.get(`mp:automation_log:${flowId}`) as any[]) || [];
+    const logs = (await kv.get(`${ws.prefix}automation_log:${flowId}`) as any[]) || [];
     return c.json({ success: true, data: logs });
   } catch (error) {
     console.log(`Automation log error: ${error}`);
@@ -1121,13 +1143,10 @@ app.get("/make-server-b80b3260/backup/export", async (c) => {
   try {
     const supabase = getAdminClient();
 
-    // Try to scope to workspace if authenticated
     const user = await getUserFromToken(c.req.header("Authorization"));
-    let likePattern = "mp:%";
-    if (user) {
-      const wsId = await getWorkspaceId(user.id);
-      likePattern = `mp:ws:${wsId}:%`;
-    }
+    if (!user) return c.json(UNAUTH, 401);
+    const wsId = await getWorkspaceId(user.id);
+    const likePattern = `mp:ws:${wsId}:%`;
 
     const { data, error } = await supabase
       .from("kv_store_b80b3260")
@@ -1153,11 +1172,24 @@ app.get("/make-server-b80b3260/backup/export", async (c) => {
 // Restore backup — bulk upsert all entries
 app.post("/make-server-b80b3260/backup/import", async (c) => {
   try {
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
+    if (ws.role === "viewer") return c.json({ success: false, error: "Viewers cannot restore backups" }, 403);
     const body = await c.req.json();
-    const entries = body.entries;
-    if (!Array.isArray(entries) || entries.length === 0) {
+    const raw = body.entries;
+    if (!Array.isArray(raw) || raw.length === 0) {
       return c.json({ success: false, error: "No entries to import" }, 400);
     }
+    // Only keys of the caller's own workspace; keys from another workspace are re-homed
+    const entries = raw
+      .filter((e: any) => typeof e?.key === "string")
+      .map((e: any) => {
+        const m = (e.key as string).match(/^mp:ws:[^:]+:(.+)$/);
+        const rel = m ? m[1] : (e.key as string).replace(/^mp:/, "");
+        return { key: `${ws.prefix}${rel}`, value: e.value };
+      })
+      .filter((e: any) => !/^mp:ws:[^:]+:(user_plan|usage_counters)$/.test(e.key));
+    if (entries.length === 0) return c.json({ success: false, error: "No entries to import" }, 400);
     const keys = entries.map((e: any) => e.key);
     const values = entries.map((e: any) => e.value);
     await kv.mset(keys, values);
@@ -1200,65 +1232,7 @@ app.post("/make-server-b80b3260/auth/signup", async (c) => {
       console.log(`createUser error for ${email}: ${errMsg}`);
 
       if (/already|exist|registered|duplicate/i.test(errMsg)) {
-        // User already exists - find them, confirm email, update password so they can sign in
-        let existingUser: any = null;
-        try {
-          let page = 1;
-          const perPage = 100;
-          while (!existingUser) {
-            const listResult = await supabase.auth.admin.listUsers({ page, perPage });
-            const users = listResult?.data?.users;
-            if (!users || users.length === 0) {
-              console.log(`listUsers page ${page}: no users returned (data=${JSON.stringify(listResult?.data)}, error=${listResult?.error?.message})`);
-              break;
-            }
-            console.log(`listUsers page ${page}: ${users.length} users, searching for ${email}`);
-            existingUser = users.find((u: any) => u.email?.toLowerCase() === email.toLowerCase());
-            if (existingUser || users.length < perPage) break;
-            page++;
-            if (page > 50) break;
-          }
-        } catch (listErr) {
-          console.log(`listUsers exception while finding existing user ${email}: ${listErr}`);
-        }
-
-        if (existingUser) {
-          // Update password, confirm email, update metadata
-          await supabase.auth.admin.updateUserById(existingUser.id, {
-            password,
-            user_metadata: { name: name || existingUser.user_metadata?.name || "" },
-            email_confirm: true,
-          });
-
-          const userId = existingUser.id;
-
-          // Ensure profile and workspace exist
-          const existingProfile = await kv.get(`mp:user_profile:${userId}`);
-          if (!existingProfile) {
-            await kv.set(`mp:user_profile:${userId}`, {
-              id: userId,
-              email,
-              name: name || "",
-              role: "owner",
-              workspaceId: userId,
-              access: "all",
-              createdAt: new Date().toISOString(),
-            });
-          }
-
-          const existingWs = await kv.get(`mp:user_workspace:${userId}`);
-          if (!existingWs) {
-            await kv.set(`mp:user_workspace:${userId}`, {
-              workspaceId: userId,
-              role: "owner",
-              access: "all",
-            });
-          }
-
-          console.log(`Existing user ${email} updated and confirmed (${userId})`);
-          return c.json({ success: true, data: { userId, email, updated: true } });
-        }
-
+        // Existing account: never change its password here (that allowed account takeover)
         return c.json({
           success: false,
           error: "Этот email уже зарегистрирован. Попробуйте войти.",
@@ -1428,47 +1402,12 @@ app.post("/make-server-b80b3260/auth/invite", async (c) => {
       const errMsg = error.message || "";
       console.log(`Invite createUser error for ${memberEmail}: ${errMsg}`);
 
-      // Handle "user already exists" — find existing user and re-use
+      // Existing account: refuse instead of resetting its password and hijacking it
       if (/already|exist|registered|duplicate/i.test(errMsg)) {
-        let existingUser: any = null;
-        try {
-          let page = 1;
-          const perPage = 100;
-          while (!existingUser) {
-            const listResult = await supabase.auth.admin.listUsers({ page, perPage });
-            const users = listResult?.data?.users;
-            if (!users || users.length === 0) break;
-            existingUser = users.find(
-              (u: any) => u.email?.toLowerCase() === memberEmail.toLowerCase()
-            );
-            if (existingUser || users.length < perPage) break;
-            page++;
-            if (page > 50) break;
-          }
-        } catch (listErr) {
-          console.log(`Invite listUsers error while looking up ${memberEmail}: ${listErr}`);
-        }
-
-        if (!existingUser) {
-          return c.json({
-            success: false,
-            error: `Пользователь с таким email существует в auth, но не найден при поиске. Попробуйте другой email.`,
-          }, 400);
-        }
-
-        // Update existing user: set new password, confirm email, update metadata
-        const { error: updateErr } = await supabase.auth.admin.updateUserById(existingUser.id, {
-          password: memberPassword,
-          user_metadata: { name, invitedBy: owner.id },
-          email_confirm: true,
-        });
-        if (updateErr) {
-          console.log(`Invite updateUserById error for ${memberEmail}: ${updateErr.message}`);
-          return c.json({ success: false, error: `Ошибка обновления пользователя: ${updateErr.message}` }, 500);
-        }
-
-        memberId = existingUser.id;
-        console.log(`Invite: re-using existing auth user ${memberEmail} (${memberId})`);
+        return c.json({
+          success: false,
+          error: "Этот email уже зарегистрирован в MarketPlan. Пригласите другой email.",
+        }, 409);
       } else {
         return c.json({ success: false, error: errMsg }, 400);
       }
@@ -1516,7 +1455,7 @@ app.post("/make-server-b80b3260/auth/invite", async (c) => {
 
     // Auto-send Telegram notification if configured
     try {
-      const tgConfig = await kv.get("mp:telegram_config") as any;
+      const tgConfig = await kv.get(`mp:ws:${owner.id}:telegram_config`) as any;
       if (tgConfig?.botToken && tgConfig?.chatId) {
         const tgText = `👤 <b>Новый участник в команде</b>\n\n` +
           `Имя: ${name}\nEmail: ${memberEmail}\n` +
@@ -1777,78 +1716,10 @@ app.post("/make-server-b80b3260/auth/migrate", async (c) => {
       });
     }
 
-    // Query all old mp: keys from the database
-    const supabase = getAdminClient();
-    const { data: rows, error } = await supabase
-      .from("kv_store_b80b3260")
-      .select("key, value")
-      .like("key", "mp:%");
-
-    if (error) throw error;
-    if (!rows || rows.length === 0) {
-      // No legacy data, mark as migrated anyway
-      await kv.set(`mp:ws:${wsId}:_migrated`, { done: true, at: new Date().toISOString(), count: 0 });
-      return c.json({ success: true, data: { migrated: 0, skipped: 0 } });
-    }
-
-    // System key prefixes to skip (not user data)
-    const SKIP_PREFIXES = [
-      "mp:user_profile:",
-      "mp:user_workspace:",
-      "mp:team:",
-      "mp:ws:",
-    ];
-
-    let migrated = 0;
-    let skipped = 0;
-    const newKeys: string[] = [];
-    const newValues: any[] = [];
-
-    for (const row of rows) {
-      const oldKey = row.key as string;
-
-      // Skip system keys
-      if (SKIP_PREFIXES.some(p => oldKey.startsWith(p))) {
-        skipped++;
-        continue;
-      }
-
-      // Extract the user-data part after "mp:"
-      // e.g. "mp:projects:list" -> "projects:list"
-      // e.g. "mp:ai_history:chat-assistant" -> "ai_history:chat-assistant"
-      const userKey = oldKey.slice(3); // remove "mp:"
-
-      // New key in workspace namespace
-      const newKey = `mp:ws:${wsId}:${userKey}`;
-
-      // Check if new key already exists (don't overwrite)
-      const existing = await kv.get(newKey);
-      if (existing !== null && existing !== undefined) {
-        skipped++;
-        continue;
-      }
-
-      newKeys.push(newKey);
-      newValues.push(row.value);
-      migrated++;
-    }
-
-    // Bulk write in batches of 20
-    const BATCH = 20;
-    for (let i = 0; i < newKeys.length; i += BATCH) {
-      const batchKeys = newKeys.slice(i, i + BATCH);
-      const batchVals = newValues.slice(i, i + BATCH);
-      await kv.mset(batchKeys, batchVals);
-    }
-
-    // Set migration flag
-    await kv.set(`mp:ws:${wsId}:_migrated`, {
-      done: true,
-      at: new Date().toISOString(),
-      count: migrated,
-      skippedCount: skipped,
-      totalLegacyKeys: rows.length,
-    });
+    // Legacy global data is no longer copied into workspaces (it mixed other users' data).
+    const migrated = 0, skipped = 0;
+    const rows: any[] = [];
+    await kv.set(`mp:ws:${wsId}:_migrated`, { done: true, at: new Date().toISOString(), count: 0 });
 
     sendWebhook("auth.migrated", { wsId, migrated, skipped, total: rows.length });
 
@@ -1952,259 +1823,6 @@ app.delete("/make-server-b80b3260/ws/data/:key", async (c) => {
 });
 
 // ============================================
-// ADMIN: System overview (protected by access code)
-// ============================================
-app.post("/make-server-b80b3260/admin/overview", async (c) => {
-  try {
-    const body = await c.req.json();
-    if (body.code !== "1234") {
-      return c.json({ success: false, error: "Invalid access code" }, 403);
-    }
-
-    const supabase = getAdminClient();
-
-    // Count all KV entries
-    const { data: allEntries, error: kvErr } = await supabase
-      .from("kv_store_b80b3260")
-      .select("key");
-    if (kvErr) throw kvErr;
-
-    const entries = allEntries || [];
-    const totalKeys = entries.length;
-
-    // Categorize keys
-    const categories: Record<string, number> = {};
-    for (const e of entries) {
-      const parts = (e.key as string).split(":");
-      const cat = parts.length >= 2 ? `${parts[0]}:${parts[1]}` : parts[0];
-      categories[cat] = (categories[cat] || 0) + 1;
-    }
-
-    // Count auth users
-    let userCount = 0;
-    try {
-      const { data: usersData } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
-      userCount = usersData?.users?.length || 0;
-    } catch { /* ignore */ }
-
-    // AI history count
-    const aiKeys = entries.filter((e: any) => (e.key as string).includes("ai_history"));
-    
-    // Workspace count
-    const wsKeys = entries.filter((e: any) => (e.key as string).includes("user_workspace"));
-
-    // Automation logs
-    const autoKeys = entries.filter((e: any) => (e.key as string).includes("automation_log"));
-
-    return c.json({
-      success: true,
-      data: {
-        totalKeys,
-        categories,
-        userCount,
-        aiHistoryKeys: aiKeys.length,
-        workspaces: wsKeys.length,
-        automationLogs: autoKeys.length,
-        timestamp: new Date().toISOString(),
-      },
-    });
-  } catch (error) {
-    console.log(`Admin overview error: ${error}`);
-    return c.json({ success: false, error: `Admin overview failed: ${error}` }, 500);
-  }
-});
-
-// ADMIN: Browse KV store entries
-app.post("/make-server-b80b3260/admin/kv-browse", async (c) => {
-  try {
-    const body = await c.req.json();
-    if (body.code !== "1234") {
-      return c.json({ success: false, error: "Invalid access code" }, 403);
-    }
-
-    const supabase = getAdminClient();
-    const prefix = body.prefix || "mp:";
-    const limit = Math.min(body.limit || 50, 200);
-    const offset = body.offset || 0;
-
-    const { data, error, count } = await supabase
-      .from("kv_store_b80b3260")
-      .select("key, value", { count: "exact" })
-      .like("key", `${prefix}%`)
-      .order("key")
-      .range(offset, offset + limit - 1);
-
-    if (error) throw error;
-
-    return c.json({
-      success: true,
-      data: {
-        entries: (data || []).map((d: any) => ({
-          key: d.key,
-          value: d.value,
-          valuePreview: JSON.stringify(d.value).slice(0, 300),
-        })),
-        total: count || 0,
-        offset,
-        limit,
-      },
-    });
-  } catch (error) {
-    console.log(`Admin KV browse error: ${error}`);
-    return c.json({ success: false, error: `KV browse failed: ${error}` }, 500);
-  }
-});
-
-// ADMIN: List auth users
-app.post("/make-server-b80b3260/admin/users", async (c) => {
-  try {
-    const body = await c.req.json();
-    if (body.code !== "1234") {
-      return c.json({ success: false, error: "Invalid access code" }, 403);
-    }
-
-    const supabase = getAdminClient();
-    const { data, error } = await supabase.auth.admin.listUsers({ page: 1, perPage: 100 });
-    if (error) throw error;
-
-    const users = (data?.users || []).map((u: any) => ({
-      id: u.id,
-      email: u.email,
-      name: u.user_metadata?.name || "",
-      createdAt: u.created_at,
-      lastSignIn: u.last_sign_in_at,
-      confirmed: !!u.email_confirmed_at,
-    }));
-
-    return c.json({ success: true, data: users });
-  } catch (error) {
-    console.log(`Admin users error: ${error}`);
-    return c.json({ success: false, error: `Admin users failed: ${error}` }, 500);
-  }
-});
-
-// ADMIN: Delete a KV entry
-app.post("/make-server-b80b3260/admin/kv-delete", async (c) => {
-  try {
-    const body = await c.req.json();
-    if (body.code !== "1234") {
-      return c.json({ success: false, error: "Invalid access code" }, 403);
-    }
-    if (!body.key) {
-      return c.json({ success: false, error: "key is required" }, 400);
-    }
-    await kv.del(body.key);
-
-    appendActivityLog({
-      type: "kv_delete",
-      action: `KV ключ удалён: ${body.key}`,
-      details: { key: body.key },
-      actor: "admin",
-    });
-
-    return c.json({ success: true });
-  } catch (error) {
-    console.log(`Admin KV delete error: ${error}`);
-    return c.json({ success: false, error: `KV delete failed: ${error}` }, 500);
-  }
-});
-
-// ADMIN: Update a KV entry value
-app.post("/make-server-b80b3260/admin/kv-update", async (c) => {
-  try {
-    const body = await c.req.json();
-    if (body.code !== "1234") {
-      return c.json({ success: false, error: "Invalid access code" }, 403);
-    }
-    if (!body.key) {
-      return c.json({ success: false, error: "key is required" }, 400);
-    }
-    await kv.set(body.key, body.value);
-
-    appendActivityLog({
-      type: "kv_edit",
-      action: `KV ключ обновлён: ${body.key}`,
-      details: { key: body.key, valuePreview: JSON.stringify(body.value).slice(0, 200) },
-      actor: "admin",
-    });
-
-    return c.json({ success: true });
-  } catch (error) {
-    console.log(`Admin KV update error: ${error}`);
-    return c.json({ success: false, error: `KV update failed: ${error}` }, 500);
-  }
-});
-
-// ADMIN: Get activity log
-app.post("/make-server-b80b3260/admin/activity-log", async (c) => {
-  try {
-    const body = await c.req.json();
-    if (body.code !== "1234") {
-      return c.json({ success: false, error: "Invalid access code" }, 403);
-    }
-
-    const logs = (await kv.get("mp:admin_activity_log") as any[]) || [];
-    const typeFilter = body.type || null;
-    const filtered = typeFilter ? logs.filter((l: any) => l.type === typeFilter) : logs;
-    const limit = Math.min(body.limit || 100, 500);
-
-    return c.json({
-      success: true,
-      data: {
-        entries: filtered.slice(0, limit),
-        total: filtered.length,
-        allTotal: logs.length,
-      },
-    });
-  } catch (error) {
-    console.log(`Admin activity log error: ${error}`);
-    return c.json({ success: false, error: `Activity log failed: ${error}` }, 500);
-  }
-});
-
-// ADMIN: Clear activity log
-app.post("/make-server-b80b3260/admin/activity-log-clear", async (c) => {
-  try {
-    const body = await c.req.json();
-    if (body.code !== "1234") {
-      return c.json({ success: false, error: "Invalid access code" }, 403);
-    }
-    await kv.set("mp:admin_activity_log", []);
-    return c.json({ success: true });
-  } catch (error) {
-    console.log(`Admin activity log clear error: ${error}`);
-    return c.json({ success: false, error: `Activity log clear failed: ${error}` }, 500);
-  }
-});
-
-// ADMIN: Delete auth user
-app.post("/make-server-b80b3260/admin/delete-user", async (c) => {
-  try {
-    const body = await c.req.json();
-    if (body.code !== "1234") {
-      return c.json({ success: false, error: "Invalid access code" }, 403);
-    }
-    if (!body.userId) {
-      return c.json({ success: false, error: "userId is required" }, 400);
-    }
-    const supabase = getAdminClient();
-    const { error } = await supabase.auth.admin.deleteUser(body.userId);
-    if (error) throw error;
-
-    // Clean up KV data for user
-    try {
-      await kv.del(`mp:user_profile:${body.userId}`);
-      await kv.del(`mp:user_workspace:${body.userId}`);
-    } catch { /* non-critical */ }
-
-    return c.json({ success: true });
-  } catch (error) {
-    console.log(`Admin delete user error: ${error}`);
-    return c.json({ success: false, error: `Delete user failed: ${error}` }, 500);
-  }
-});
-
-// ============================================
 // Usage Limits API — server-side enforcement
 // ============================================
 
@@ -2245,8 +1863,10 @@ app.post("/make-server-b80b3260/usage/increment", async (c) => {
     if (!key) {
       return c.json({ success: false, error: "key is required" }, 400);
     }
-    const { prefix: wsPrefix } = await resolveWsPrefix(c.req.header("Authorization"));
-    const result = await usageLimits.checkAndIncrement(wsPrefix, key as usageLimits.UsageKey, amount);
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
+    const wsPrefix = ws.prefix;
+    const result = await usageLimits.checkAndIncrement(wsPrefix, key as usageLimits.UsageKey, Math.max(1, Number(amount) || 1));
 
     if (!result.allowed) {
       return c.json({
@@ -2278,7 +1898,12 @@ app.post("/make-server-b80b3260/usage/decrement", async (c) => {
     if (!key) {
       return c.json({ success: false, error: "key is required" }, 400);
     }
-    const { prefix: wsPrefix } = await resolveWsPrefix(c.req.header("Authorization"));
+    if (["aiTextPerMonth", "aiImagePerMonth", "aiChatPerDay"].includes(key)) {
+      return c.json({ success: false, error: "This counter cannot be decremented" }, 400);
+    }
+    const ws = await requireWs(c.req.header("Authorization"));
+    if (!ws) return c.json(UNAUTH, 401);
+    const wsPrefix = ws.prefix;
     await usageLimits.decrementCounter(wsPrefix, key as usageLimits.UsageKey, amount);
     return c.json({ success: true });
   } catch (error) {

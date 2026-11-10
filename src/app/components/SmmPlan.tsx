@@ -738,7 +738,7 @@ ${form.goals ? `Цель: ${form.goals}` : ""}
       if (res) {
         set("caption", res.content);
         toast.success("Подпись сгенерирована");
-        showMascotReaction("ai_generate", "Текст готов!");
+        showMascotReaction("ai_done", "Текст готов!");
         // Pick a random contextual tip from Марк
         const tips = [
           "Попробуй добавить вопрос в конце - это повысит ER!",

@@ -356,6 +356,7 @@ export interface IntegrationsStatus {
   pipedream: { connected: boolean; url?: string };
   notion: { connected: boolean; config?: any };
   amplitude: { connected: boolean; config?: any };
+  googleSheets?: { connected: boolean; config?: any };
 }
 
 export async function getIntegrationsStatus(): Promise<IntegrationsStatus | null> {

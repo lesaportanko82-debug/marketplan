@@ -6,9 +6,10 @@
  * All costly operations (AI text, DALL-E, etc.) MUST be gated here.
  */
 import * as kv from "./kv_store.tsx";
+import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
 
 /* ═══ Plan types ═══ */
-export type PlanId = "demo" | "light" | "medium";
+export type PlanId = "demo" | "start" | "light" | "medium";
 
 export type UsageKey =
   | "projects"
@@ -50,6 +51,20 @@ const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
     personas: 0,
     automations: 0,
     integrations: 0,
+    aiChatPerDay: 5,
+  },
+  // Тариф «Старт» (MarketPlan): без AI-инструментов, до 2 проектов
+  start: {
+    projects: 2,
+    posts: 300,
+    aiTextPerMonth: 5,
+    aiImagePerMonth: 0,
+    storageMb: 2048,
+    teamMembers: 1,
+    abTests: 3,
+    personas: 3,
+    automations: 5,
+    integrations: 2,
     aiChatPerDay: 5,
   },
   light: {
@@ -116,6 +131,8 @@ const EMPTY_COUNTERS: UsageCounters = {
   aiChatPerDay: 0,
 };
 
+const PLAN_NAMES: Record<PlanId, string> = { demo: "демо", start: "Старт", light: "Light", medium: "Про" };
+
 const MONTHLY_KEYS: UsageKey[] = ["aiTextPerMonth", "aiImagePerMonth"];
 const DAILY_KEYS: UsageKey[] = ["aiChatPerDay"];
 
@@ -141,12 +158,25 @@ const KEY_LABELS: Record<UsageKey, string> = {
 };
 
 /* ═══ Resolve plan ID for a workspace ═══ */
+// Источник истины — таблица user_access (project = "marketplan") владельца workspace.
+// «Старт» → start, «Про» / «Про+» → medium (весь функционал). Нет активного доступа → demo.
+const ACCESS_TO_PLAN: Record<string, PlanId> = { start: "start", pro: "medium", pro_plus: "medium" };
+
 export async function getWorkspacePlan(wsKvPrefix: string): Promise<PlanId> {
+  const m = wsKvPrefix.match(/^mp:ws:([^:]+):$/);
+  if (!m) return "demo";
   try {
-    const planData = await kv.get(`${wsKvPrefix}user_plan`) as { planId?: PlanId } | null;
-    if (planData?.planId && PLAN_LIMITS[planData.planId]) {
-      return planData.planId;
-    }
+    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data } = await supabase
+      .from("user_access")
+      .select("plan, status, expires_at")
+      .eq("user_id", m[1])
+      .eq("project", "marketplan")
+      .limit(5);
+    const now = new Date();
+    const active = (data || []).find((r: any) =>
+      r.status === "active" && (!r.expires_at || new Date(r.expires_at) > now));
+    if (active && ACCESS_TO_PLAN[active.plan]) return ACCESS_TO_PLAN[active.plan];
   } catch (e) {
     console.log(`[usage_limits] getWorkspacePlan error: ${e}`);
   }
@@ -224,7 +254,7 @@ export async function canUse(
       current,
       limit,
       remaining: Math.max(0, limit - current),
-      message: `Лимит ${KEY_LABELS[key]} исчерпан (${current}/${limit}). Текущий план: ${planId}. Обновите план для продолжения.`,
+      message: `Лимит ${KEY_LABELS[key]} исчерпан (${current}/${limit}). Текущий тариф: ${PLAN_NAMES[planId]}. Обновите план для продолжения.`,
     };
   }
 
@@ -264,7 +294,7 @@ export async function checkAndIncrement(
       current,
       limit,
       remaining: Math.max(0, limit - current),
-      message: `Лимит ${KEY_LABELS[key]} исчерпан (${current}/${limit}). Текущий план: ${planId}. Обновите план.`,
+      message: `Лимит ${KEY_LABELS[key]} исчерпан (${current}/${limit}). Текущий тариф: ${PLAN_NAMES[planId]}. Обновите план.`,
     };
   }
 

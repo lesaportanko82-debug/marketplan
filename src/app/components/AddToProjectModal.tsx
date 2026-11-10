@@ -18,7 +18,10 @@ export type AttachmentType =
   | "competitor"
   | "unit_model"
   | "influencer"
-  | "media_asset";
+  | "media_asset"
+  | "content-studio"
+  | "brand_voice"
+  | "hashtag_seo";
 
 export interface ProjectAttachment {
   type: AttachmentType;
@@ -35,6 +38,9 @@ const ATTACHMENT_LABELS: Record<AttachmentType, string> = {
   unit_model: "Unit-модель",
   influencer: "Инфлюенсер",
   media_asset: "Бренд-ассет",
+  "content-studio": "Контент",
+  brand_voice: "Brand Voice",
+  hashtag_seo: "Хештеги и SEO",
 };
 
 const ATTACHMENTS_KEY = (projectId: string) => `project_attachments:${projectId}`;

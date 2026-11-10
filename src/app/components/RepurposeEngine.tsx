@@ -272,7 +272,7 @@ ${formatNames.map((f, i) => `${i + 1}. ${f}`).join("\n")}
             <EmptyState
               title="История пуста"
               description="Адаптированные контенты появятся здесь после первой генерации"
-              emotion="curious"
+              emotion="think"
               compact
             />
           )}

@@ -189,7 +189,7 @@ export function DataBackup() {
 
       {/* Confirm import dialog */}
       {showConfirm && importPreview && (
-        <ModalOverlay onClose={() => { setShowConfirm(false); setImportPreview(null); }}>
+        <ModalOverlay label="Восстановление из резервной копии" onClose={() => { setShowConfirm(false); setImportPreview(null); }}>
           <ConfirmImportDialog
             importPreview={importPreview}
             importing={importing}

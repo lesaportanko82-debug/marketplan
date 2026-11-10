@@ -340,14 +340,14 @@ export function CustomerJourneyMap() {
 
       {/* Create map modal */}
       {showCreate && (
-        <ModalOverlay onClose={() => setShowCreate(false)}>
+        <ModalOverlay label="Новая карта пути клиента" onClose={() => setShowCreate(false)}>
           <CreateMapModal onCreate={createMap} onClose={() => setShowCreate(false)} />
         </ModalOverlay>
       )}
 
       {/* Add/Edit touchpoint modal */}
       {(addingToStage || editingTP) && (
-        <ModalOverlay onClose={() => { setAddingToStage(null); setEditingTP(null); }}>
+        <ModalOverlay label="Точка контакта" onClose={() => { setAddingToStage(null); setEditingTP(null); }}>
           <TouchpointModal
             existing={editingTP?.tp}
             onSave={(tp) => {

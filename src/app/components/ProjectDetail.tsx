@@ -342,20 +342,24 @@ function LinkedContent({ project, attachments }: { project: Project; attachments
   const TYPE_ICONS: Record<string, typeof Link2> = {
     ab_test: FlaskConical, smm_post: FileText, content_idea: Lightbulb,
     competitor: Swords, unit_model: Calculator, influencer: Users, media_asset: Palette,
+    "content-studio": FileText, brand_voice: Palette, hashtag_seo: Lightbulb,
   };
   const TYPE_LABELS: Record<string, string> = {
     ab_test: "A/B Тест", smm_post: "SMM Пост", content_idea: "Идея контента",
     competitor: "Конкурент", unit_model: "Unit-модель", influencer: "Инфлюенсер", media_asset: "Бренд-ассет",
+    "content-studio": "Контент", brand_voice: "Brand Voice", hashtag_seo: "Хештеги и SEO",
   };
   const TYPE_COLORS: Record<string, string> = {
     ab_test: "bg-teal-600/10 text-teal-700", smm_post: "bg-teal-500/10 text-teal-600",
     content_idea: "bg-amber-500/10 text-amber-600", competitor: "bg-red-500/10 text-red-600",
     unit_model: "bg-emerald-500/10 text-emerald-600", influencer: "bg-amber-500/10 text-amber-700",
     media_asset: "bg-teal-500/10 text-teal-600",
+    "content-studio": "bg-teal-500/10 text-teal-600", brand_voice: "bg-amber-500/10 text-amber-600", hashtag_seo: "bg-emerald-500/10 text-emerald-600",
   };
   const TYPE_ROUTES: Record<string, string> = {
     ab_test: "/ab-tests", smm_post: "/smm/plan", content_idea: "/smm/ideas",
     competitor: "/competitors", unit_model: "/unit-economics", influencer: "/influencers", media_asset: "/media",
+    "content-studio": "/content-studio", brand_voice: "/brand-voice", hashtag_seo: "/smm/hashtags",
   };
 
   const handleRemove = async (a: ProjectAttachment) => {

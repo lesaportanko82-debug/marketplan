@@ -52,6 +52,7 @@ interface TeamMember {
   email: string;
   name: string;
   role: UserRole;
+  access?: string;
   addedAt?: number;
 }
 
@@ -711,7 +712,7 @@ export function ProfilePage() {
 
       {/* Invite Modal */}
       {inviteOpen && (
-        <ModalOverlay onClose={() => setInviteOpen(false)}>
+        <ModalOverlay label="Пригласить участника" onClose={() => setInviteOpen(false)}>
           <InviteModal
             inviteSuccess={inviteSuccess}
             inviteName={inviteName}

@@ -54,15 +54,16 @@ export function AuthPages() {
       const msg = err?.message || String(err);
       if (msg.includes("Invalid login") || msg.includes("invalid") || msg.includes("credentials")) {
         // Show option to create account instead
-        toast.error(
-          (t) => (
+        const toastId = toast.error(
+          (
+
             <div className="flex flex-col gap-2">
-              <p className="font-medium">Аккаунт не найден</p>
-              <p className="text-[11px] opacity-80">Email "{email}" не зарегистрирован</p>
+              <p className="font-medium">Неверный email или пароль</p>
+              <p className="text-[11px] opacity-80">Проверьте пароль. Если аккаунта ещё нет — создайте его.</p>
               <div className="flex gap-2 mt-1">
                 <button
                   onClick={() => {
-                    toast.dismiss(t);
+                    toast.dismiss(toastId);
                     setMode("signup");
                     if (!name.trim()) setName("User");
                   }}
@@ -72,7 +73,7 @@ export function AuthPages() {
                 </button>
                 <button
                   onClick={() => {
-                    toast.dismiss(t);
+                    toast.dismiss(toastId);
                     setMode("reset");
                   }}
                   className="text-left text-[#d4a373] hover:underline text-[12px] font-medium flex items-center gap-1"
@@ -103,14 +104,7 @@ export function AuthPages() {
 
     setLoading(true);
     try {
-      // Call Supabase password reset
-      const { createClient } = await import("@supabase/supabase-js");
-      const { projectId, publicAnonKey } = await import("/utils/supabase/info");
-      const supabase = createClient(
-        `https://${projectId}.supabase.co`,
-        publicAnonKey
-      );
-      
+      const { supabase } = await import("../lib/useAuth");
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: `${window.location.origin}/reset-password`,
       });

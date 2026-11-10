@@ -386,7 +386,7 @@ export function OKRTracker() {
 
       {/* Add OKR Modal */}
       {showAdd && (
-        <ModalOverlay onClose={() => setShowAdd(false)}>
+        <ModalOverlay label="Новая цель OKR" onClose={() => setShowAdd(false)}>
           <AddOKRModal
             quarter={quarterFilter}
             onSave={addObjective}

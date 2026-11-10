@@ -42,7 +42,7 @@ export function UpsellModal({ onClose, aiOnly = false }: Props) {
           {/* Header */}
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <Mascot emotion="wink" size={52} animate={false} />
+              <Mascot emotion="wave" size={52} animate={false} />
               <div>
                 <h2 className="text-[18px] font-bold text-foreground leading-snug">
                   {aiOnly

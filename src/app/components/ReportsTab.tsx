@@ -55,7 +55,7 @@ export function ReportsTab({ project }: { project: Project }) {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
-  const generateTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const generateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleGenerate = () => {
     setIsGenerating(true);

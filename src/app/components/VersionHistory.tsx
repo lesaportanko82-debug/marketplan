@@ -115,7 +115,7 @@ function VersionPanel({
   const modalRef = useModal(onClose);
 
   return (
-    <ModalOverlay onClose={onClose}>
+    <ModalOverlay label="История версий" onClose={onClose}>
       <div
         ref={modalRef}
         className="bg-card border border-border rounded-xl w-full max-w-[520px] shadow-2xl max-h-[80vh] flex flex-col"
