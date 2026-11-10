@@ -1043,7 +1043,7 @@ export function Layout() {
           {/* Content — pointer-events:none в preview (кроме страницы тарифов) */}
           <div style={{
             pointerEvents: (isPreview && location.pathname !== "/app/pricing") ? "none" : "auto",
-            paddingBottom: isMobile ? "calc(72px + env(safe-area-inset-bottom, 0px))" : undefined,
+            paddingBottom: isMobile ? 16 : undefined,
           }}>
             <PageTransition key={location.pathname}>
               <ErrorBoundary>
