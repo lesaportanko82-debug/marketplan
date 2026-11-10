@@ -65,7 +65,6 @@ export function AuthPages() {
                   onClick={() => {
                     toast.dismiss(toastId);
                     setMode("signup");
-                    if (!name.trim()) setName("User");
                   }}
                   className="flex-1 text-left text-white bg-[#d4a373] hover:bg-[#c0854a] px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors"
                 >
@@ -157,7 +156,7 @@ export function AuthPages() {
           {/* Feature list */}
           <div className="space-y-3">
             {[
-              { emoji: "🤖", text: "6 AI-инструментов на GPT-4o-mini" },
+              { emoji: "🤖", text: "AI-инструменты для контента и аналитики" },
               { emoji: "📅", text: "Контент-план и маркетинговый календарь" },
               { emoji: "🎯", text: "OKR, персоны, CJM и конкуренты" },
               { emoji: "📊", text: "Unit-экономика и A/B тесты" },
@@ -209,19 +208,26 @@ export function AuthPages() {
             <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-start gap-3">
               <AlertCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="text-[12px] text-emerald-700 font-medium">Аккаунт не найден</p>
+                <p className="text-[12px] text-emerald-700 font-medium">Не получилось войти</p>
                 <p className="text-[11px] text-emerald-600/80 mt-0.5">
-                  Этот email ещё не зарегистрирован. Создайте новый аккаунт или используйте другой email.
+                  Проверьте email и пароль. Если аккаунта ещё нет — создайте его, если забыли пароль — сбросьте.
                 </p>
                 <button
                   onClick={() => {
                     setMode("signup");
-                    if (!name.trim()) setName("User");
                   }}
                   className="mt-2 flex items-center gap-1.5 text-[12px] text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-lg font-medium transition-colors"
                 >
                   <User className="w-3.5 h-3.5" />
                   Создать аккаунт
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setShowResetHint(false); setMode("reset"); }}
+                  className="mt-2 ml-2 inline-flex items-center gap-1.5 text-[12px] text-emerald-700 hover:underline font-medium"
+                >
+                  <KeyRound className="w-3.5 h-3.5" />
+                  Сбросить пароль
                 </button>
               </div>
             </div>
@@ -275,6 +281,15 @@ export function AuthPages() {
                     {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
+                {mode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => setMode("reset")}
+                    className="mt-1.5 text-[11px] text-muted-foreground hover:text-[#c0854a] transition-colors"
+                  >
+                    Забыли пароль?
+                  </button>
+                )}
               </div>
             )}
 

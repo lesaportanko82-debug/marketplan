@@ -227,7 +227,7 @@ export function PricingPage() {
               Наведи порядок в маркетинге
             </h1>
             <p className="text-muted-foreground text-[15px] md:text-[16px] max-w-[580px] mx-auto leading-relaxed">
-              Marketing Planer помогает структурировать задачи, видеть картину целиком и доводить идеи до результата
+              MarketPlan помогает структурировать задачи, видеть картину целиком и доводить идеи до результата
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
@@ -267,7 +267,7 @@ export function PricingPage() {
             </div>
             <div className="text-center">
               <p className="text-foreground text-[15px] md:text-[16px] font-medium leading-relaxed">
-                Marketing Planer помогает собрать всё в одну структуру и начать двигаться по понятному плану
+                MarketPlan помогает собрать всё в одну структуру и начать двигаться по понятному плану
               </p>
             </div>
           </div>

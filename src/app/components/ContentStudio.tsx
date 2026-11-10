@@ -252,7 +252,7 @@ export function ContentStudio() {
       increment("aiImagePerMonth", successCount);
       toast.success(`Сгенерировано ${successCount} из ${withPrompts.length} визуалов`);
     } else if (withPrompts.length > 0) {
-      toast.error("Не удалось сгенерировать визуалы. Проверьте настройку OpenAI API ключа.");
+      toast.error("Не удалось сгенерировать визуалы: лимит тарифа исчерпан или сервис временно недоступен.");
     }
   }, []);
 
