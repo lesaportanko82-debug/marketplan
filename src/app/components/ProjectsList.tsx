@@ -486,18 +486,18 @@ function ProjectListCard({ project, idx, onOpen, onDelete, menuOpen, onMenuToggl
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 text-[12px] text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <Megaphone className="w-3 h-3" />{project.campaigns.length} кампаний
+                <Megaphone className="w-3 h-3" />{project.campaigns.length} {ruPlural(project.campaigns.length, "кампания", "кампании", "кампаний")}
               </span>
               <span className="flex items-center gap-1.5">
-                <Activity className="w-3 h-3" />{project.metrics.length} метрик
+                <Activity className="w-3 h-3" />{project.metrics.length} {ruPlural(project.metrics.length, "метрика", "метрики", "метрик")}
               </span>
               <span className="hidden sm:flex items-center gap-1.5">
-                <Users className="w-3 h-3" />{project.audiences.length} аудиторий
+                <Users className="w-3 h-3" />{project.audiences.length} {ruPlural(project.audiences.length, "аудитория", "аудитории", "аудиторий")}
               </span>
             </div>
             <span className="text-[11px] text-muted-foreground flex items-center gap-1">
               <Calendar className="w-3 h-3" />
-              {new Date(project.endDate).toLocaleDateString("ru-RU", { day: "2-digit", month: "short", year: "2-digit" })}
+              до {new Date(project.endDate).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" }).replace(" г.", "")}
             </span>
           </div>
         </div>
