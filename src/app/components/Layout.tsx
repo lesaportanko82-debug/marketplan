@@ -945,8 +945,14 @@ export function Layout() {
               )}
             </div>
 
-            <button className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors" data-hotspot="header-help">
-              <HelpCircle className="w-4 h-4" />
+            <button
+              onClick={() => window.dispatchEvent(new Event("mp:open-chat"))}
+              className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              data-hotspot="header-help"
+              aria-label="Помощник Марк"
+              title="Помощник Марк"
+            >
+              {isMobile ? <MessageSquareQuote className="w-4 h-4" /> : <HelpCircle className="w-4 h-4" />}
             </button>
             <button
               onClick={() => startTransition(() => navigate("/app/profile"))}
@@ -1036,7 +1042,8 @@ export function Layout() {
 
           {/* Content — pointer-events:none в preview (кроме страницы тарифов) */}
           <div style={{
-            pointerEvents: (isPreview && location.pathname !== "/app/pricing") ? "none" : "auto"
+            pointerEvents: (isPreview && location.pathname !== "/app/pricing") ? "none" : "auto",
+            paddingBottom: isMobile ? "calc(72px + env(safe-area-inset-bottom, 0px))" : undefined,
           }}>
             <PageTransition key={location.pathname}>
               <ErrorBoundary>

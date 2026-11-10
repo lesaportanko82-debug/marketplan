@@ -47,7 +47,7 @@ export default function App() {
         <UsageProvider>
           <AuthGate />
           <Toaster
-            position="bottom-right"
+            position={typeof window !== "undefined" && window.innerWidth < 768 ? "top-center" : "bottom-right"}
             toastOptions={{
               style: {
                 background: "var(--card)",

@@ -72,7 +72,7 @@ export function MascotReactionsProvider() {
   }, [addReaction]);
 
   return (
-    <div className="fixed bottom-6 left-6 z-[46] flex flex-col-reverse gap-3 pointer-events-none">
+    <div className="fixed bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-6 left-4 md:left-6 z-[46] flex flex-col-reverse gap-3 pointer-events-none">
       <AnimatePresence mode="popLayout">
         {reactions.map((reaction) => {
           const isLeft = reaction.side === "left";

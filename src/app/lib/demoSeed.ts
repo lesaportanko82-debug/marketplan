@@ -4,7 +4,7 @@
  * Создаётся один раз: только если у пользователя ещё нет проектов.
  * Флаг demo_seeded не даёт создать демо повторно после удаления.
  */
-import { getData, saveData } from "./api";
+import { getData, saveData, deleteData } from "./api";
 import { clearKVCache } from "./useKV";
 
 const FLAG_KEY = "demo_seeded";
@@ -180,7 +180,13 @@ export async function seedDemoIfNeeded(): Promise<boolean> {
   }
 }
 
-const DEMO_KEYS = ["projects:list", "smm_plan:posts", "smm:content_ideas", "okr:objectives", "cjm:maps"];
+// Все списки, где могут лежать демо-записи или записи, привязанные к демо-проекту
+const LIST_KEYS = [
+  "projects:list", "smm_plan:posts", "smm:content_ideas", "okr:objectives", "cjm:maps",
+  "ab_tests:list", "campaigns:storylines", "competitor:spy_reports", "competitors:list",
+  "content:scoring_history", "fatigue:reports", "influencers:list", "personas:projects",
+  "repurpose:history", "smm:hashtags", "automation:flows", "brand:assets",
+];
 const isDemo = (x: any) => typeof x?.id === "string" && x.id.includes("-demo-");
 
 /** Есть ли у пользователя демо-данные (по проекту-примеру). */
@@ -188,16 +194,31 @@ export function hasDemoProject(projects: any[] | null | undefined): boolean {
   return Array.isArray(projects) && projects.some(isDemo);
 }
 
-/** Удаляет всё демо-наполнение, свои данные пользователя не трогает. */
+/** Удаляет демо-проект и всё, что с ним связано, во всех разделах. Свои данные пользователя не трогает. */
 export async function removeDemo(): Promise<boolean> {
   try {
-    const lists = await Promise.all(DEMO_KEYS.map((k) => getData<any[]>(k)));
+    const projects = (await getData<any[]>("projects:list")) || [];
+    const demoIds = new Set<string>(projects.filter(isDemo).map((p) => p.id));
+    const linked = (x: any) =>
+      isDemo(x) ||
+      (x && typeof x === "object" && (
+        demoIds.has(x.projectId) || demoIds.has(x.project_id) ||
+        (Array.isArray(x.projectIds) && x.projectIds.some((id: string) => demoIds.has(id)))
+      ));
+
+    const lists = await Promise.all(LIST_KEYS.map((k) => getData<any>(k)));
     const writes: Promise<boolean>[] = [];
     lists.forEach((list, i) => {
-      if (Array.isArray(list) && list.some(isDemo)) {
-        writes.push(saveData(DEMO_KEYS[i], list.filter((x) => !isDemo(x))));
+      if (Array.isArray(list) && list.some(linked)) {
+        writes.push(saveData(LIST_KEYS[i], list.filter((x) => !linked(x))));
       }
     });
+    // Данные, которые хранятся отдельно по каждому проекту
+    for (const id of demoIds) {
+      for (const k of [`metrics_tree:${id}`, `campaign_order:${id}`, `project_attachments:${id}`]) {
+        writes.push(deleteData(k).then(() => true, () => true));
+      }
+    }
     const ok = (await Promise.all(writes)).every(Boolean);
     clearKVCache();
     return ok;

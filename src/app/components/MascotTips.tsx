@@ -375,7 +375,7 @@ export function MascotTipProvider() {
   return (
     <>
       <AnimatePresence>
-        {currentTip && !dismissed && (
+        {currentTip && !dismissed && typeof window !== "undefined" && window.innerWidth >= 768 && (
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.85, rotate: 0 }}
             animate={{ opacity: 1, y: 0, scale: 1, rotate: WOBBLE_ROTATE }}

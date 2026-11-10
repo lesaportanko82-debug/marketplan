@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { type Project } from "../data/mock-data";
 import { getData } from "../lib/api";
+import { removeDemo } from "../lib/demoSeed";
 import { MetricsTab } from "./MetricsTab";
 import { CampaignsTab } from "./CampaignsTab";
 import { AudienceTab } from "./AudienceTab";
@@ -110,6 +111,23 @@ export function ProjectDetail() {
             <ArrowLeft className="w-4 h-4" />
             Назад
           </button>
+
+          {project.id.includes("-demo-") && (
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 py-2 mb-3">
+              <p className="flex-1 text-[13px] text-muted-foreground">Это демо-пример. Удалите его вместе со всеми примерами в разделах и начните со своего проекта.</p>
+              <button
+                onClick={async () => {
+                  if (!window.confirm("Удалить демо-проект и все связанные с ним данные во всех разделах? Ваши собственные данные останутся.")) return;
+                  const ok = await removeDemo();
+                  if (ok) { toast.success("Демо удалено. Создайте свой первый проект."); navigate("/app"); }
+                  else toast.error("Не получилось удалить демо. Попробуйте ещё раз.");
+                }}
+                className="shrink-0 bg-primary text-primary-foreground px-3 py-1.5 rounded-lg text-[13px] hover:opacity-90"
+              >
+                Удалить демо и начать своё
+              </button>
+            </div>
+          )}
 
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">

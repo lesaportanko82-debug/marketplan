@@ -256,6 +256,12 @@ export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
+  useEffect(() => {
+    const open = () => setIsOpen(true);
+    window.addEventListener("mp:open-chat", open);
+    return () => window.removeEventListener("mp:open-chat", open);
+  }, []);
+
   const chatW = isMobile ? "w-full" : isExpanded ? "w-[520px]" : "w-[380px]";
   const chatH = isMobile ? "h-full" : isExpanded ? "h-[600px]" : "h-[480px]";
 
@@ -269,7 +275,7 @@ export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
     <>
       {/* ═══ FAB - Mini Марк ═══ */}
       <AnimatePresence>
-        {!isOpen && (
+        {!isOpen && !isMobile && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1, rotate: FAB_WOBBLE }}
