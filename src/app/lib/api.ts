@@ -5,8 +5,20 @@ const BASE_URL = `https://${projectId}.supabase.co/functions/v1/make-server-b80b
 // Auth token management - set by useAuth when user signs in
 let _authToken: string | null = null;
 
+// Пока не известно, вошёл ли пользователь, запросы к данным ждут (иначе уходят без токена
+// и получают пустой ответ). useAuth вызывает setAuthToken после проверки сессии.
+let _authKnown = false;
+let _resolveAuth: () => void = () => {};
+const _authReady = new Promise<void>((r) => { _resolveAuth = r; });
+
 export function setAuthToken(token: string | null) {
   _authToken = token;
+  if (!_authKnown) { _authKnown = true; _resolveAuth(); }
+}
+
+async function waitForAuth() {
+  if (_authKnown) return;
+  await Promise.race([_authReady, new Promise((r) => setTimeout(r, 4000))]);
 }
 
 export function getAuthToken(): string | null {
@@ -50,6 +62,7 @@ async function fetchWithRetry(
 
 export async function getData<T = any>(key: string): Promise<T | null> {
   try {
+    await waitForAuth();
     // Use workspace-scoped route when authenticated
     const prefix = _authToken ? "ws/data" : "data";
     const res = await fetchWithRetry(
@@ -76,6 +89,7 @@ export async function getData<T = any>(key: string): Promise<T | null> {
 
 export async function saveData(key: string, value: any): Promise<boolean> {
   try {
+    await waitForAuth();
     const prefix = _authToken ? "ws/data" : "data";
     const res = await fetchWithRetry(
       `${BASE_URL}/${prefix}/${encodeURIComponent(key)}`,
@@ -104,6 +118,7 @@ export async function saveData(key: string, value: any): Promise<boolean> {
 
 export async function deleteData(key: string): Promise<boolean> {
   try {
+    await waitForAuth();
     const prefix = _authToken ? "ws/data" : "data";
     const res = await fetchWithRetry(
       `${BASE_URL}/${prefix}/${encodeURIComponent(key)}`,

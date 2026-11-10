@@ -378,8 +378,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Sync auth token with api.ts
   useEffect(() => {
+    // до окончания проверки сессии токен ещё неизвестен — не сообщаем api.ts «вход не выполнен»
+    if (state.loading && !state.accessToken) return;
     setAuthToken(state.accessToken);
-  }, [state.accessToken]);
+  }, [state.accessToken, state.loading]);
 
   // signUp creates the user and immediately signs in.
   const signUp = useCallback(async (email: string, password: string, name: string): Promise<void> => {
