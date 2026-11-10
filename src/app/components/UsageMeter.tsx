@@ -94,7 +94,7 @@ export function UsageMeter({
         </div>
         {info.isReached && showUpgrade && (
           <button
-            onClick={() => navigate("/settings")}
+            onClick={() => navigate("/app/settings")}
             className="text-[10px] font-medium hover:underline flex items-center gap-1"
             style={{ color }}
           >
@@ -141,7 +141,7 @@ export function UsageMeter({
 
       {info.isReached && showUpgrade && (
         <button
-          onClick={() => navigate("/settings")}
+          onClick={() => navigate("/app/settings")}
           className="mt-2 w-full py-1.5 rounded-lg text-[11px] font-semibold text-white transition-all hover:shadow-md"
           style={{ background: color }}
         >

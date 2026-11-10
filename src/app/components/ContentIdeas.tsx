@@ -87,7 +87,7 @@ export function ContentIdeas() {
     await saveData("smm_plan:posts", updatedPosts);
     
     toast.success(`"${idea.title}" добавлена в контент-план`, { description: "Пост создан — настройте дату и площадки" });
-    navigate("/smm/plan");
+    navigate("/app/smm/plan");
   };
 
   const filtered = ideas.filter((i) => {

@@ -138,7 +138,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   key={p.id}
                   value={p.label}
                   onSelect={() =>
-                    runCommand(() => navigate(`/project/${p.id}`))
+                    runCommand(() => navigate(`/app/project/${p.id}`))
                   }
                   className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-foreground cursor-pointer data-[selected=true]:bg-primary/8 data-[selected=true]:text-primary transition-colors"
                 >

@@ -209,6 +209,11 @@ export const router = createBrowserRouter([
       { path: "*", Component: NotFound },
     ],
   },
+  // Старые адреса без /app — перенаправляем внутрь приложения
+  {
+    path: "/project/:id",
+    loader: ({ params }) => redirect(`/app/project/${params.id}`),
+  },
   {
     path: "*",
     Component: NotFound,

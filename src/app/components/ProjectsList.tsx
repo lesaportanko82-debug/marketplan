@@ -304,7 +304,7 @@ export function ProjectsList() {
                 key={project.id}
                 project={project}
                 idx={idx}
-                onOpen={() => startTransition(() => navigate(`/project/${project.id}`))}
+                onOpen={() => startTransition(() => navigate(`/app/project/${project.id}`))}
                 onDelete={() => setDeleteConfirm(project.id)}
                 menuOpen={menuOpen === project.id}
                 onMenuToggle={() => setMenuOpen(menuOpen === project.id ? null : project.id)}
@@ -327,7 +327,7 @@ export function ProjectsList() {
                 key={project.id}
                 project={project}
                 idx={idx}
-                onOpen={() => startTransition(() => navigate(`/project/${project.id}`))}
+                onOpen={() => startTransition(() => navigate(`/app/project/${project.id}`))}
                 onDelete={() => setDeleteConfirm(project.id)}
                 menuOpen={menuOpen === project.id}
                 onMenuToggle={() => setMenuOpen(menuOpen === project.id ? null : project.id)}

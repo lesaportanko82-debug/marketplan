@@ -80,7 +80,7 @@ export function UsageLimitAlert() {
   }, []);
 
   const handleUpgrade = useCallback(() => {
-    navigate("/settings");
+    navigate("/app/settings");
   }, [navigate]);
 
   if (dismissed || alerts.length === 0) return null;

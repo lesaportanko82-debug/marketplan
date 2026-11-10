@@ -78,7 +78,7 @@ export function ProjectDetail() {
       <div className="p-4 md:p-6 flex flex-col items-center justify-center h-full">
         <p className="text-muted-foreground mb-4">Проект не найден</p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/app")}
           className="bg-primary text-primary-foreground px-4 py-2 rounded-lg"
         >
           Вернуться
@@ -104,7 +104,7 @@ export function ProjectDetail() {
       <div className="border-b border-border bg-card px-4 md:px-5 py-3">
         <div className="max-w-[1440px] mx-auto">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/app")}
             className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] mb-2 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
