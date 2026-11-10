@@ -487,7 +487,7 @@ export function OnboardingPage() {
                         }
                       >
                         {loadingPlan === plan.id && <Loader2 className="w-4 h-4 animate-spin" />}
-                        {loadingPlan === plan.id ? "Отправляем заявку..." : plan.cta}
+                        {loadingPlan === plan.id ? "Секунду..." : plan.cta}
                       </button>
                     )}
                   </div>

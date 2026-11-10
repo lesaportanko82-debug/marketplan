@@ -7,17 +7,30 @@ import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { useAuth, supabase } from "./useAuth";
 
+/** Telegram для вопросов оплаты */
+export const PAYMENT_TELEGRAM = "ohh_lessya";
+export const PAYMENT_TELEGRAM_URL = `https://t.me/${PAYMENT_TELEGRAM}`;
+
+function showPaymentContact() {
+  toast.warning("Временный сбой оплаты из-за сервера", {
+    description: `Пожалуйста, напишите нам в личные сообщения в Telegram: @${PAYMENT_TELEGRAM}. Мы подключим тариф вручную.`,
+    duration: 20000,
+    action: {
+      label: "Написать в Telegram",
+      onClick: () => window.open(PAYMENT_TELEGRAM_URL, "_blank", "noopener"),
+    },
+  });
+}
+
 async function submitPlanRequest(email: string, plan: string): Promise<void> {
   const { error } = await supabase.from("plan_requests").insert({ email, plan });
   if (error) {
     // 23505 — уже есть открытая заявка на этот тариф
     if ((error as any).code === "23505") {
-      toast.info("Заявка на этот тариф уже отправлена. Мы свяжемся с вами.");
       return;
     }
     throw new Error(error.message);
   }
-  toast.success("Заявка отправлена! Мы свяжемся с вами и подключим тариф.");
 }
 
 export function usePayment() {
@@ -28,12 +41,11 @@ export function usePayment() {
   const send = useCallback(async (email: string, planId: string): Promise<boolean> => {
     setLoadingPlan(planId);
     try {
-      await submitPlanRequest(email, planId);
+      // Заявку сохраняем для учёта, но пользователю в любом случае показываем контакт
+      await submitPlanRequest(email, planId).catch((err) =>
+        console.error("[usePayment] plan request error:", err));
+      showPaymentContact();
       return true;
-    } catch (err: any) {
-      console.error("[usePayment] plan request error:", err);
-      toast.error("Не удалось отправить заявку. Попробуйте ещё раз.");
-      return false;
     } finally {
       setLoadingPlan(null);
     }
