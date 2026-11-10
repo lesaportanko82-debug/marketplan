@@ -58,35 +58,8 @@ export default function App() {
                 borderRadius: "10px",
                 boxShadow: "0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)",
               },
-              /* Enhanced type differentiation */
-              success: {
-                style: {
-                  border: "1px solid rgba(26, 122, 109, 0.3)",
-                  background: "rgba(26, 122, 109, 0.04)",
-                },
-                icon: "✓",
-              },
-              error: {
-                style: {
-                  border: "1px solid rgba(196, 64, 64, 0.3)",
-                  background: "rgba(196, 64, 64, 0.04)",
-                },
-                icon: "✕",
-              },
-              warning: {
-                style: {
-                  border: "1px solid rgba(200, 137, 58, 0.3)",
-                  background: "rgba(200, 137, 58, 0.04)",
-                },
-                icon: "⚠",
-              },
-              loading: {
-                icon: "⏳",
-                style: {
-                  border: "1px solid var(--border)",
-                },
-              },
             }}
+            icons={{ success: "✓", error: "✕", warning: "⚠", loading: "⏳" }}
             /* Enhanced UX settings */
             closeButton
             duration={3000}

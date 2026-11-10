@@ -1,3 +1,17 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+/* Toast type accents (sonner) */
+[data-sonner-toast][data-type="success"] {
+  border-color: rgba(26, 122, 109, 0.35) !important;
+  background: color-mix(in srgb, var(--card) 94%, rgb(26, 122, 109)) !important;
+}
+[data-sonner-toast][data-type="error"] {
+  border-color: rgba(196, 64, 64, 0.35) !important;
+  background: color-mix(in srgb, var(--card) 94%, rgb(196, 64, 64)) !important;
+}
+[data-sonner-toast][data-type="warning"] {
+  border-color: rgba(200, 137, 58, 0.4) !important;
+  background: color-mix(in srgb, var(--card) 92%, rgb(200, 137, 58)) !important;
+}
