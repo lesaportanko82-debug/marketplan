@@ -81,7 +81,7 @@ export function EmptyState({
   );
 }
 
-/** Обёртка для таблиц и списков - показывает EmptyState когда data.length === 0 */
+/** Обёртка для таблиц и списков — показывает EmptyState когда data.length === 0 */
 export function WithEmptyState({
   isEmpty,
   children,

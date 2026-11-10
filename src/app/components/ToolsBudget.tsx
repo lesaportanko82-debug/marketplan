@@ -5,7 +5,7 @@ import {
   Copy,
   CheckCircle2,
   AlertCircle,
-  Sparkles,
+  Zap as Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { copyToClipboard } from "../lib/clipboard";
@@ -63,7 +63,7 @@ export function ToolsBudget() {
     <div className="p-4 sm:p-5 max-w-[1000px] mx-auto space-y-4 sm:space-y-5">
       <div>
         <h1 className="text-foreground flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center">
             <DollarSign className="w-4.5 h-4.5 text-white" />
           </div>
           Прогноз бюджета

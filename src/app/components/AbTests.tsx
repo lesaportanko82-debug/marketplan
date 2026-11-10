@@ -133,7 +133,7 @@ export function AbTests() {
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center shrink-0"><FlaskConical className="w-4 h-4 text-white" /></div>
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-teal-600 flex items-center justify-center shrink-0"><FlaskConical className="w-4 h-4 text-white" /></div>
             A/B Тесты
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1">{tests.length} экспериментов · {counts.running} активных</p>

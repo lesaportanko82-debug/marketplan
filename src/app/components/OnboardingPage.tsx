@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import {
   Check, X, Zap, Crown, Eye, ChevronRight,
-  LayoutDashboard, Target, Gauge, PlayCircle, FolderKanban, Sparkles, Loader2,
+  LayoutDashboard, Target, Gauge, PlayCircle, FolderKanban, Zap as Sparkles, Loader2,
 } from "lucide-react";
 import { Mascot } from "./Mascot";
 import { useAuth } from "../lib/useAuth";
@@ -39,7 +39,7 @@ const PLANS: Plan[] = [
     description: "Все базовые инструменты без AI",
     icon: Zap,
     color: "#d4a373",
-    gradient: "from-[#d4a373] to-[#c08a40]",
+    gradient: "from-[#d4a373] to-[#d4a373]",
     badge: "Попробовать",
     popular: true,
     features: [
@@ -61,7 +61,7 @@ const PLANS: Plan[] = [
     description: "Весь функционал в течение месяца",
     icon: Crown,
     color: "#1a7a6d",
-    gradient: "from-[#1a7a6d] to-[#0d7377]",
+    gradient: "from-[#1a7a6d] to-[#1a7a6d]",
     badge: "Лучший выбор",
     features: [
       "весь функционал платформы",
@@ -80,7 +80,7 @@ const PLANS: Plan[] = [
     description: "Весь функционал в течение 3 месяцев",
     icon: Sparkles,
     color: "#7c3aed",
-    gradient: "from-[#7c3aed] to-[#5b21b6]",
+    gradient: "from-[#7c3aed] to-[#7c3aed]",
     badge: "Выгода 600 ₽",
     features: [
       "весь функционал платформы",
@@ -118,7 +118,7 @@ const FEATURES = [
   {
     icon: Zap,
     title: "Контент и кампании",
-    desc: "Планируйте контент, акции, рассылки, рекламные активности и запуски в одной системе - без разбросанных заметок и забытых идей.",
+    desc: "Планируйте контент, акции, рассылки, рекламные активности и запуски в одной системе — без разбросанных заметок и забытых идей.",
   },
   {
     icon: Check,
@@ -193,14 +193,14 @@ export function OnboardingPage() {
               Маркетинг без хаоса: от идеи до понятного плана
             </h1>
             <p className="text-muted-foreground text-[15px] md:text-[16px] max-w-[620px] mx-auto leading-relaxed">
-              Собирайте идеи, планируйте кампании, разбивайте задачи на шаги и контролируйте продвижение - без таблиц, хаоса и бесконечных заметок
+              Собирайте идеи, планируйте кампании, разбивайте задачи на шаги и контролируйте продвижение — без таблиц, хаоса и бесконечных заметок
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button
               onClick={() => window.location.href = "/app"}
               className="px-6 py-3 rounded-xl text-white font-semibold text-[14px] transition-all hover:opacity-90 active:scale-[0.98] shadow-lg"
-              style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
+              style={{ background: "#c0854a" }}
             >
               Начать бесплатно
             </button>
@@ -345,7 +345,7 @@ export function OnboardingPage() {
                 <div className="flex items-start gap-4">
                   <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-[16px] shrink-0"
-                    style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
+                    style={{ background: "#c0854a" }}
                   >
                     {item.step}
                   </div>
@@ -392,7 +392,7 @@ export function OnboardingPage() {
               Тарифы
             </h2>
             <p className="text-muted-foreground text-[14px] max-w-[520px] mx-auto">
-              Старт - без AI. Про - всё включено. Про+ - квартал со скидкой.
+              Старт — без AI. Про — всё включено. Про+ - квартал со скидкой.
             </p>
           </div>
 
@@ -482,7 +482,7 @@ export function OnboardingPage() {
                         }`}
                         style={
                           plan.id !== "demo"
-                            ? { background: `linear-gradient(135deg, ${plan.color}, ${plan.color}dd)` }
+                            ? { background: `${plan.color}` }
                             : undefined
                         }
                       >
@@ -503,13 +503,13 @@ export function OnboardingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            className="bg-gradient-to-br from-primary/5 to-[#d4a373]/5 border border-border rounded-2xl p-7 md:p-9 text-center space-y-4"
+            className="bg-primary/5 border border-border rounded-2xl p-7 md:p-9 text-center space-y-4"
           >
             <p className="text-foreground text-[15.5px] md:text-[17px] font-medium leading-relaxed">
-              Старт - без AI. Про - всё включено. Про+ - квартал со скидкой.
+              Старт — без AI. Про — всё включено. Про+ - квартал со скидкой.
             </p>
             <p className="text-muted-foreground text-[14px] leading-relaxed max-w-[580px] mx-auto">
-              Если маркетинг - часть вашей ежедневной работы, безлимит проектов быстро становится не удобством, а необходимостью.
+              Если маркетинг — часть вашей ежедневной работы, безлимит проектов быстро становится не удобством, а необходимостью.
             </p>
           </motion.div>
         </section>
@@ -534,7 +534,7 @@ export function OnboardingPage() {
             <button
               onClick={() => window.location.href = "/app"}
               className="px-8 py-3.5 rounded-xl text-white font-semibold text-[15px] transition-all hover:opacity-90 active:scale-[0.98] shadow-lg mx-auto flex items-center gap-2"
-              style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
+              style={{ background: "#c0854a" }}
             >
               Начать сейчас
               <ChevronRight className="w-4.5 h-4.5" />

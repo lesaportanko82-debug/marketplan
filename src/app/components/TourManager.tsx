@@ -8,7 +8,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Trash2, GripVertical, Eye, Save, X, Settings,
-  ArrowUp, ArrowDown, Copy, Wand2, Sparkles, Target,
+  ArrowUp, ArrowDown, Copy, Wand2, Zap as Sparkles, Target,
   Clock, MapPin, CheckCircle2, AlertCircle, Edit, Play, ChevronRight, ChevronLeft, Check, SkipForward,
   BookOpen, Award,
 } from "lucide-react";
@@ -157,7 +157,7 @@ export function TourManager({ onClose }: TourManagerProps) {
             </span>
             <div className="w-32 h-1.5 bg-muted rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-primary to-[#d4a373]"
+                className="h-full bg-primary"
                 initial={{ width: 0 }}
                 animate={{
                   width: `${((progress[activeTour.id]?.currentStep + 1) / activeTour.steps.length) * 100}%`,
@@ -234,7 +234,7 @@ export function TourManager({ onClose }: TourManagerProps) {
                 {/* Header */}
                 <div className="p-6 border-b border-border flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-[#d4a373] flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center">
                       <BookOpen className="w-6 h-6 text-white" />
                     </div>
                     <div>

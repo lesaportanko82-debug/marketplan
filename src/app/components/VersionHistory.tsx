@@ -199,7 +199,7 @@ function VersionPanel({
                         onClick={() => onRestore(entry)}
                         className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium rounded-md transition-colors"
                         style={{
-                          background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)",
+                          background: "#c0854a",
                           color: "#fff",
                         }}
                       >

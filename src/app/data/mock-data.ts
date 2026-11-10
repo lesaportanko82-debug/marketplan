@@ -101,7 +101,7 @@ export const mockProjects: Project[] = [
       { id: "m12", name: "Email Open Rate", value: 24, target: 30, unit: "%", parentId: "m10" },
     ],
     campaigns: [
-      { id: "c1", name: "Яндекс Директ - Поиск", status: "active", channel: "Яндекс Директ", budget: 450000, spent: 312000, startDate: "2026-01-15", endDate: "2026-06-30", impressions: 2800000, clicks: 89600, conversions: 2240, cpa: 139, roi: 280 },
+      { id: "c1", name: "Яндекс Директ — Поиск", status: "active", channel: "Яндекс Директ", budget: 450000, spent: 312000, startDate: "2026-01-15", endDate: "2026-06-30", impressions: 2800000, clicks: 89600, conversions: 2240, cpa: 139, roi: 280 },
       { id: "c2", name: "VK Ads - Ретаргетинг", status: "active", channel: "VK Реклама", budget: 280000, spent: 195000, startDate: "2026-02-01", endDate: "2026-05-31", impressions: 4500000, clicks: 135000, conversions: 1620, cpa: 120, roi: 320 },
       { id: "c3", name: "Telegram Ads", status: "active", channel: "Telegram", budget: 180000, spent: 98000, startDate: "2026-02-15", endDate: "2026-06-30", impressions: 1200000, clicks: 36000, conversions: 720, cpa: 136, roi: 245 },
       { id: "c4", name: "Email-рассылки", status: "active", channel: "Email", budget: 85000, spent: 42000, startDate: "2026-01-15", endDate: "2026-06-30", impressions: 350000, clicks: 84000, conversions: 4200, cpa: 10, roi: 1850 },
@@ -192,7 +192,7 @@ export const mockProjects: Project[] = [
   },
   {
     id: "3",
-    name: "Ресторанная сеть - Локальный маркетинг",
+    name: "Ресторанная сеть — Локальный маркетинг",
     description: "Продвижение новых точек ресторанной сети в регионах. Фокус на локальный таргетинг и geo-маркетинг.",
     status: "paused",
     industry: "HoReCa",

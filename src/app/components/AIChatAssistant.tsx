@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  X, Send, Loader2, Sparkles, User,
+  X, Send, Loader2, Zap as Sparkles, User,
   Minimize2, Maximize2, RotateCcw, Copy, Check,
 } from "lucide-react";
 import { aiGenerate, getData, saveData } from "../lib/api";
@@ -56,7 +56,7 @@ function detectEmotion(content: string): MascotEmotion {
   return "idle";
 }
 
-const SYSTEM_CONTEXT = `Ты - Марк 🦊, маскот и встроенный ассистент маркетингового планера MarketPlan. Ты дружелюбный лисёнок-эксперт в маркетинге. Помогай с маркетинговыми стратегиями, контент-планированием, расчётами ROI/CAC/LTV, A/B тестами, конкурентным анализом, SMM, брендингом, unit-экономикой. Отвечай кратко, структурированно, на русском. Используй маркдаун для форматирования. Давай конкретные, actionable советы. Иногда вставляй лёгкие «лисьи» ремарки или поддержку, но не перебарщивай - ты эксперт, а не клоун. ВАЖНО: Никогда не упоминай GPT, ChatGPT, OpenAI, языковую модель или искусственный интеллект. Не говори что ты AI, нейросеть или бот. Ты - Марк, лисёнок-маскот MarketPlan. Не используй фразы типа "как языковая модель", "я AI" и подобные. Просто давай полезные ответы от имени Марка.`;
+const SYSTEM_CONTEXT = `Ты — Марк, маскот и встроенный ассистент маркетингового планера MarketPlan. Ты дружелюбный лисёнок-эксперт в маркетинге. Помогай с маркетинговыми стратегиями, контент-планированием, расчётами ROI/CAC/LTV, A/B тестами, конкурентным анализом, SMM, брендингом, unit-экономикой. Отвечай кратко, структурированно, на русском. Используй маркдаун для форматирования. Давай конкретные, actionable советы. Иногда вставляй лёгкие «лисьи» ремарки или поддержку, но не перебарщивай — ты эксперт, а не клоун. ВАЖНО: Никогда не упоминай GPT, ChatGPT, OpenAI, языковую модель или искусственный интеллект. Не говори что ты AI, нейросеть или бот. Ты — Марк, лисёнок-маскот MarketPlan. Не используй фразы типа "как языковая модель", "я AI" и подобные. Просто давай полезные ответы от имени Марка.`;
 
 const QUICK_PROMPTS = [
   "Какие KPI отслеживать для e-commerce?",
@@ -192,7 +192,7 @@ export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
       const contextPrompt = `${SYSTEM_CONTEXT}\n\nИстория беседы:\n${conversationContext}\n\nОтветь на последнее сообщение пользователя.`;
       const result = await aiGenerate("chat-assistant", contextPrompt);
 
-      const content = cleanResponse(result?.content || "Ой, не удалось получить ответ. Попробуйте ещё раз! 🦊");
+      const content = cleanResponse(result?.content || "Ой, не удалось получить ответ. Попробуйте ещё раз!");
       // Track AI chat usage
       await increment("aiChatPerDay");
       const assistantMsg: Message = {
@@ -213,8 +213,8 @@ export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
         id: (Date.now() + 1).toString(36),
         role: "assistant",
         content: isLimitError
-          ? `🔒 ${err.message || "Лимит AI-чата исчерпан!"} Обновите план в разделе Тарифы.`
-          : "Ой, что-то пошло не так! Проверьте подключение и попробуйте снова 🦊",
+          ? ` ${err.message || "Лимит AI-чата исчерпан!"} Обновите план в разделе Тарифы.`
+          : "Ой, что-то пошло не так! Проверьте подключение и попробуйте снова",
         timestamp: new Date().toISOString(),
         emotion: "oops",
       };
@@ -313,7 +313,7 @@ export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
             {/* Hover tooltip speech bubble */}
             <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
               <div className="bg-card border border-border rounded-xl px-3 py-1.5 shadow-lg whitespace-nowrap">
-                <span className="text-[11px] text-foreground font-medium">Спроси Марка! 🦊</span>
+                <span className="text-[11px] text-foreground font-medium">Спроси Марка!</span>
               </div>
               <svg width="12" height="8" viewBox="0 0 12 8" fill="none" className="absolute -bottom-[7px] right-4">
                 <path d="M0 0 L6 8 L12 0 Z" fill="var(--card)" />
@@ -363,7 +363,7 @@ export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
                 </div>
                 <div>
                   <div className="text-[13px] font-semibold text-[#f0e0d0] flex items-center gap-1.5">
-                    Марк <span className="text-[11px] opacity-60">🦊</span>
+                    Марк <span className="text-[11px] opacity-60"></span>
                     {hasCostume && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-white/8 text-[#c9a87a]">
                         {seasonLabel}
@@ -424,9 +424,9 @@ export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
                     className="relative mt-2 mb-4"
                   >
                     <SpeechBubble side="left" size="sm" accentColor="#d4a373" className="max-w-[280px]">
-                      <p className="text-[13px] font-semibold text-foreground">Привет! Я Марк 🦊</p>
+                      <p className="text-[13px] font-semibold text-foreground">Привет! Я Марк</p>
                       <p className="text-[11.5px] text-muted-foreground mt-0.5">
-                        Ваш маркетинг-ассистент. Стратегия, аналитика, контент - спрашивайте что угодно!
+                        Ваш маркетинг-ассистент. Стратегия, аналитика, контент — спрашивайте что угодно!
                       </p>
                     </SpeechBubble>
                   </motion.div>
@@ -583,7 +583,7 @@ export function AIChatAssistant({ isMobile = false }: { isMobile?: boolean }) {
                   disabled={!input.trim() || loading}
                   className="p-1.5 rounded-lg transition-all disabled:opacity-30 cursor-pointer"
                   style={{
-                    background: input.trim() ? "linear-gradient(135deg, #d4a373, #a87040)" : "transparent",
+                    background: input.trim() ? "#c0854a" : "transparent",
                     color: input.trim() ? "#fff" : "var(--muted-foreground)",
                   }}
                 >

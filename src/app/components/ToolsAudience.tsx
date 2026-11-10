@@ -5,7 +5,7 @@ import {
   Copy,
   CheckCircle2,
   AlertCircle,
-  Sparkles,
+  Zap as Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { copyToClipboard } from "../lib/clipboard";
@@ -63,7 +63,7 @@ export function ToolsAudience() {
     <div className="p-4 sm:p-5 max-w-[1000px] mx-auto space-y-4 sm:space-y-5">
       <div>
         <h1 className="text-foreground flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-lg bg-teal-600 flex items-center justify-center">
             <Users className="w-4.5 h-4.5 text-white" />
           </div>
           ЦА и аватары
@@ -84,7 +84,7 @@ export function ToolsAudience() {
             onKeyDown={(e) => {
               if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate();
             }}
-            placeholder="Онлайн-курсы по программированию для начинающих. Цена 30-50K RUB. География - Россия, крупные города. Предполагаю что ЦА - мужчины и женщины 22-35, хотят сменить профессию или повысить доход."
+            placeholder="Онлайн-курсы по программированию для начинающих. Цена 30-50K RUB. География — Россия, крупные города. Предполагаю что ЦА — мужчины и женщины 22-35, хотят сменить профессию или повысить доход."
             className="w-full bg-muted/30 border border-border rounded-lg px-4 py-3 text-foreground resize-none h-28 text-[13px] placeholder:text-muted-foreground/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
           />
           <p className="text-[11px] text-muted-foreground mt-1">

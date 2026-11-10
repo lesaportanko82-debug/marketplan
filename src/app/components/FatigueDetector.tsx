@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import {
   Battery, BatteryLow, BatteryWarning, BatteryFull, Loader2,
-  Sparkles, AlertTriangle, CheckCircle2, TrendingDown, TrendingUp,
+  Zap as Sparkles, AlertTriangle, CheckCircle2, TrendingDown, TrendingUp,
   RefreshCw, MessageSquare, Image, Hash, Zap, BarChart3,
   Eye, Repeat, FileText, ArrowRight, Lightbulb, Clock,
 } from "lucide-react";
@@ -228,13 +228,13 @@ ${contentInput.slice(0, 5000)}
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
             <BatteryLow className="w-5 h-5 text-[#d4a373] shrink-0" />
-            Marketing Fatigue Detector
+            Выгорание креативов
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Находит повторяющиеся паттерны и рекомендует свежие темы
           </p>
         </div>
-        <AddToProjectButton itemType="content-studio" itemId="fatigue" itemTitle="Fatigue Detector" />
+        <AddToProjectButton itemType="content-studio" itemId="fatigue" itemTitle="Выгорание креативов" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">

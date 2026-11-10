@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import {
-  Sparkles, Loader2, Copy, Check, Instagram, MessageCircle, Mail,
+  Zap as Sparkles, Loader2, Copy, Check, Instagram, MessageCircle, Mail,
   Video, Globe, AlertTriangle, CheckCircle2, XCircle, Volume2,
   Hash, RefreshCw, Wand2, FileText, Eye, ChevronDown, ChevronRight,
   Smartphone, Monitor, X, Lightbulb, Zap, Palette, BookOpen, Star, Tag,
@@ -210,7 +210,7 @@ export function ContentStudio() {
 
     // Usage gate: check AI image limit
     if (!canUse("aiImagePerMonth")) {
-      showMascotReaction("error", "Лимит AI-изображений исчерпан! Обновите план 🦊");
+      showMascotReaction("error", "Лимит AI-изображений исчерпан! Обновите план");
       toast.error("Лимит AI-изображений исчерпан. Обновите план.");
       return;
     }
@@ -263,7 +263,7 @@ export function ContentStudio() {
 
     // Usage gate: check AI text limit
     if (!canUse("aiTextPerMonth")) {
-      showMascotReaction("error", "Лимит AI-генераций исчерпан! Обновите план 🦊");
+      showMascotReaction("error", "Лимит AI-генераций исчерпан! Обновите план");
       toast.error("Лимит AI-генераций текста исчерпан. Обновите план для продолжения.");
       return;
     }
@@ -307,7 +307,7 @@ export function ContentStudio() {
       const imageInstruction = `\n\nДля КАЖДОЙ платформы предложи описание визуала на английском (одно предложение).
 Формат строго: **Image:** (one sentence in English describing the image)`;
 
-      const prompt = `Ты - контент-студия. Создай контент-пакет по брифу для каждой платформы отдельно.
+      const prompt = `Ты — контент-студия. Создай контент-пакет по брифу для каждой платформы отдельно.
 ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstruction}
 
 Бриф: ${brief}
@@ -324,7 +324,7 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
 **Формат:** (рекомендуемый формат)
 **Image:** (one sentence in English describing a relevant photo/image for this post)
 
-Адаптируй стиль, длину и подачу под каждую платформу. Instagram - визуальный, эмоциональный. Telegram - информативный, структурированный. Email - профессиональный, с чёткой воронкой. YouTube - SEO, таймкоды. Рекламный текст - лаконичный, с сильным CTA.
+Адаптируй стиль, длину и подачу под каждую платформу. Instagram - визуальный, эмоциональный. Telegram - информативный, структурированный. Email - профессиональный, с чёткой воронкой. YouTube - SEO, таймкоды. Рекламный текст — лаконичный, с сильным CTA.
 Пиши на русском (кроме Image).`;
 
       const result = await aiGenerate("content-studio", prompt);
@@ -369,7 +369,7 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
       setResults(parsed);
       setActivePlatform(parsed[0]?.platformId || null);
       toast.success(`Сгенерировано ${parsed.length} адаптаций`);
-      showMascotReaction("ai_done", `${parsed.length} адаптаций готово! ✨`);
+      showMascotReaction("ai_done", `${parsed.length} адаптаций готово!`);
       const m = checkMilestone("first_ai", 1);
       if (m) triggerMilestoneCheck();
 
@@ -383,7 +383,7 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
       console.error("Content Studio generation error:", err);
       if (err?.name === "UsageLimitError") {
         toast.error(err.message || "Лимит AI-генераций исчерпан. Обновите план.");
-        showMascotReaction("error", "Лимит исчерпан! Обновите план 🦊");
+        showMascotReaction("error", "Лимит исчерпан! Обновите план");
       } else {
         toast.error("Ошибка генерации контента");
         showMascotReaction("error");
@@ -504,10 +504,10 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
             <Wand2 className="w-5 h-5 text-[#d4a373] shrink-0" />
-            AI Content Studio
+            Студия контента
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
-            Один бриф - контент для всех платформ с проверкой Brand Voice и генерацией визуалов
+            Один бриф — контент для всех платформ с проверкой Brand Voice и генерацией визуалов
           </p>
         </div>
         <AddToProjectButton itemType="content-studio" itemId="studio" itemTitle="Content Studio" />
@@ -975,7 +975,7 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
                             : r
                         )
                       );
-                      toast.success("Контент обновлён! ✨");
+                      toast.success("Контент обновлён!");
                     }}
                   />
                 </div>
@@ -1016,7 +1016,7 @@ function PlatformPreview({ platform, content, mode, onRegenerateImage, generatin
 
     if (generatingImage) {
       return (
-        <div className={`${aspectClass} bg-gradient-to-br from-[#d4a373]/10 to-[#d4a373]/5 flex items-center justify-center`}>
+        <div className={`${aspectClass} bg-[#d4a373]/10 flex items-center justify-center`}>
           <div className="text-center">
             <Loader2 className="w-8 h-8 text-[#d4a373]/50 animate-spin mx-auto mb-2" />
             <span className="text-[11px] text-muted-foreground">Генерация визуала...</span>
@@ -1026,7 +1026,7 @@ function PlatformPreview({ platform, content, mode, onRegenerateImage, generatin
     }
 
     return (
-      <div className={`${aspectClass} bg-gradient-to-br from-[#d4a373]/20 to-[#d4a373]/5 flex items-center justify-center`}>
+      <div className={`${aspectClass} bg-[#d4a373]/20 flex items-center justify-center`}>
         <div className="text-center">
           <Image className="w-10 h-10 text-[#d4a373]/40 mx-auto mb-2" />
           <span className="text-[12px] text-muted-foreground">Визуал к посту</span>
@@ -1040,7 +1040,7 @@ function PlatformPreview({ platform, content, mode, onRegenerateImage, generatin
       <div className={`mx-auto ${width}`}>
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 via-amber-500 to-amber-600 p-[2px]">
+            <div className="w-8 h-8 rounded-full bg-amber-400 p-[2px]">
               <div className="w-full h-full rounded-full bg-card flex items-center justify-center">
                 <span className="text-[10px] font-bold text-foreground">MP</span>
               </div>
@@ -1153,7 +1153,7 @@ function PlatformPreview({ platform, content, mode, onRegenerateImage, generatin
           )}
           <div className="px-4 py-3 space-y-2">
             <h4 className="text-[14px] font-semibold text-foreground line-clamp-2">{content.cta || "Заголовок видео"}</h4>
-            <p className="text-[12px] text-muted-foreground">MarketPlan - 0 просмотров - только что</p>
+            <p className="text-[12px] text-muted-foreground">MarketPlan - 0 просмотров — только что</p>
             <p className="text-[12px] text-foreground leading-relaxed line-clamp-3 whitespace-pre-wrap">{content.text}</p>
             {content.hashtags && <p className="text-[11px] text-teal-500">{content.hashtags}</p>}
           </div>
@@ -1175,7 +1175,7 @@ function PlatformPreview({ platform, content, mode, onRegenerateImage, generatin
             </button>
           </div>
         ) : (
-          <div className="bg-gradient-to-r from-[#d4a373]/20 to-teal-600/20 p-4 md:p-6 text-center">
+          <div className="bg-[#d4a373]/20 p-4 md:p-6 text-center">
             <Zap className="w-8 h-8 text-[#d4a373] mx-auto mb-2" />
             <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Рекламный блок</p>
           </div>

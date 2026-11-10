@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import {
   BarChart3, Send, RefreshCw, Copy, CheckCircle2, AlertCircle,
-  Sparkles, Download, Calculator, TrendingUp, DollarSign, Users,
+  Zap as Sparkles, Download, Calculator, TrendingUp, DollarSign, Users,
   Target, Percent, ArrowUpRight, ArrowDownRight, Info, RotateCcw,
   Layers, Activity, Zap, PieChart,
 } from "lucide-react";
@@ -67,8 +67,8 @@ const FORMULA_GROUPS: FormulaGroup[] = [
         { label: "CAC (стоимость привлечения)", value: Math.round(cac), suffix: "₽", color: cac > 0 ? "default" : "red" as any, tooltip: "Расходы на маркетинг ÷ Кол-во новых клиентов" },
         { label: "LTV (доход за жизнь клиента)", value: Math.round(ltv), suffix: "₽", tooltip: "ARPU × Средний срок жизни" },
         { label: "LTV с маржой", value: Math.round(ltvMargin), suffix: "₽", tooltip: "LTV × Маржинальность" },
-        { label: "LTV/CAC", value: ltvCacRatio.toFixed(1), color: ltvCacRatio >= 3 ? "green" : ltvCacRatio >= 1 ? "amber" : "red", tooltip: ">=3 - хорошо, >=5 - отлично, <1 - убыток" },
-        { label: "Payback Period", value: payback.toFixed(1), suffix: "мес.", color: payback <= 6 ? "green" : payback <= 12 ? "amber" : "red", tooltip: "CAC / (ARPU * Маржа). До 6 мес. - отлично" },
+        { label: "LTV/CAC", value: ltvCacRatio.toFixed(1), color: ltvCacRatio >= 3 ? "green" : ltvCacRatio >= 1 ? "amber" : "red", tooltip: ">=3 — хорошо, >=5 — отлично, <1 — убыток" },
+        { label: "Payback Period", value: payback.toFixed(1), suffix: "мес.", color: payback <= 6 ? "green" : payback <= 12 ? "amber" : "red", tooltip: "CAC / (ARPU * Маржа). До 6 мес. — отлично" },
       ];
     },
   },
@@ -100,7 +100,7 @@ const FORMULA_GROUPS: FormulaGroup[] = [
         { label: "CTR (кликабельность)", value: ctr.toFixed(2), suffix: "%", color: ctr >= 2 ? "green" : ctr >= 0.5 ? "amber" : "red", tooltip: "(Клики ÷ Показы) × 100%. Поиск ≥2%, баннеры ≥0.5%" },
         { label: "CR (конверсия)", value: cr.toFixed(2), suffix: "%", color: cr >= 3 ? "green" : cr >= 1 ? "amber" : "red", tooltip: "(Конверсии ÷ Клики) × 100%. E-com: 1–3%, SaaS: 3–7%" },
         { label: "CPA (цена конверсии)", value: Math.round(cpa), suffix: "₽", tooltip: "Бюджет ÷ Конверсии" },
-        { label: "ROI / ROMI", value: roi.toFixed(1), suffix: "%", color: roi > 100 ? "green" : roi > 0 ? "amber" : "red", tooltip: "(Доход - Расход) / Расход * 100%. >100% - хорошо" },
+        { label: "ROI / ROMI", value: roi.toFixed(1), suffix: "%", color: roi > 100 ? "green" : roi > 0 ? "amber" : "red", tooltip: "(Доход — Расход) / Расход * 100%. >100% — хорошо" },
       ];
     },
   },
@@ -165,8 +165,8 @@ const FORMULA_GROUPS: FormulaGroup[] = [
         { label: "Retention Rate (удержание)", value: retention.toFixed(2), suffix: "%", color: retention >= 95 ? "green" : retention >= 90 ? "amber" : "red", tooltip: "100% − Churn Rate" },
         { label: "Чистый рост клиентов", value: netGrowth > 0 ? `+${netGrowth}` : String(netGrowth), color: netGrowth > 0 ? "green" : "red", tooltip: "Новых − Ушедших" },
         { label: "Клиентов на конец периода", value: customersEnd, tooltip: "Начало + Новые − Ушедшие" },
-        { label: "DAU/MAU (Stickiness)", value: stickiness.toFixed(1), suffix: "%", color: stickiness >= 20 ? "green" : stickiness >= 10 ? "amber" : "red", tooltip: "DAU / MAU * 100%. >=20% - хороший показатель" },
-        { label: "NPS (индекс лояльности)", value: Math.round(nps), color: nps >= 50 ? "green" : nps >= 0 ? "amber" : "red", tooltip: "(Промоутеры - Критики) / Всего * 100. ≥50 - отлично" },
+        { label: "DAU/MAU (Stickiness)", value: stickiness.toFixed(1), suffix: "%", color: stickiness >= 20 ? "green" : stickiness >= 10 ? "amber" : "red", tooltip: "DAU / MAU * 100%. >=20% — хороший показатель" },
+        { label: "NPS (индекс лояльности)", value: Math.round(nps), color: nps >= 50 ? "green" : nps >= 0 ? "amber" : "red", tooltip: "(Промоутеры — Критики) / Всего * 100. ≥50 — отлично" },
       ];
     },
   },
@@ -196,8 +196,8 @@ const FORMULA_GROUPS: FormulaGroup[] = [
         { label: "Доставляемость", value: deliverability.toFixed(1), suffix: "%", color: deliverability >= 95 ? "green" : deliverability >= 90 ? "amber" : "red", tooltip: "Доставлено ÷ Отправлено × 100%" },
         { label: "Open Rate (открытия)", value: openRate.toFixed(1), suffix: "%", color: openRate >= 20 ? "green" : openRate >= 10 ? "amber" : "red", tooltip: "Открыто ÷ Доставлено × 100%. Средний: 15–25%" },
         { label: "Click Rate (клики)", value: clickRate.toFixed(2), suffix: "%", color: clickRate >= 3 ? "green" : clickRate >= 1 ? "amber" : "red", tooltip: "Клики ÷ Доставлено × 100%. Средний: 2–5%" },
-        { label: "CTOR (клик-ту-опен)", value: ctor.toFixed(1), suffix: "%", color: ctor >= 15 ? "green" : ctor >= 8 ? "amber" : "red", tooltip: "Клики ÷ Открытия × 100%. ≥15% - хорошо" },
-        { label: "Unsubscribe Rate", value: unsubRate.toFixed(3), suffix: "%", color: unsubRate <= 0.2 ? "green" : unsubRate <= 0.5 ? "amber" : "red", tooltip: "Отписки ÷ Доставлено × 100%. <0.2% - норма" },
+        { label: "CTOR (клик-ту-опен)", value: ctor.toFixed(1), suffix: "%", color: ctor >= 15 ? "green" : ctor >= 8 ? "amber" : "red", tooltip: "Клики ÷ Открытия × 100%. ≥15% — хорошо" },
+        { label: "Unsubscribe Rate", value: unsubRate.toFixed(3), suffix: "%", color: unsubRate <= 0.2 ? "green" : unsubRate <= 0.5 ? "amber" : "red", tooltip: "Отписки ÷ Доставлено × 100%. <0.2% — норма" },
         { label: "RPE (доход на письмо)", value: rpe.toFixed(2), suffix: "₽", tooltip: "Доход ÷ Отправлено" },
       ];
     },
@@ -226,7 +226,7 @@ const FORMULA_GROUPS: FormulaGroup[] = [
       const cpf = v.new_followers > 0 ? v.smm_budget / v.new_followers : 0;
       const engTotal = v.post_likes + v.post_comments + v.post_shares;
       return [
-        { label: "ER (по подписчикам)", value: er.toFixed(2), suffix: "%", color: er >= 3 ? "green" : er >= 1 ? "amber" : "red", tooltip: "(Лайки + Комменты) ÷ Подписчики × 100%. >3% - отлично" },
+        { label: "ER (по подписчикам)", value: er.toFixed(2), suffix: "%", color: er >= 3 ? "green" : er >= 1 ? "amber" : "red", tooltip: "(Лайки + Комменты) ÷ Подписчики × 100%. >3% — отлично" },
         { label: "ER (по охвату)", value: erReach.toFixed(2), suffix: "%", color: erReach >= 8 ? "green" : erReach >= 4 ? "amber" : "red", tooltip: "(Лайки + Комменты) ÷ Охват × 100%" },
         { label: "Reach Rate (охват)", value: reachRate.toFixed(1), suffix: "%", color: reachRate >= 30 ? "green" : reachRate >= 15 ? "amber" : "red", tooltip: "Охват ÷ Подписчики × 100%" },
         { label: "Virality Rate", value: virality.toFixed(3), suffix: "%", tooltip: "Репосты ÷ Охват × 100%" },
@@ -484,7 +484,7 @@ export function ToolsMetrics() {
       {/* Header */}
       <div>
         <h1 className="text-foreground flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center">
             <BarChart3 className="w-4.5 h-4.5 text-white" />
           </div>
           Проработка метрик
@@ -528,7 +528,7 @@ export function ToolsMetrics() {
           <div className="flex items-center gap-3 p-3 bg-muted/30 border border-border rounded-xl text-[12px] text-muted-foreground">
             <Info className="w-4 h-4 shrink-0 text-primary" />
             <span>
-              Раскройте любой калькулятор, введите данные или нажмите «Заполнить пример» - формулы рассчитаются мгновенно.
+              Раскройте любой калькулятор, введите данные или нажмите «Заполнить пример» — формулы рассчитаются мгновенно.
               Наведите на <Info className="w-3 h-3 inline" /> для подсказки по бенчмаркам.
             </span>
           </div>
@@ -588,7 +588,7 @@ export function ToolsMetrics() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate();
                 }}
-                placeholder="Интернет-магазин электроники, бюджет 2.5M RUB, цель - увеличить выручку на 35% за полгода. Основные каналы: Яндекс Директ, VK Реклама, SEO, Email."
+                placeholder="Интернет-магазин электроники, бюджет 2.5M RUB, цель — увеличить выручку на 35% за полгода. Основные каналы: Яндекс Директ, VK Реклама, SEO, Email."
                 className="w-full bg-muted/30 border border-border rounded-lg px-4 py-3 text-foreground resize-none h-28 text-[13px] placeholder:text-muted-foreground/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
               />
               <p className="text-[11px] text-muted-foreground mt-1">
@@ -686,10 +686,10 @@ const REFERENCE_TABLE = [
   { name: "MRR / ARR", formula: "Выручка мес. / × 12", benchmark: "рост ≥ 10% м/м", benchColor: "bg-teal-500/10 text-teal-600", group: "Revenue" },
   { name: "AOV", formula: "Выручка ÷ Заказы", benchmark: "зависит от ниши", benchColor: "bg-muted text-muted-foreground", group: "Revenue" },
   { name: "Churn Rate", formula: "Ушедших ÷ Было × 100%", benchmark: "SaaS: < 5% мес.", benchColor: "bg-emerald-500/10 text-emerald-600", group: "Retention" },
-  { name: "NPS", formula: "(Промоутеры - Критики) / Всего * 100", benchmark: ">= 50 - отлично", benchColor: "bg-emerald-500/10 text-emerald-600", group: "Retention" },
+  { name: "NPS", formula: "(Промоутеры — Критики) / Всего * 100", benchmark: ">= 50 — отлично", benchColor: "bg-emerald-500/10 text-emerald-600", group: "Retention" },
   { name: "DAU/MAU", formula: "DAU ÷ MAU × 100%", benchmark: "≥ 20%", benchColor: "bg-emerald-500/10 text-emerald-600", group: "Retention" },
   { name: "Open Rate", formula: "Открытия ÷ Доставлено × 100%", benchmark: "15–25%", benchColor: "bg-amber-500/10 text-amber-600", group: "Email" },
   { name: "CTOR", formula: "Клики ÷ Открытия × 100%", benchmark: "≥ 15%", benchColor: "bg-emerald-500/10 text-emerald-600", group: "Email" },
-  { name: "ER", formula: "(Лайки + Комменты) / Подписчики × 100%", benchmark: "> 3% - отлично", benchColor: "bg-emerald-500/10 text-emerald-600", group: "SMM" },
+  { name: "ER", formula: "(Лайки + Комменты) / Подписчики × 100%", benchmark: "> 3% — отлично", benchColor: "bg-emerald-500/10 text-emerald-600", group: "SMM" },
   { name: "CPF", formula: "Бюджет SMM ÷ Новые подписчик", benchmark: "≤ 50₽", benchColor: "bg-emerald-500/10 text-emerald-600", group: "SMM" },
 ];

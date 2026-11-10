@@ -131,7 +131,7 @@ export function AuthPages() {
           {/* Brand */}
           <div className="flex items-center gap-3 mb-12">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #d4a373 0%, #b87a45 100%)" }}>
+              style={{ background: "#c0854a" }}>
               <Zap className="w-5 h-5 text-white" />
             </div>
             <span className="text-white text-[17px] font-bold tracking-tight">MarketPlan</span>
@@ -142,19 +142,19 @@ export function AuthPages() {
             <span style={{ color: "#d4a373" }}>в одном месте</span>
           </h2>
           <p className="text-white/60 text-[14px] leading-relaxed mb-8">
-            Планируйте, создавайте и анализируйте - с AI-помощником Марком на каждом шаге.
+            Планируйте, создавайте и анализируйте — с AI-помощником Марком на каждом шаге.
           </p>
           {/* Feature list */}
           <div className="space-y-3">
             {[
-              { emoji: "🤖", text: "AI-инструменты для контента и аналитики" },
-              { emoji: "📅", text: "Контент-план и маркетинговый календарь" },
-              { emoji: "🎯", text: "OKR, персоны, CJM и конкуренты" },
-              { emoji: "📊", text: "Unit-экономика и A/B тесты" },
-              { emoji: "🦊", text: "Маскот Марк - ваш маркетинг-коуч" },
+              { emoji: "", text: "AI-инструменты для контента и аналитики" },
+              { emoji: "", text: "Контент-план и маркетинговый календарь" },
+              { emoji: "", text: "OKR, персоны, CJM и конкуренты" },
+              { emoji: "", text: "Unit-экономика и A/B тесты" },
+              { emoji: "", text: "Помощник Марк — подскажет на каждом шаге" },
             ].map((f, i) => (
               <div key={i} className="flex items-center gap-3">
-                <span className="text-[18px]">{f.emoji}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#d4a373] shrink-0" />
                 <span className="text-white/75 text-[13px]">{f.text}</span>
               </div>
             ))}
@@ -182,7 +182,7 @@ export function AuthPages() {
             <h1
               className="text-[28px] font-bold tracking-tight mt-1"
               style={{
-                background: "linear-gradient(135deg, #d4a373 0%, #e0c4a8 50%, #c0854a 100%)",
+                background: "#c0854a",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -297,8 +297,8 @@ export function AuthPages() {
               disabled={loading}
               className="w-full py-3 rounded-xl font-semibold text-[14px] text-white flex items-center justify-center gap-2 transition-all disabled:opacity-50"
               style={{
-                background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)",
-                boxShadow: "0 4px 16px rgba(212,163,115,0.3)",
+                background: "#c0854a",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
               }}
             >
               {loading ? (

@@ -1,11 +1,11 @@
 /**
- * 🦊 OnboardingTour - полностью переработанный онбординг
+ * OnboardingTour - полностью переработанный онбординг
  * Иммерсивный опыт: welcome-экран → 4 feature-карточки → quick-start
  */
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  ChevronRight, ChevronLeft, X, Sparkles, Calendar,
+  ChevronRight, ChevronLeft, X, Zap as Sparkles, Calendar,
   FolderKanban, Wand2, BarChart3, Command, MessageCircle,
   ArrowRight, CheckCircle2, Zap, Users, Target,
 } from "lucide-react";
@@ -26,7 +26,7 @@ const FEATURES = [
     bg: "from-[#1a7a6d]/20 to-[#2eb8a4]/5",
     badge: "Основа",
     title: "Проекты и дашборд",
-    desc: "Создайте проект - добавьте бюджет, KPI, кампании. Дашборд с виджетами кастомизируется под вас.",
+    desc: "Создайте проект — добавьте бюджет, KPI, кампании. Дашборд с виджетами кастомизируется под вас.",
     details: ["Бюджет и расходы с прогрессом", "Воронка конверсий", "Метрики и аудитории", "Привязка всех модулей"],
   },
   {
@@ -37,7 +37,7 @@ const FEATURES = [
     badge: "AI",
     title: "6 AI-инструментов",
     desc: "AI-тексты и AI-изображения на каждом шаге: от идей до публикации, от аналитики до стратегии.",
-    details: ["Content Studio + AI-визуалы", "Brand Voice Engine", "Persona Builder", "Campaign Storyline"],
+    details: ["Студия контента и визуалы", "Голос бренда", "Персоны", "Сценарий кампании"],
   },
   {
     id: "calendar",
@@ -47,7 +47,7 @@ const FEATURES = [
     badge: "Планирование",
     title: "Контент и календарь",
     desc: "Контент-план с drag & drop, единый маркетинговый календарь, репёрпозирование и scoring постов.",
-    details: ["Контент-план по платформам", "Маркетинговый календарь", "Repurpose Engine", "Content Scoring"],
+    details: ["Контент-план по платформам", "Маркетинговый календарь", "Переупаковка", "Оценка текста"],
   },
   {
     id: "strategy",
@@ -57,7 +57,7 @@ const FEATURES = [
     badge: "Стратегия",
     title: "OKR, CJM и конкуренты",
     desc: "Отслеживайте цели, стройте карту пути клиента, следите за конкурентами и запускайте A/B тесты.",
-    details: ["OKR-трекинг по кварталам", "Customer Journey Map", "Competitor Spy", "A/B тесты"],
+    details: ["OKR по кварталам", "Путь клиента", "Разведка конкурентов", "A/B-тесты"],
   },
 ];
 
@@ -87,7 +87,7 @@ function WelcomeStep({ onNext }: { onNext: () => void }) {
         transition={{ type: "spring", damping: 14, stiffness: 200, delay: 0.1 }}
         className="relative mb-6"
       >
-        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#d4a373]/30 to-[#1a7a6d]/20 blur-2xl scale-150" />
+        <div className="absolute inset-0 rounded-full bg-[#d4a373]/30 blur-2xl scale-150" />
         <Mascot emotion="wave" size={120} sound />
       </motion.div>
 
@@ -101,7 +101,7 @@ function WelcomeStep({ onNext }: { onNext: () => void }) {
           MarketPlan
         </div>
         <h1 className="text-[26px] font-bold text-foreground mb-3 leading-tight">
-          Привет! Я Марк 🦊
+          Привет! Я Марк
         </h1>
         <p className="text-[14px] text-muted-foreground leading-relaxed max-w-[320px] mx-auto">
           Ваш AI-помощник в маркетинге. Покажу возможности платформы за&nbsp;
@@ -118,7 +118,7 @@ function WelcomeStep({ onNext }: { onNext: () => void }) {
         <button
           onClick={onNext}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-[14px] font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
-          style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
+          style={{ background: "#c0854a" }}
         >
           Погнали! <ArrowRight className="w-4 h-4" />
         </button>
@@ -145,7 +145,7 @@ function FeatureStep({ feature, direction }: { feature: typeof FEATURES[0]; dire
         <div className="flex items-start gap-4">
           <div
             className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg"
-            style={{ background: `linear-gradient(135deg, ${feature.color}dd, ${feature.color}88)` }}
+            style={{ background: `${feature.color}` }}
           >
             <Icon className="w-6 h-6 text-white" />
           </div>
@@ -390,7 +390,7 @@ export function OnboardingTour() {
                   <button
                     onClick={isLast ? () => close(true) : next}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
-                    style={{ background: `linear-gradient(135deg, ${barColor}ee, ${barColor}aa)` }}
+                    style={{ background: `${barColor}` }}
                   >
                     {isLast ? (
                       <><CheckCircle2 className="w-4 h-4" /> Начать работу</>

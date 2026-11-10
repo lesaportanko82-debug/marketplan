@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import {
   LayoutDashboard, FolderKanban, Calendar, CalendarRange, Wand2, Recycle,
   Lightbulb, Hash, Users, Swords, Radar, FlaskConical, Calculator, Palette,
-  Volume2, BatteryLow, Target, GitBranch, MapPin, Film, Sparkles, BarChart3,
+  Volume2, BatteryLow, Target, GitBranch, MapPin, Film, Zap as Sparkles, BarChart3,
   DollarSign, MessageSquareQuote, Workflow, Settings, LogOut, Moon, Sun,
   Menu, X, Command, Loader2, MessageCircle, User, ChevronDown, Lock, Star,
   PanelLeft, PanelLeftClose, Zap, Search, Crown, WifiOff, Bell, Clock,
@@ -22,7 +22,6 @@ import { useAuth } from "../lib/useAuth";
 import { MascotTipProvider } from "./MascotTips";
 import { OnboardingTour } from "./OnboardingTour";
 import { MascotReactionsProvider } from "./MascotReactions";
-import { MascotGamesProvider } from "./MascotGames";
 import { trackDailyVisit, checkMilestone } from "../lib/mascot-reactions";
 import { UsageLimitAlert } from "./UsageLimitAlert";
 import { useAccess, PLAN_CONFIG, AI_PATHS } from "../lib/useAccess";
@@ -34,7 +33,7 @@ const MOBILE_NAV_ITEMS = [
   { icon: CalendarRange, label: "Контент", path: "/app/smm/plan" },
   { icon: Calendar, label: "Календарь", path: "/app/calendar" },
   { icon: Wand2, label: "Студия", path: "/app/content-studio" },
-  { icon: Sparkles, label: "AI", path: "/app/tools/metrics" },
+  { icon: Target, label: "OKR", path: "/app/okr" },
 ];
 
 /* ─── Nav data ─── */
@@ -64,53 +63,53 @@ const navSections: NavSection[] = [
   },
   {
     id: "smm",
-    title: "Контент и SMM",
+    title: "Контент",
     icon: CalendarRange,
     items: [
       { icon: CalendarRange, label: "Контент-план", path: "/app/smm/plan" },
-      { icon: Wand2, label: "Content Studio", path: "/app/content-studio", badge: "AI" },
-      { icon: Recycle, label: "Repurpose", path: "/app/repurpose", badge: "AI" },
-      { icon: Lightbulb, label: "Идеи", path: "/app/smm/ideas" },
+      { icon: Wand2, label: "Студия контента", path: "/app/content-studio" },
+      { icon: Recycle, label: "Переупаковка", path: "/app/repurpose" },
+      { icon: BarChart3, label: "Оценка текста", path: "/app/content-scoring" },
+      { icon: Lightbulb, label: "Банк идей", path: "/app/smm/ideas" },
       { icon: Hash, label: "Хештеги и SEO", path: "/app/smm/hashtags" },
-      { icon: Users, label: "Инфлюенсеры", path: "/app/influencers" },
+      { icon: Users, label: "Блогеры", path: "/app/influencers" },
     ],
   },
   {
     id: "marketing",
-    title: "Маркетинг",
+    title: "Аудитория и рынок",
     icon: Swords,
     items: [
+      { icon: Users, label: "Персоны", path: "/app/personas" },
+      { icon: Users, label: "ЦА и портреты", path: "/app/tools/audience" },
+      { icon: MessageSquareQuote, label: "Инсайты из отзывов", path: "/app/tools/triggers" },
+      { icon: MapPin, label: "Путь клиента", path: "/app/cjm" },
       { icon: Swords, label: "Конкуренты", path: "/app/competitors" },
-      { icon: Radar, label: "Competitor Spy", path: "/app/competitor-spy", badge: "AI" },
-      { icon: FlaskConical, label: "A/B Тесты", path: "/app/ab-tests" },
-      { icon: Calculator, label: "Unit-экономика", path: "/app/unit-economics" },
-      { icon: Palette, label: "Бренд-ассеты", path: "/app/media" },
-      { icon: Volume2, label: "Brand Voice", path: "/app/brand-voice", badge: "AI" },
-      { icon: BatteryLow, label: "Fatigue Detector", path: "/app/fatigue-detector", badge: "AI" },
+      { icon: Radar, label: "Разведка конкурентов", path: "/app/competitor-spy" },
     ],
   },
   {
     id: "strategy",
-    title: "Стратегия",
+    title: "Стратегия и цифры",
     icon: Target,
     items: [
       { icon: Target, label: "OKR", path: "/app/okr" },
       { icon: GitBranch, label: "Дерево метрик", path: "/app/metrics-tree" },
-      { icon: MapPin, label: "CJM", path: "/app/cjm" },
-      { icon: Users, label: "Personas", path: "/app/personas", badge: "AI" },
-      { icon: Film, label: "Storyline", path: "/app/campaign-storyline", badge: "AI" },
+      { icon: BarChart3, label: "Проработка метрик", path: "/app/tools/metrics" },
+      { icon: DollarSign, label: "Прогноз бюджета", path: "/app/tools/budget" },
+      { icon: Calculator, label: "Unit-экономика", path: "/app/unit-economics" },
+      { icon: FlaskConical, label: "A/B-тесты", path: "/app/ab-tests" },
+      { icon: Film, label: "Сценарий кампании", path: "/app/campaign-storyline" },
     ],
   },
   {
-    id: "ai",
-    title: "AI Инструменты",
-    icon: Sparkles,
+    id: "brand",
+    title: "Бренд",
+    icon: Palette,
     items: [
-      { icon: BarChart3, label: "Content Scoring", path: "/app/content-scoring", badge: "AI" },
-      { icon: BarChart3, label: "Метрики", path: "/app/tools/metrics", badge: "AI" },
-      { icon: DollarSign, label: "Прогноз бюджета", path: "/app/tools/budget", badge: "AI" },
-      { icon: Users, label: "ЦА и аватары", path: "/app/tools/audience", badge: "AI" },
-      { icon: MessageSquareQuote, label: "Триггеры", path: "/app/tools/triggers", badge: "AI" },
+      { icon: Palette, label: "Бренд-ассеты", path: "/app/media" },
+      { icon: Volume2, label: "Голос бренда", path: "/app/brand-voice" },
+      { icon: BatteryLow, label: "Выгорание креативов", path: "/app/fatigue-detector" },
     ],
   },
   {
@@ -123,6 +122,7 @@ const navSections: NavSection[] = [
     ],
   },
 ];
+
 
 /* ─── Notifications ─── */
 interface Notification {
@@ -559,7 +559,7 @@ export function Layout() {
         <div
           className="w-12 h-12 rounded-xl flex items-center justify-center"
           style={{
-            background: "linear-gradient(135deg, #d4a373 0%, #c0854a 50%, #a87040 100%)",
+            background: "#c0854a",
             boxShadow: "0 4px 20px rgba(212,163,115,0.3)",
           }}
         >
@@ -617,7 +617,7 @@ export function Layout() {
             <div
               className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
               style={{
-                background: "linear-gradient(135deg, #d4a373 0%, #b87a45 100%)",
+                background: "#c0854a",
                 boxShadow: "0 2px 10px rgba(212,163,115,0.3), inset 0 1px 0 rgba(255,255,255,0.2)",
               }}
             >
@@ -779,7 +779,7 @@ export function Layout() {
                 <div
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[11px] font-bold shrink-0"
                   style={{
-                    background: "linear-gradient(135deg, #d4a373, #a87040)",
+                    background: "#c0854a",
                     boxShadow: "0 2px 8px rgba(212,163,115,0.25)",
                   }}
                 >
@@ -953,7 +953,7 @@ export function Layout() {
               title={user?.name || user?.email || "Профиль"}
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-medium ml-2 cursor-pointer hover:ring-2 hover:ring-[#d4a373]/40 transition-all"
               style={{
-                background: "linear-gradient(135deg, #d4a373 0%, #c0854a 50%, #a87040 100%)",
+                background: "#c0854a",
               }}
             >
               {user?.avatarInitials || "МП"}
@@ -968,11 +968,11 @@ export function Layout() {
           <div className="shrink-0 flex items-center gap-3 px-4 py-2 text-[12px] font-medium border-b border-amber-500/20"
             style={{ background: "rgba(200,137,58,0.08)", color: "var(--foreground)" }}>
             <span className="text-amber-600 font-semibold">Режим просмотра</span>
-            <span className="text-muted-foreground hidden sm:inline">Кнопки неактивны - выберите тариф для полного доступа</span>
+            <span className="text-muted-foreground hidden sm:inline">Кнопки неактивны — выберите тариф для полного доступа</span>
             <button
               onClick={() => startTransition(() => navigate("/app/pricing"))}
               className="ml-auto shrink-0 px-3 py-1 rounded-lg text-white text-[11px] font-semibold hover:opacity-90 transition-opacity"
-              style={{ background: "linear-gradient(135deg, #d4a373, #c08a40)" }}
+              style={{ background: "#c0854a" }}
             >
               Выбрать тариф
             </button>
@@ -988,7 +988,7 @@ export function Layout() {
             <button
               onClick={() => { setUpsellIsAI(true); setShowUpsell(true); }}
               className="ml-auto shrink-0 px-3 py-1 rounded-lg text-white text-[11px] font-semibold hover:opacity-90 transition-opacity"
-              style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}
+              style={{ background: "#1a7a6d" }}
             >
               Перейти на Про
             </button>
@@ -1016,7 +1016,7 @@ export function Layout() {
                 onClick={e => e.stopPropagation()}
               >
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto"
-                  style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}>
+                  style={{ background: "#1a7a6d" }}>
                   <Crown className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-[17px] font-bold text-foreground">Требуется тариф Про</h3>
@@ -1026,7 +1026,7 @@ export function Layout() {
                 <button
                   onClick={() => { setUpsellIsAI(true); setShowUpsell(true); }}
                   className="w-full px-5 py-2.5 rounded-xl text-white text-[13px] font-semibold hover:opacity-90 transition-opacity shadow-md"
-                  style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}
+                  style={{ background: "#1a7a6d" }}
                 >
                   Перейти на Про
                 </button>
@@ -1134,7 +1134,6 @@ export function Layout() {
       <MascotTipProvider />
       <OnboardingTour />
       <MascotReactionsProvider />
-      <MascotGamesProvider />
     </div>
   );
 }
@@ -1147,34 +1146,34 @@ function Breadcrumbs() {
   const labels: Record<string, string> = {
     "/app": "Проекты",
     "/app/smm/plan": "Контент-план",
-    "/app/smm/ideas": "Идеи и заметки",
+    "/app/smm/ideas": "Банк идей",
     "/app/smm/hashtags": "Хештеги и SEO",
-    "/app/influencers": "Инфлюенс-маркетинг",
+    "/app/influencers": "Блогеры",
     "/app/competitors": "Конкуренты",
-    "/app/competitor-spy": "Competitor Spy",
-    "/app/ab-tests": "A/B Тесты",
+    "/app/competitor-spy": "Разведка конкурентов",
+    "/app/ab-tests": "A/B-тесты",
     "/app/unit-economics": "Unit-экономика",
     "/app/media": "Бренд-ассеты",
     "/app/tools/metrics": "Проработка метрик",
     "/app/tools/budget": "Прогноз бюджета",
     "/app/tools/audience": "ЦА и аватары",
-    "/app/tools/triggers": "Триггеры из отзывов",
+    "/app/tools/triggers": "Инсайты из отзывов",
     "/app/settings": "Настройки",
-    "/app/brand-voice": "Brand Voice",
+    "/app/brand-voice": "Голос бренда",
     "/app/okr": "OKR-трекинг",
-    "/app/cjm": "Customer Journey Map",
+    "/app/cjm": "Путь клиента",
     "/app/calendar": "Маркетинговый календарь",
-    "/app/content-studio": "Content Studio",
+    "/app/content-studio": "Студия контента",
     "/app/automations": "Автоматизации",
-    "/app/repurpose": "Repurpose Engine",
-    "/app/content-scoring": "Content Scoring",
-    "/app/personas": "Persona Builder",
-    "/app/fatigue-detector": "Fatigue Detector",
-    "/app/campaign-storyline": "Campaign Storyline",
+    "/app/repurpose": "Переупаковка контента",
+    "/app/content-scoring": "Оценка текста",
+    "/app/personas": "Персоны",
+    "/app/fatigue-detector": "Выгорание креативов",
+    "/app/campaign-storyline": "Сценарий кампании",
     "/app/profile": "Личный кабинет",
     "/app/metrics-tree": "Дерево метрик",
     "/app/pricing": "Тарифы",
-    "/app/notion": "Notion Hub",
+    "/app/notion": "Notion",
   };
 
   const isProjectDetail = path.startsWith("/app/project/");

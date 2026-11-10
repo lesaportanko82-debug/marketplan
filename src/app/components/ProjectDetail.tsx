@@ -224,7 +224,7 @@ function SummaryContent({ project }: { project: Project }) {
   return (
     <div className="space-y-6">
       {/* KPI Summary Card */}
-      <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-xl p-4 md:p-6">
+      <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 md:p-6">
         <div className="flex items-start gap-3">
           <TrendingUp className="w-5 h-5 text-primary mt-0.5 shrink-0" />
           <div>

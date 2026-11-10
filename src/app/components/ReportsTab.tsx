@@ -90,7 +90,7 @@ export function ReportsTab({ project }: { project: Project }) {
         if (parent) {
           const notice = document.createElement('div');
           notice.style.cssText = 'padding: 2rem; text-align: center; color: #666; background: #f5f5f5; border-radius: 8px; font-size: 14px;';
-          notice.textContent = '📊 График доступен в веб-версии';
+          notice.textContent = ' График доступен в веб-версии';
           parent.replaceChild(notice, el);
         }
       });
@@ -568,7 +568,7 @@ export function ReportsTab({ project }: { project: Project }) {
             </div>
 
             {/* Recommendations */}
-            <div className="bg-gradient-to-r from-green-500/5 to-teal-500/5 border border-green-500/20 rounded-xl p-4 md:p-6 mt-6">
+            <div className="bg-green-500/5 border border-green-500/20 rounded-xl p-4 md:p-6 mt-6">
               <h3 className="text-foreground mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-green-600" />
                 Рекомендации

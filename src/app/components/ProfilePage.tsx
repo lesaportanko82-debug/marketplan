@@ -380,7 +380,7 @@ export function ProfilePage() {
         <div className="flex items-center gap-3 sm:gap-4">
           <div
             className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-white text-[18px] sm:text-[20px] font-bold shrink-0"
-            style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 50%, #a87040 100%)", boxShadow: "0 4px 16px rgba(212,163,115,0.25)" }}
+            style={{ background: "#c0854a", boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
           >
             {user.avatarInitials}
           </div>

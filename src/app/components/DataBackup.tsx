@@ -131,7 +131,7 @@ export function DataBackup() {
             disabled={exporting}
             className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-[12px] font-medium transition-colors disabled:opacity-50"
             style={{
-              background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)",
+              background: "#c0854a",
               color: "#fff",
             }}
           >

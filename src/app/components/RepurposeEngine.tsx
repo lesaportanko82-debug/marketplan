@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import {
   Recycle, Loader2, Copy, Check, ChevronDown, ChevronRight,
   Instagram, MessageCircle, Mail, Video, Zap, FileText, Twitter,
-  Newspaper, BookOpen, Mic, Image, Smartphone, Sparkles, ArrowRight,
+  Newspaper, BookOpen, Mic, Image, Smartphone, Zap as Sparkles, ArrowRight,
   GitBranch, LayoutList, X, FolderKanban,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -132,7 +132,7 @@ ${formatNames.map((f, i) => `${i + 1}. ${f}`).join("\n")}
 - Для Stories-цитат: короткие яркие фразы для визуальных карточек
 - Для инфографики: структурированные блоки данных
 - Адаптируй длину и стиль под каждый формат
-- НЕ используй markdown (**, ##, и т.д.) - чистый текст
+- НЕ используй markdown (**, ##, и т.д.) — чистый текст
 - Пиши на русском
 
 Формат ответа для КАЖДОГО:
@@ -231,7 +231,7 @@ ${formatNames.map((f, i) => `${i + 1}. ${f}`).join("\n")}
             Движок адаптации контента
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
-            Один контент - десять форматов. Введите текст и получите готовый контент-план на неделю
+            Один контент — десять форматов. Введите текст и получите готовый контент-план на неделю
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -241,7 +241,7 @@ ${formatNames.map((f, i) => `${i + 1}. ${f}`).join("\n")}
           >
             <span className="hidden sm:inline">История </span>({history.length})
           </button>
-          <AddToProjectButton itemType="content-studio" itemId="repurpose" itemTitle="Repurpose Engine" />
+          <AddToProjectButton itemType="content-studio" itemId="repurpose" itemTitle="Переупаковка" />
         </div>
       </div>
 
@@ -319,7 +319,7 @@ ${formatNames.map((f, i) => `${i + 1}. ${f}`).join("\n")}
             <p className={`text-[11px] transition-colors ${sourceText.trim().length < 50 ? "text-amber-500 font-medium" : "text-muted-foreground"}`}>
               {sourceText.trim().length < 50
                 ? `Введите ещё ${50 - sourceText.trim().length} симв. для запуска`
-                : `${sourceText.length} симв. - готово к адаптации ✓`}
+                : `${sourceText.length} симв. — готово к адаптации ✓`}
             </p>
           </div>
 

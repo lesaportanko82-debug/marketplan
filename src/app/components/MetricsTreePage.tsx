@@ -367,7 +367,7 @@ function AddMetricModal({
         <button
           onClick={handleSubmit}
           className="px-4 py-2 text-[13px] rounded-lg font-medium text-white transition-colors"
-          style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+          style={{ background: "#c0854a" }}
         >
           Добавить
         </button>
@@ -618,7 +618,7 @@ export function MetricsTreePage() {
               <div
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0"
                 style={{
-                  background: "linear-gradient(135deg, #1a7a6d 0%, #2eb8a4 100%)",
+                  background: "#1a7a6d",
                   boxShadow: "0 2px 10px rgba(26,122,109,0.3)",
                 }}
               >
@@ -627,7 +627,7 @@ export function MetricsTreePage() {
               Дерево метрик
             </h1>
             <p className="text-muted-foreground text-[13px] mt-1 ml-11 hidden sm:block">
-              Глобальное дерево всех метрик - перетаскивайте, добавляйте, симулируйте
+              Глобальное дерево всех метрик — перетаскивайте, добавляйте, симулируйте
             </p>
           </div>
 
@@ -636,7 +636,7 @@ export function MetricsTreePage() {
               <button
                 onClick={handleSave}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium text-white transition-colors"
-                style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}
+                style={{ background: "#1a7a6d" }}
               >
                 <Save className="w-3.5 h-3.5" />
                 Сохранить
@@ -705,7 +705,7 @@ export function MetricsTreePage() {
                 <GripVertical className="w-3 h-3 inline-block align-middle opacity-60" />{" "}
                 чтобы перестроить дерево. Нажмите на метрику для деталей. Кнопка{" "}
                 <Trash2 className="w-3 h-3 inline-block align-middle opacity-60" />{" "}
-                (при наведении) - удалить.
+                (при наведении) — удалить.
               </span>
             </div>
 

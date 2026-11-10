@@ -9,7 +9,7 @@ import {
   CheckCircle2,
   Trash2,
   AlertCircle,
-  Sparkles,
+  Zap as Sparkles,
   FileUp,
   X,
 } from "lucide-react";
@@ -115,7 +115,7 @@ export function ToolsTriggers() {
       {/* Header */}
       <div>
         <h1 className="text-foreground flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center">
             <MessageSquareQuote className="w-4.5 h-4.5 text-white" />
           </div>
           Триггеры из отзывов
@@ -136,7 +136,7 @@ export function ToolsTriggers() {
           <textarea
             value={reviewsText}
             onChange={(e) => setReviewsText(e.target.value)}
-            placeholder={`Отличный магазин! Заказал ноутбук, доставили за 2 дня. Упаковка идеальная.\n\nДолго выбирала между вами и конкурентами. В итоге решилась из-за отзывов. Не пожалела!\n\nЦены выше среднего, но качество сервиса того стоит. Менеджер Алексей помог с выбором.\n\nЗаказал второй раз. В первый раз были проблемы с доставкой, но во второй - всё идеально.`}
+            placeholder={`Отличный магазин! Заказал ноутбук, доставили за 2 дня. Упаковка идеальная.\n\nДолго выбирала между вами и конкурентами. В итоге решилась из-за отзывов. Не пожалела!\n\nЦены выше среднего, но качество сервиса того стоит. Менеджер Алексей помог с выбором.\n\nЗаказал второй раз. В первый раз были проблемы с доставкой, но во второй — всё идеально.`}
             className="w-full bg-muted/30 border border-border rounded-lg px-4 py-3 text-foreground resize-none h-40 text-[13px] placeholder:text-muted-foreground/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
           />
         </div>

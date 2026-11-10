@@ -5,7 +5,7 @@
  */
 import { useNavigate } from "react-router";
 import { startTransition } from "react";
-import { Crown, Sparkles, Zap, X, ArrowRight } from "lucide-react";
+import { Crown, Zap as Sparkles, Zap, X, ArrowRight } from "lucide-react";
 import { Mascot } from "./Mascot";
 
 interface Props {
@@ -35,7 +35,7 @@ export function UpsellModal({ onClose, aiOnly = false }: Props) {
         {/* Top gradient strip */}
         <div
           className="h-1.5 w-full"
-          style={{ background: "linear-gradient(90deg, #d4a373, #1a7a6d, #7c3aed)" }}
+          style={{ background: "#1a7a6d" }}
         />
 
         <div className="p-6 space-y-5">
@@ -68,7 +68,7 @@ export function UpsellModal({ onClose, aiOnly = false }: Props) {
           <div className="space-y-2">
             <div className="flex items-center gap-3 p-3 rounded-xl border border-border bg-muted/30">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: "linear-gradient(135deg, #d4a373, #c08a40)" }}>
+                style={{ background: "#c0854a" }}>
                 <Zap className="w-4 h-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
@@ -79,7 +79,7 @@ export function UpsellModal({ onClose, aiOnly = false }: Props) {
 
             <div className="flex items-center gap-3 p-3 rounded-xl border border-primary/30 bg-primary/5">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}>
+                style={{ background: "#1a7a6d" }}>
                 <Crown className="w-4 h-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
@@ -87,14 +87,14 @@ export function UpsellModal({ onClose, aiOnly = false }: Props) {
                 <p className="text-[11px] text-muted-foreground">Весь функционал + все AI-инструменты</p>
               </div>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white shrink-0"
-                style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}>
+                style={{ background: "#1a7a6d" }}>
                 Хит
               </span>
             </div>
 
             <div className="flex items-center gap-3 p-3 rounded-xl border border-border bg-muted/30">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #a855f7)" }}>
+                style={{ background: "#7c3aed" }}>
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
@@ -109,7 +109,7 @@ export function UpsellModal({ onClose, aiOnly = false }: Props) {
             <button
               onClick={handlePricing}
               className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white text-[14px] font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-md"
-              style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}
+              style={{ background: "#1a7a6d" }}
             >
               Выбрать тариф
               <ArrowRight className="w-4 h-4" />

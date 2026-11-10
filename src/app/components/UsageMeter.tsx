@@ -1,5 +1,5 @@
 /**
- * 🦊 Visual usage meter - progress bar + label.
+ * Visual usage meter - progress bar + label.
  *
  * Colors: green → amber → red based on percentage.
  * Supports inline (compact) and card (large) variants.
@@ -99,7 +99,7 @@ export function UsageMeter({
             style={{ color }}
           >
             <TrendingUp className="w-3 h-3" />
-            Лимит исчерпан - обновить план
+            Лимит исчерпан — обновить план
           </button>
         )}
       </div>
@@ -160,14 +160,14 @@ export function UsageOverview({ className = "" }: { className?: string }) {
   const { getUsage } = useUsage();
 
   const items: { key: UsageKey; label: string; icon: string }[] = [
-    { key: "projects", label: "Проекты", icon: "📁" },
-    { key: "posts", label: "Посты", icon: "📝" },
-    { key: "aiTextPerMonth", label: "AI-тексты", icon: "🤖" },
-    { key: "aiImagePerMonth", label: "AI-картинки", icon: "🎨" },
-    { key: "aiChatPerDay", label: "AI-чат (день)", icon: "💬" },
-    { key: "teamMembers", label: "Команда", icon: "👥" },
-    { key: "abTests", label: "A/B тесты", icon: "🧪" },
-    { key: "automations", label: "Автоматизации", icon: "⚡" },
+    { key: "projects", label: "Проекты", icon: "" },
+    { key: "posts", label: "Посты", icon: "" },
+    { key: "aiTextPerMonth", label: "AI-тексты", icon: "" },
+    { key: "aiImagePerMonth", label: "AI-картинки", icon: "" },
+    { key: "aiChatPerDay", label: "AI-чат (день)", icon: "" },
+    { key: "teamMembers", label: "Команда", icon: "" },
+    { key: "abTests", label: "A/B тесты", icon: "" },
+    { key: "automations", label: "Автоматизации", icon: "" },
   ];
 
   // Only show items that have non-zero limits (relevant for current plan)
@@ -183,8 +183,7 @@ export function UsageOverview({ className = "" }: { className?: string }) {
         const color = getBarColor(info.percentage);
         return (
           <div key={item.key} className="flex items-center gap-2 p-2 rounded-lg bg-muted/40">
-            <span className="text-[14px]">{item.icon}</span>
-            <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] text-muted-foreground truncate">{item.label}</span>
                 <span className="text-[10px] font-semibold" style={{ color: info.isInfinite ? "#1a7a6d" : color }}>

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import {
-  Film, Loader2, Sparkles, Plus, ChevronRight, ChevronDown,
+  Film, Loader2, Zap as Sparkles, Plus, ChevronRight, ChevronDown,
   Flame, Eye, Rocket, ThumbsUp, Clock, AlertTriangle,
   Copy, Check, X, ArrowRight, Target, Zap, Heart,
   MessageSquare, Star, FileText, Volume2, RefreshCw,
@@ -90,12 +90,12 @@ export function CampaignStoryline() {
 Длительность: ${duration}
 
 Создай кампанию из 6 фаз:
-1. WARMUP (Прогрев) - создаём интерес, намекаем
-2. INTRIGUE (Интрига) - тизеры, загадки, обратный отсчёт
-3. LAUNCH (Запуск) - главное объявление, максимальный охват
-4. SOCIAL_PROOF (Социальное доказательство) - отзывы, кейсы, цифры
-5. FOLLOWUP (Дожим) - работа с сомневающимися, доп. аргументы
-6. FOMO (Срочность) - дедлайны, ограниченность, финальный push
+1. WARMUP (Прогрев) — создаём интерес, намекаем
+2. INTRIGUE (Интрига) — тизеры, загадки, обратный отсчёт
+3. LAUNCH (Запуск) — главное объявление, максимальный охват
+4. SOCIAL_PROOF (Социальное доказательство) — отзывы, кейсы, цифры
+5. FOLLOWUP (Дожим) — работа с сомневающимися, доп. аргументы
+6. FOMO (Срочность) — дедлайны, ограниченность, финальный push
 
 Для КАЖДОЙ фазы:
 
@@ -211,13 +211,13 @@ export function CampaignStoryline() {
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
             <Film className="w-5 h-5 text-[#d4a373] shrink-0" />
-            Campaign Storyline Builder
+            Сценарий кампании
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Визуальная раскадровка кампании: от прогрева до FOMO
           </p>
         </div>
-        <AddToProjectButton itemType="content-studio" itemId="storyline" itemTitle="Campaign Storyline" />
+        <AddToProjectButton itemType="content-studio" itemId="storyline" itemTitle="Сценарий кампании" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">

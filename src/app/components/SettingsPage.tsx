@@ -229,7 +229,7 @@ export function SettingsPage() {
           <div className="flex items-center gap-2 sm:gap-3">
             <MascotBadge size={48} showName={false} />
             <div>
-              <p className="text-[13px] sm:text-[14px] font-semibold text-foreground">Марк 🦊</p>
+              <p className="text-[13px] sm:text-[14px] font-semibold text-foreground">Марк</p>
               <p className="text-[11px] text-muted-foreground">Настройки маскота</p>
             </div>
           </div>
@@ -238,7 +238,7 @@ export function SettingsPage() {
         <div className="space-y-4">
           <div className="flex items-start sm:items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-foreground text-[13px]">🔊 Звуковые эффекты</p>
+              <p className="text-foreground text-[13px]"> Звуковые эффекты</p>
               <p className="text-muted-foreground text-[11px]">Тихие мелодии при подсказках и действиях</p>
             </div>
             <button
@@ -250,7 +250,7 @@ export function SettingsPage() {
           </div>
           <div className="flex items-start sm:items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-foreground text-[13px]">👔 Сезонный костюм</p>
+              <p className="text-foreground text-[13px]"> Сезонный костюм</p>
               <p className="text-muted-foreground text-[11px]">Меняется автоматически по календарю</p>
             </div>
             <span className="text-[11px] text-[#d4a373] font-medium bg-[#d4a373]/10 px-2.5 py-1 rounded-full">
@@ -259,7 +259,7 @@ export function SettingsPage() {
           </div>
           <div className="flex items-start sm:items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-foreground text-[13px]">🦊 Настроение дня</p>
+              <p className="text-foreground text-[13px]"> Настроение дня</p>
               <p className="text-muted-foreground text-[11px]">Марк запоминает тональность разговоров</p>
             </div>
             <span className="text-[11px] text-teal-600 dark:text-teal-400 font-medium bg-teal-600/10 px-2.5 py-1 rounded-full capitalize">
@@ -273,28 +273,28 @@ export function SettingsPage() {
             onClick={() => { resetOnboarding(); resetAllTips(); window.location.reload(); }}
             className="text-[11px] text-[#d4a373] hover:underline"
           >
-            🔄 Пройти онбординг-тур снова
+            Пройти онбординг-тур снова
           </button>
           <span className="text-[10px] text-muted-foreground">•</span>
           <button
             onClick={() => { resetAllTips(); toast.success("Подсказки Марка сброшены!"); }}
             className="text-[11px] text-teal-600 dark:text-teal-400 hover:underline"
           >
-            💬 Сбросить подсказки
+            Сбросить подсказки
           </button>
           <span className="text-[10px] text-muted-foreground">•</span>
           <button
             onClick={() => { resetMilestones(); toast.success("Достижения сброшены!"); }}
             className="text-[11px] text-[#c08a40] hover:underline"
           >
-            🏆 Сбросить достижения
+            Сбросить достижения
           </button>
           <span className="text-[10px] text-muted-foreground">•</span>
           <button
             onClick={() => { resetMood(); toast.success("Настроение Марка сброшено!"); }}
             className="text-[11px] text-[#2eb8a4] hover:underline"
           >
-            🦊 Сбросить настроение
+            Сбросить настроение
           </button>
         </div>
       </div>

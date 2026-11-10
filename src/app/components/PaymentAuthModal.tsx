@@ -142,7 +142,7 @@ export function PaymentAuthModal({ planName, onClose, onAuthSuccess }: Props) {
             type="submit"
             disabled={loading}
             className="w-full py-2.5 rounded-xl text-white text-[14px] font-semibold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
-            style={{ background: "linear-gradient(135deg, #1a7a6d, #2eb8a4)" }}
+            style={{ background: "#1a7a6d" }}
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {loading

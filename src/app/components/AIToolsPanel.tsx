@@ -1,5 +1,5 @@
 /**
- * 🤖 AIToolsPanel - панель расширенных AI-инструментов
+ * AIToolsPanel - панель расширенных AI-инструментов
  * 
  * Интеграция новых AI-функций в Content Studio:
  * - Content Repurposing
@@ -11,7 +11,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  Sparkles, ArrowRight, TrendingUp, TrendingDown, Minus,
+  Zap as Sparkles, ArrowRight, TrendingUp, TrendingDown, Minus,
   RefreshCw, Check, X, Loader2, Lightbulb, Zap, Star,
   BarChart3, MessageSquare, Wand2, Split,
 } from "lucide-react";
@@ -70,7 +70,7 @@ export function AIToolsPanel({ content, platform, onApply }: AIToolsPanelProps) 
         targetFormat,
       });
       setRepurposeResult(result);
-      toast.success("Контент адаптирован! 🎯");
+      toast.success("Контент адаптирован!");
     } catch (error) {
       console.error("[Repurpose] Error:", error);
       toast.error("Ошибка при адаптации контента");
@@ -89,7 +89,7 @@ export function AIToolsPanel({ content, platform, onApply }: AIToolsPanelProps) 
     try {
       const result = await analyzeSentiment(content);
       setSentimentResult(result);
-      toast.success("Тональность проанализирована! 📊");
+      toast.success("Тональность проанализирована!");
     } catch (error) {
       console.error("[Sentiment] Error:", error);
       toast.error("Ошибка при анализе тональности");
@@ -114,7 +114,7 @@ export function AIToolsPanel({ content, platform, onApply }: AIToolsPanelProps) 
       const result = await enhanceContent(content, Array.from(selectedImprovements));
       setEnhancedContent(result.enhanced);
       setEnhanceChanges(result.changes);
-      toast.success("Контент улучшен! ✨");
+      toast.success("Контент улучшен!");
     } catch (error) {
       console.error("[Enhance] Error:", error);
       toast.error("Ошибка при улучшении контента");
@@ -133,7 +133,7 @@ export function AIToolsPanel({ content, platform, onApply }: AIToolsPanelProps) 
     try {
       const result = await generateABTestIdeas(content, abTestGoal);
       setAbTestSuggestions(result);
-      toast.success(`Сгенерировано ${result.length} идей для A/B тестов! 🧪`);
+      toast.success(`Сгенерировано ${result.length} идей для A/B тестов!`);
     } catch (error) {
       console.error("[A/B Test] Error:", error);
       toast.error("Ошибка при генерации A/B тестов");

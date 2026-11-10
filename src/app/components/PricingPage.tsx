@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import {
-  Check, X, Zap, Crown, Eye, Sparkles, ChevronRight,
+  Check, X, Zap, Crown, Eye, Zap as Sparkles, ChevronRight,
   LayoutDashboard, Target, Gauge, PlayCircle, Loader2, ShieldCheck, CalendarDays,
 } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -40,7 +40,7 @@ const PLANS: Plan[] = [
     description: "Все базовые инструменты без AI",
     icon: Zap,
     color: "#d4a373",
-    gradient: "from-[#d4a373] to-[#c08a40]",
+    gradient: "from-[#d4a373] to-[#d4a373]",
     badge: "Попробовать",
     popular: true,
     features: [
@@ -62,7 +62,7 @@ const PLANS: Plan[] = [
     description: "Весь функционал в течение месяца",
     icon: Crown,
     color: "#1a7a6d",
-    gradient: "from-[#1a7a6d] to-[#0d7377]",
+    gradient: "from-[#1a7a6d] to-[#1a7a6d]",
     badge: "Лучший выбор",
     features: [
       "Весь функционал платформы",
@@ -81,7 +81,7 @@ const PLANS: Plan[] = [
     description: "Весь функционал в течение 3 месяцев",
     icon: Sparkles,
     color: "#7c3aed",
-    gradient: "from-[#7c3aed] to-[#5b21b6]",
+    gradient: "from-[#7c3aed] to-[#7c3aed]",
     badge: "Выгода 600 ₽",
     features: [
       "Весь функционал платформы",
@@ -237,7 +237,7 @@ export function PricingPage() {
             <button
               onClick={() => navigate("/app")}
               className="px-6 py-3 rounded-xl text-white font-semibold text-[14px] transition-all hover:opacity-90 active:scale-[0.98] shadow-lg"
-              style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
+              style={{ background: "#c0854a" }}
             >
               {user ? "Перейти к проектам" : "Начать бесплатно"}
             </button>
@@ -320,7 +320,7 @@ export function PricingPage() {
               >
                 <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-[16px] shrink-0"
-                  style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
+                  style={{ background: "#c0854a" }}
                 >
                   {item.step}
                 </div>
@@ -360,7 +360,7 @@ export function PricingPage() {
               Тарифы
             </h2>
             <p className="text-muted-foreground text-[14px] max-w-[520px] mx-auto">
-              Старт - без AI. Про - всё включено. Про+ - квартал со скидкой.
+              Старт — без AI. Про — всё включено. Про+ - квартал со скидкой.
             </p>
           </div>
 
@@ -455,7 +455,7 @@ export function PricingPage() {
                         }`}
                         style={
                           plan.id !== "demo"
-                            ? { background: `linear-gradient(135deg, ${plan.color}, ${plan.color}dd)` }
+                            ? { background: `${plan.color}` }
                             : undefined
                         }
                       >
@@ -476,16 +476,16 @@ export function PricingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-gradient-to-br from-primary/5 to-[#d4a373]/5 border border-border rounded-2xl p-4 md:p-6 md:p-8 text-center space-y-3"
+            className="bg-primary/5 border border-border rounded-2xl p-4 md:p-6 md:p-8 text-center space-y-3"
           >
             <p className="text-foreground text-[15px] md:text-[16px] font-medium leading-relaxed">
-              2 проекта - достаточно, чтобы попробовать
+              2 проекта — достаточно, чтобы попробовать
             </p>
             <p className="text-foreground text-[15px] md:text-[16px] font-medium leading-relaxed">
-              Безлимит - чтобы реально работать
+              Безлимит — чтобы реально работать
             </p>
             <p className="text-muted-foreground text-[13px] pt-2 max-w-[520px] mx-auto">
-              Если вы регулярно занимаетесь маркетингом - лимита в 2 проекта быстро станет мало
+              Если вы регулярно занимаетесь маркетингом — лимита в 2 проекта быстро станет мало
             </p>
           </motion.div>
         </section>
@@ -507,7 +507,7 @@ export function PricingPage() {
             <button
               onClick={() => navigate("/app")}
               className="px-8 py-3.5 rounded-xl text-white font-semibold text-[15px] transition-all hover:opacity-90 active:scale-[0.98] shadow-lg mx-auto flex items-center gap-2"
-              style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
+              style={{ background: "#c0854a" }}
             >
               Начать
               <ChevronRight className="w-4.5 h-4.5" />

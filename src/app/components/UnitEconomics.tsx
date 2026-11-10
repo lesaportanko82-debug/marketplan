@@ -427,7 +427,7 @@ export function UnitEconomics() {
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-amber-500 flex items-center justify-center shrink-0">
               <Calculator className="w-4 h-4 text-white" />
             </div>
             Unit-экономика
@@ -529,7 +529,7 @@ export function UnitEconomics() {
                 <ResultRow label="Paid CAC" value={fmtCurrency(calc.paidCAC)} tone={calc.paidCAC > calc.ltvNet ? "bad" : "neutral"} tooltip="Расходы ÷ Только платные клиенты" />
                 <ResultRow label="Blended CAC" value={fmtCurrency(calc.blendedCAC)} bold tone={calc.blendedCAC > calc.ltvNet / 3 ? "warn" : "good"} tooltip="Расходы ÷ Все клиенты (вкл. органику)" />
               </TableWrapper>
-              <Verdict tone={calc.blendedCAC < calc.ltvNet / 3 ? "good" : calc.blendedCAC < calc.ltvNet ? "warn" : "bad"} text={calc.blendedCAC < calc.ltvNet / 3 ? `CAC в здоровой зоне - ${fmtCurrency(calc.blendedCAC)} составляет менее трети LTV (${fmtCurrency(calc.ltvNet)}). Органика ${calc.organicShare.toFixed(0)}% - хороший признак.` : calc.blendedCAC < calc.ltvNet ? `CAC (${fmtCurrency(calc.blendedCAC)}) приближается к критической зоне - более трети LTV. Оптимизируйте каналы или наращивайте органику.` : `CAC (${fmtCurrency(calc.blendedCAC)}) превышает LTV - каждый клиент убыточен. Срочно пересмотрите модель привлечения.`} />
+              <Verdict tone={calc.blendedCAC < calc.ltvNet / 3 ? "good" : calc.blendedCAC < calc.ltvNet ? "warn" : "bad"} text={calc.blendedCAC < calc.ltvNet / 3 ? `CAC в здоровой зоне - ${fmtCurrency(calc.blendedCAC)} составляет менее трети LTV (${fmtCurrency(calc.ltvNet)}). Органика ${calc.organicShare.toFixed(0)}% — хороший признак.` : calc.blendedCAC < calc.ltvNet ? `CAC (${fmtCurrency(calc.blendedCAC)}) приближается к критической зоне — более трети LTV. Оптимизируйте каналы или наращивайте органику.` : `CAC (${fmtCurrency(calc.blendedCAC)}) превышает LTV - каждый клиент убыточен. Срочно пересмотрите модель привлечения.`} />
             </div>
 
             {/* Unit P&L */}
@@ -544,7 +544,7 @@ export function UnitEconomics() {
                 <ResultRow label="− Variable Costs" value={`−${fmtCurrency(m.variableCostPerUser)}`} tone="bad" />
                 <ResultRow label="= Contribution Margin" value={fmtCurrency(calc.contributionMargin)} bold tone={calc.cmPercent >= 40 ? "good" : calc.cmPercent >= 20 ? "warn" : "bad"} tooltip={`CM%: ${fmtPct(calc.cmPercent)}. Покрывает пост. расходы`} />
               </TableWrapper>
-              <Verdict tone={calc.contributionMargin > 0 ? (calc.cmPercent >= 40 ? "good" : "warn") : "bad"} text={calc.contributionMargin > 0 ? `Каждый клиент приносит ${fmtCurrency(calc.contributionMargin)} CM (${fmtPct(calc.cmPercent)}). ${calc.grossMargin >= 60 ? "Валовая маржа высокая - структура затрат эффективна." : "Рассмотрите снижение COGS или переменных расходов."}` : `CM отрицательный - бизнес теряет ${fmtCurrency(Math.abs(calc.contributionMargin))} на клиенте до постоянных расходов. Пересмотрите цены или затраты.`} />
+              <Verdict tone={calc.contributionMargin > 0 ? (calc.cmPercent >= 40 ? "good" : "warn") : "bad"} text={calc.contributionMargin > 0 ? `Каждый клиент приносит ${fmtCurrency(calc.contributionMargin)} CM (${fmtPct(calc.cmPercent)}). ${calc.grossMargin >= 60 ? "Валовая маржа высокая — структура затрат эффективна." : "Рассмотрите снижение COGS или переменных расходов."}` : `CM отрицательный — бизнес теряет ${fmtCurrency(Math.abs(calc.contributionMargin))} на клиенте до постоянных расходов. Пересмотрите цены или затраты.`} />
             </div>
 
             {/* LTV Engine */}
@@ -560,7 +560,7 @@ export function UnitEconomics() {
                 <ResultRow label="LTV / CAC" value={calc.ltvCacRatio.toFixed(2) + "x"} bold tone={calc.ltvCacRatio >= 3 ? "good" : calc.ltvCacRatio >= 1.5 ? "warn" : "bad"} tooltip="≥3x хорошо, ≥5x отлично. <1x - убыток" />
                 <ResultRow label="Payback Period" value={calc.paybackMonths < 999 ? calc.paybackMonths.toFixed(1) + " мес." : "∞"} bold tone={calc.paybackMonths <= 6 ? "good" : calc.paybackMonths <= 12 ? "warn" : "bad"} tooltip="CAC ÷ CM. SaaS норма: 12–18 мес." />
               </TableWrapper>
-              <Verdict tone={calc.ltvCacRatio >= 3 ? "good" : calc.ltvCacRatio >= 1.5 ? "warn" : "bad"} text={calc.ltvCacRatio >= 3 ? `LTV/CAC = ${calc.ltvCacRatio.toFixed(1)}x, payback ${calc.paybackMonths.toFixed(1)} мес. - экономика здорова. ${calc.ltvCacRatio >= 5 ? "Можно агрессивнее инвестировать в привлечение." : "Запас прочности достаточный, фокус на снижение churn для роста LTV."}` : calc.ltvCacRatio >= 1.5 ? `LTV/CAC = ${calc.ltvCacRatio.toFixed(1)}x - ниже целевых 3x. Payback ${calc.paybackMonths.toFixed(1)} мес. создаёт кассовый разрыв. Приоритет: снижение churn с ${fmtPct(m.monthlyChurnRate)}.` : `LTV/CAC = ${calc.ltvCacRatio.toFixed(1)}x - критическая ситуация. ${calc.ltvCacRatio < 1 ? "Каждый клиент убыточен." : "Экономика на грани."} Пересмотрите модель.`} />
+              <Verdict tone={calc.ltvCacRatio >= 3 ? "good" : calc.ltvCacRatio >= 1.5 ? "warn" : "bad"} text={calc.ltvCacRatio >= 3 ? `LTV/CAC = ${calc.ltvCacRatio.toFixed(1)}x, payback ${calc.paybackMonths.toFixed(1)} мес. — экономика здорова. ${calc.ltvCacRatio >= 5 ? "Можно агрессивнее инвестировать в привлечение." : "Запас прочности достаточный, фокус на снижение churn для роста LTV."}` : calc.ltvCacRatio >= 1.5 ? `LTV/CAC = ${calc.ltvCacRatio.toFixed(1)}x - ниже целевых 3x. Payback ${calc.paybackMonths.toFixed(1)} мес. создаёт кассовый разрыв. Приоритет: снижение churn с ${fmtPct(m.monthlyChurnRate)}.` : `LTV/CAC = ${calc.ltvCacRatio.toFixed(1)}x - критическая ситуация. ${calc.ltvCacRatio < 1 ? "Каждый клиент убыточен." : "Экономика на грани."} Пересмотрите модель.`} />
             </div>
 
             {/* Monthly Totals */}
@@ -575,7 +575,7 @@ export function UnitEconomics() {
                 <ResultRow label="− Fixed Costs" value={`−${fmtCurrency(m.fixedCostsMonthly)}`} tone="bad" />
                 <ResultRow label="= Operating Profit" value={fmtCurrency(calc.opProfit)} bold tone={calc.opProfit > 0 ? "good" : "bad"} tooltip={`Op. Margin: ${fmtPct(calc.opMargin)}`} />
               </TableWrapper>
-              <Verdict tone={calc.opProfit > 0 ? (calc.opMargin > 15 ? "good" : "warn") : "bad"} text={calc.opProfit > 0 ? `Бизнес прибылен: ${fmtCurrency(calc.opProfit)}/мес. (маржа ${fmtPct(calc.opMargin)}). ${calc.opMargin > 20 ? "Запас позволяет масштабировать." : "Маржа тонкая - контролируйте фикс при росте."}` : `Убыток ${fmtCurrency(Math.abs(calc.opProfit))}/мес. ${calc.totalContribution > 0 ? `CM положительный - нужно ещё ~${Math.ceil(m.fixedCostsMonthly / calc.contributionMargin - calc.totalCustomers)} клиентов для нуля.` : "CM отрицательный - пересмотрите цены."}`} />
+              <Verdict tone={calc.opProfit > 0 ? (calc.opMargin > 15 ? "good" : "warn") : "bad"} text={calc.opProfit > 0 ? `Бизнес прибылен: ${fmtCurrency(calc.opProfit)}/мес. (маржа ${fmtPct(calc.opMargin)}). ${calc.opMargin > 20 ? "Запас позволяет масштабировать." : "Маржа тонкая — контролируйте фикс при росте."}` : `Убыток ${fmtCurrency(Math.abs(calc.opProfit))}/мес. ${calc.totalContribution > 0 ? `CM положительный — нужно ещё ~${Math.ceil(m.fixedCostsMonthly / calc.contributionMargin - calc.totalCustomers)} клиентов для нуля.` : "CM отрицательный — пересмотрите цены."}`} />
             </div>
           </div>
         </div>
@@ -611,7 +611,7 @@ export function UnitEconomics() {
                 <ResultRow label="= Ending MRR" value={fmtCurrency(saas.endMRR)} bold tone="info" />
                 <ResultRow label="ARR (×12)" value={fmtCurrency(saas.arr)} bold tone="info" />
               </TableWrapper>
-              <Verdict tone={saas.netNewMRR > 0 ? "good" : "bad"} text={saas.netNewMRR > 0 ? `MRR растёт на ${fmtCurrency(saas.netNewMRR)}/мес. ${m.mrrExpansion > m.mrrChurned ? "Expansion превышает отток - признак product-market fit." : "Отток превышает expansion - работайте над upsell и retention."}` : `MRR сокращается на ${fmtCurrency(Math.abs(saas.netNewMRR))}/мес. Отток (${fmtCurrency(m.mrrContraction + m.mrrChurned)}) превышает приход. Приоритет - снижение churn.`} />
+              <Verdict tone={saas.netNewMRR > 0 ? "good" : "bad"} text={saas.netNewMRR > 0 ? `MRR растёт на ${fmtCurrency(saas.netNewMRR)}/мес. ${m.mrrExpansion > m.mrrChurned ? "Expansion превышает отток — признак product-market fit." : "Отток превышает expansion - работайте над upsell и retention."}` : `MRR сокращается на ${fmtCurrency(Math.abs(saas.netNewMRR))}/мес. Отток (${fmtCurrency(m.mrrContraction + m.mrrChurned)}) превышает приход. Приоритет — снижение churn.`} />
             </div>
 
             {/* SaaS Health Metrics */}
@@ -623,13 +623,13 @@ export function UnitEconomics() {
                 <ResultRow label="Gross MRR Churn Rate" value={fmtPct(saas.grossChurnRate)} tone={saas.grossChurnRate <= 2 ? "good" : saas.grossChurnRate <= 5 ? "warn" : "bad"} tooltip="Churned MRR ÷ Starting MRR. B2B SaaS: <2% мес." />
                 <ResultRow label="Gross Revenue Retention (GRR)" value={fmtPct(saas.grossRetention)} tone={saas.grossRetention >= 90 ? "good" : saas.grossRetention >= 80 ? "warn" : "bad"} tooltip="(Starting − Churned) ÷ Starting × 100%. Top SaaS: >90%" />
                 <ResultRow label="Net Revenue Retention (NRR)" value={fmtPct(saas.netRevenueRetention)} bold tone={saas.netRevenueRetention >= 120 ? "good" : saas.netRevenueRetention >= 100 ? "warn" : "bad"} tooltip="(Starting + Expansion − Contraction − Churned) ÷ Starting. Топ: >120%" />
-                <ResultRow label="Quick Ratio" value={saas.quickRatio < 100 ? saas.quickRatio.toFixed(2) : "∞"} bold tone={saas.quickRatio >= 4 ? "good" : saas.quickRatio >= 2 ? "warn" : "bad"} tooltip="(New + Expansion) ÷ (Contraction + Churned). ≥4 - отлично, ≥2 - здоровый рост" />
-                <ResultRow label="Magic Number" value={saas.magicNumber.toFixed(2)} tone={saas.magicNumber >= 1 ? "good" : saas.magicNumber >= 0.5 ? "warn" : "bad"} tooltip="Net New ARR ÷ S&M Spend. ≥1 - масштабируйтесь. <0.5 - оптимизируйте" />
+                <ResultRow label="Quick Ratio" value={saas.quickRatio < 100 ? saas.quickRatio.toFixed(2) : "∞"} bold tone={saas.quickRatio >= 4 ? "good" : saas.quickRatio >= 2 ? "warn" : "bad"} tooltip="(New + Expansion) ÷ (Contraction + Churned). ≥4 — отлично, ≥2 — здоровый рост" />
+                <ResultRow label="Magic Number" value={saas.magicNumber.toFixed(2)} tone={saas.magicNumber >= 1 ? "good" : saas.magicNumber >= 0.5 ? "warn" : "bad"} tooltip="Net New ARR ÷ S&M Spend. ≥1 — масштабируйтесь. <0.5 — оптимизируйте" />
                 <ResultRow label="Burn Multiple" value={saas.burnMultiple < 100 ? saas.burnMultiple.toFixed(1) + "x" : "∞"} tone={saas.burnMultiple <= 1.5 ? "good" : saas.burnMultiple <= 3 ? "warn" : "bad"} tooltip="Net Burn ÷ Net New ARR. <1.5x - отлично (Bessemer)" />
-                <ResultRow label="Rule of 40" value={saas.rule40.toFixed(0) + "%"} bold tone={saas.rule40 >= 40 ? "good" : saas.rule40 >= 20 ? "warn" : "bad"} tooltip="Growth Rate + Profit Margin. ≥40% - лидер рынка" />
+                <ResultRow label="Rule of 40" value={saas.rule40.toFixed(0) + "%"} bold tone={saas.rule40 >= 40 ? "good" : saas.rule40 >= 20 ? "warn" : "bad"} tooltip="Growth Rate + Profit Margin. ≥40% — лидер рынка" />
                 <ResultRow label="LTV (SaaS-формула)" value={fmtCurrency(saas.ltvFromMrr)} tone="info" tooltip="ARPU × Gross Margin ÷ Monthly Churn" />
               </TableWrapper>
-              <Verdict tone={saas.rule40 >= 40 ? "good" : saas.rule40 >= 20 ? "warn" : "bad"} text={`${saas.netRevenueRetention >= 120 ? "NRR >120% - топ SaaS" : saas.netRevenueRetention >= 100 ? "NRR >100% - когорты растут" : `NRR ${fmtPct(saas.netRevenueRetention)} - когорты сжимаются`}. Quick Ratio ${saas.quickRatio < 100 ? saas.quickRatio.toFixed(1) : "∞"} - ${saas.quickRatio >= 4 ? "отличный" : saas.quickRatio >= 2 ? "здоровый" : "рост неустойчив"}. Rule of 40: ${saas.rule40.toFixed(0)}% - ${saas.rule40 >= 40 ? "лидер рынка" : saas.rule40 >= 20 ? "зона роста" : "ниже нормы"}. ${saas.magicNumber >= 1 ? "Magic Number ≥1 - пора масштабировать S&M." : saas.magicNumber >= 0.5 ? "Magic Number умеренный." : "Magic Number <0.5 - S&M неэффективен."}`} />
+              <Verdict tone={saas.rule40 >= 40 ? "good" : saas.rule40 >= 20 ? "warn" : "bad"} text={`${saas.netRevenueRetention >= 120 ? "NRR >120% — топ SaaS" : saas.netRevenueRetention >= 100 ? "NRR >100% — когорты растут" : `NRR ${fmtPct(saas.netRevenueRetention)} - когорты сжимаются`}. Quick Ratio ${saas.quickRatio < 100 ? saas.quickRatio.toFixed(1) : "∞"} - ${saas.quickRatio >= 4 ? "отличный" : saas.quickRatio >= 2 ? "здоровый" : "рост неустойчив"}. Rule of 40: ${saas.rule40.toFixed(0)}% - ${saas.rule40 >= 40 ? "лидер рынка" : saas.rule40 >= 20 ? "зона роста" : "ниже нормы"}. ${saas.magicNumber >= 1 ? "Magic Number ≥1 — пора масштабировать S&M." : saas.magicNumber >= 0.5 ? "Magic Number умеренный." : "Magic Number <0.5 - S&M неэффективен."}`} />
             </div>
           </div>
         </div>
@@ -758,7 +758,7 @@ export function UnitEconomics() {
                 <ResultRow label="BEP (единицы)" value={breakeven.bepUnits < Infinity ? breakeven.bepUnits.toLocaleString("ru-RU") : "∞"} bold tone={breakeven.bepUnits < Infinity ? "info" : "bad"} tooltip="Пост. расходы ÷ CM на единицу" />
                 <ResultRow label="BEP (выручка)" value={breakeven.bepRevenue < Infinity ? fmtCurrency(breakeven.bepRevenue) : "∞"} bold tone="info" tooltip="BEP (ед.) × Цена" />
               </TableWrapper>
-              <Verdict tone={breakeven.cm > 0 ? (breakeven.bepUnits <= calc.totalCustomers ? "good" : "warn") : "bad"} text={breakeven.cm > 0 ? (breakeven.bepUnits <= calc.totalCustomers ? `За точкой безубыточности: BEP ${breakeven.bepUnits.toLocaleString("ru-RU")} ед., база ${calc.totalCustomers} клиентов. Запас прочности ${fmtPct(((calc.totalCustomers - breakeven.bepUnits) / calc.totalCustomers) * 100)}.` : `Нужно ${breakeven.bepUnits.toLocaleString("ru-RU")} ед. при ${calc.totalCustomers} клиентах - дефицит ${(breakeven.bepUnits - calc.totalCustomers).toLocaleString("ru-RU")}. CM Ratio ${fmtPct(breakeven.cmRatio)} - ${breakeven.cmRatio >= 50 ? "масштабирование поможет." : "рассмотрите повышение цены."}`) : `CM отрицательный - каждая единица увеличивает убыток. Цена не покрывает переменные расходы.`} />
+              <Verdict tone={breakeven.cm > 0 ? (breakeven.bepUnits <= calc.totalCustomers ? "good" : "warn") : "bad"} text={breakeven.cm > 0 ? (breakeven.bepUnits <= calc.totalCustomers ? `За точкой безубыточности: BEP ${breakeven.bepUnits.toLocaleString("ru-RU")} ед., база ${calc.totalCustomers} клиентов. Запас прочности ${fmtPct(((calc.totalCustomers - breakeven.bepUnits) / calc.totalCustomers) * 100)}.` : `Нужно ${breakeven.bepUnits.toLocaleString("ru-RU")} ед. при ${calc.totalCustomers} клиентах — дефицит ${(breakeven.bepUnits - calc.totalCustomers).toLocaleString("ru-RU")}. CM Ratio ${fmtPct(breakeven.cmRatio)} - ${breakeven.cmRatio >= 50 ? "масштабирование поможет." : "рассмотрите повышение цены."}`) : `CM отрицательный — каждая единица увеличивает убыток. Цена не покрывает переменные расходы.`} />
             </div>
 
             {/* Sensitivity Analysis */}
@@ -785,7 +785,7 @@ export function UnitEconomics() {
                   ))}
                 </TableWrapper>
               </div>
-              <Verdict tone="info" text={`При -20% цены BEP: ${breakeven.sensitivity[0].bep < Infinity ? breakeven.sensitivity[0].bep.toLocaleString("ru-RU") : "∞"} ед., при +20%: ${breakeven.sensitivity[4].bep < Infinity ? breakeven.sensitivity[4].bep.toLocaleString("ru-RU") : "∞"} ед. ${breakeven.sensitivity[0].bep < Infinity && breakeven.sensitivity[4].bep < Infinity && breakeven.sensitivity[4].bep > 0 ? (breakeven.sensitivity[0].bep / breakeven.sensitivity[4].bep > 2 ? "Высокая чувствительность к цене - ценообразование критично." : "Умеренная чувствительность - модель устойчива.") : "Модель сильно зависит от ценообразования."}`} />
+              <Verdict tone="info" text={`При -20% цены BEP: ${breakeven.sensitivity[0].bep < Infinity ? breakeven.sensitivity[0].bep.toLocaleString("ru-RU") : "∞"} ед., при +20%: ${breakeven.sensitivity[4].bep < Infinity ? breakeven.sensitivity[4].bep.toLocaleString("ru-RU") : "∞"} ед. ${breakeven.sensitivity[0].bep < Infinity && breakeven.sensitivity[4].bep < Infinity && breakeven.sensitivity[4].bep > 0 ? (breakeven.sensitivity[0].bep / breakeven.sensitivity[4].bep > 2 ? "Высокая чувствительность к цене — ценообразование критично." : "Умеренная чувствительность — модель устойчива.") : "Модель сильно зависит от ценообразования."}`} />
             </div>
           </div>
         </div>
@@ -909,7 +909,7 @@ export function UnitEconomics() {
               const pess = scenarios[0].rows[scenarios[0].rows.length - 1];
               const opt = scenarios[2].rows[scenarios[2].rows.length - 1];
               const baseProfitable = scenarios[1].rows.findIndex(r => r.cumProfit > 0);
-              return `Базовый сценарий (${m.scenarioGrowthBase}% м/м): ${base.cumProfit >= 0 ? `кумулятивная прибыль ${fmtCurrency(base.cumProfit)} к M${m.scenarioMonths}` : `убыток ${fmtCurrency(Math.abs(base.cumProfit))}`}${baseProfitable >= 0 ? `, выход в плюс на M${scenarios[1].rows[baseProfitable].month}` : ""}. Пессимистичный: ${pess.cumProfit >= 0 ? "прибылен" : `убыток ${fmtCurrency(Math.abs(pess.cumProfit))}`}. Оптимистичный: MRR ${fmtCurrency(opt.mrr)}, ARR ${fmtCurrency(opt.mrr * 12)}. ${pess.cumProfit < 0 && base.cumProfit >= 0 ? "Бизнес-модель чувствительна к темпу роста - следите за метриками привлечения." : pess.cumProfit >= 0 ? "Модель устойчива даже при пессимистичном сценарии." : "Все сценарии убыточны - пересмотрите структуру затрат."}`;
+              return `Базовый сценарий (${m.scenarioGrowthBase}% м/м): ${base.cumProfit >= 0 ? `кумулятивная прибыль ${fmtCurrency(base.cumProfit)} к M${m.scenarioMonths}` : `убыток ${fmtCurrency(Math.abs(base.cumProfit))}`}${baseProfitable >= 0 ? `, выход в плюс на M${scenarios[1].rows[baseProfitable].month}` : ""}. Пессимистичный: ${pess.cumProfit >= 0 ? "прибылен" : `убыток ${fmtCurrency(Math.abs(pess.cumProfit))}`}. Оптимистичный: MRR ${fmtCurrency(opt.mrr)}, ARR ${fmtCurrency(opt.mrr * 12)}. ${pess.cumProfit < 0 && base.cumProfit >= 0 ? "Бизнес-модель чувствительна к темпу роста — следите за метриками привлечения." : pess.cumProfit >= 0 ? "Модель устойчива даже при пессимистичном сценарии." : "Все сценарии убыточны — пересмотрите структуру затрат."}`;
             })()}
           />
         </div>

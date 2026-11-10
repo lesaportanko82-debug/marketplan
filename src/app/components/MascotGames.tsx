@@ -2,14 +2,14 @@
  * 🦊 Мини-игры с Марком при достижении milestone.
  *
  * Два типа:
- *   1. Скретч-карточка - стирайте пальцем/мышью, чтобы открыть награду
- *   2. Колесо фортуны - крутите и получайте маркетинговый совет
+ *   1. Скретч-карточка — стирайте пальцем/мышью, чтобы открыть награду
+ *   2. Колесо фортуны — крутите и получайте маркетинговый совет
  *
  * Модалка появляется автоматически при milestone или по кнопке в UI.
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Trophy, Sparkles, RotateCcw } from "lucide-react";
+import { X, Trophy, Zap as Sparkles, RotateCcw } from "lucide-react";
 import { Mascot } from "./Mascot";
 import {
   getPendingGame,
@@ -127,12 +127,12 @@ function ScratchCard({ reward, onDone }: { reward: string; onDone: () => void })
 
 /* ═══════════ FORTUNE WHEEL ═══════════ */
 const WHEEL_TIPS = [
-  "Попробуйте A/B тест заголовков - это даст +20% CTR!",
+  "Попробуйте A/B тест заголовков — это даст +20% CTR!",
   "Запустите ретаргетинг на тёплую аудиторию!",
   "Снимите Reels - охваты x3 гарантированы!",
   "Обновите Brand Voice - тренды меняются!",
   "Проведите конкурс - UGC бесплатный контент!",
-  "Напишите кейс - это лучший лид-магнит!",
+  "Напишите кейс — это лучший лид-магнит!",
   "Проанализируйте CJM и найдите узкое место!",
   "Попросите отзыв у 3 клиентов прямо сейчас!",
 ];
@@ -267,8 +267,8 @@ function FortuneWheel({ onDone }: { onDone: (tip: string) => void }) {
           disabled={spinning}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50 shadow-lg"
           style={{
-            background: "linear-gradient(135deg, #d4a373, #c08a40)",
-            boxShadow: "0 4px 16px rgba(212,163,115,0.3)",
+            background: "#c0854a",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
           }}
         >
           <RotateCcw className={`w-4 h-4 ${spinning ? "animate-spin" : ""}`} />
@@ -321,7 +321,7 @@ function GameModal({ milestone, onClose }: GameModalProps) {
           {/* Top bar */}
           <div
             className="h-1.5"
-            style={{ background: "linear-gradient(90deg, #d4a373, #1a7a6d, #2eb8a4)" }}
+            style={{ background: "#1a7a6d" }}
           />
 
           {/* Close button */}

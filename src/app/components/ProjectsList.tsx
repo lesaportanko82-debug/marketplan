@@ -4,7 +4,7 @@ import {
   Plus, Search, Megaphone, Activity, Users, MoreVertical,
   Trash2, X, Check, Loader2, FolderKanban, Calendar, DollarSign,
   AlertTriangle, LayoutGrid, List, Zap, ArrowRight,
-  Clock, Sparkles,
+  Clock, Zap as Sparkles,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { type Project } from "../data/mock-data";
@@ -107,7 +107,7 @@ export function ProjectsList() {
 
   const handleAddProject = async (project: Project) => {
     if (!canUse("projects")) {
-      showMascotReaction("error", "Лимит проектов исчерпан! Обновите план 🦊");
+      showMascotReaction("error", "Лимит проектов исчерпан! Обновите план");
       toast.error("Лимит проектов исчерпан. Обновите план.");
       return;
     }
@@ -181,7 +181,7 @@ export function ProjectsList() {
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-[#2eb8a4] flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0 shadow-sm">
               <FolderKanban className="w-[18px] h-[18px] text-white" />
             </div>
             Проекты
@@ -209,7 +209,7 @@ export function ProjectsList() {
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-semibold text-white hover:opacity-90 active:scale-[0.98] transition-all shadow-sm"
-            style={{ background: "linear-gradient(135deg, #1a7a6d 0%, #2eb8a4 100%)" }}
+            style={{ background: "#1a7a6d" }}
             data-hotspot="projects-add"
           >
             <Plus className="w-4 h-4" />
@@ -274,7 +274,7 @@ export function ProjectsList() {
       {filtered.length === 0 && projects.length === 0 && (
         <EmptyState
           title="Нет ни одного проекта"
-          description="Создайте первый маркетинговый проект - добавьте бюджет, KPI и кампании. Марк поможет разобраться!"
+          description="Создайте первый маркетинговый проект — добавьте бюджет, KPI и кампании. Марк поможет разобраться!"
           emotion="wave"
           action={{ label: "Создать первый проект", onClick: () => setShowAddModal(true), icon: <Plus className="w-4 h-4" /> }}
         />
@@ -647,7 +647,7 @@ function AddProjectModal({ onSave, onClose }: { onSave: (p: Project) => void; on
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-[#2eb8a4] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
               <FolderKanban className="w-4.5 h-4.5 text-white" />
             </div>
             <h3 className="text-foreground font-semibold">Новый проект</h3>
@@ -727,7 +727,7 @@ function AddProjectModal({ onSave, onClose }: { onSave: (p: Project) => void; on
           <button
             onClick={handleSave}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white hover:opacity-90 active:scale-[0.98] transition-all"
-            style={{ background: "linear-gradient(135deg, #1a7a6d 0%, #2eb8a4 100%)" }}
+            style={{ background: "#1a7a6d" }}
           >
             <Sparkles className="w-4 h-4" />
             Создать проект

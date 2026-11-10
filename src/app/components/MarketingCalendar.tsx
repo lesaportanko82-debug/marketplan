@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import {
   CalendarRange, ChevronLeft, ChevronRight,
   FileText, FlaskConical, Target, Megaphone, Users, X,
-  Sparkles, AlertTriangle, CheckCircle2, Loader2,
+  Zap as Sparkles, AlertTriangle, CheckCircle2, Loader2,
   LayoutGrid, List, Search,
 } from "lucide-react";
 import { toast } from "sonner";

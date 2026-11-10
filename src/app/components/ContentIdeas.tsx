@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
 import {
   Plus, Edit3, Trash2, Check, X, Search, Star, Lightbulb,
-  Sparkles, RefreshCw, Link2, CalendarPlus,
+  Zap as Sparkles, RefreshCw, Link2, CalendarPlus,
 } from "lucide-react";
 import { toast } from "sonner";
 import { getData, saveData, aiGenerate } from "../lib/api";
@@ -86,7 +86,7 @@ export function ContentIdeas() {
     const updatedPosts = [...(existingPosts || []), newPost];
     await saveData("smm_plan:posts", updatedPosts);
     
-    toast.success(`"${idea.title}" добавлена в контент-план`, { description: "Пост создан - настройте дату и площадки" });
+    toast.success(`"${idea.title}" добавлена в контент-план`, { description: "Пост создан — настройте дату и площадки" });
     navigate("/smm/plan");
   };
 
@@ -115,12 +115,12 @@ export function ContentIdeas() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-amber-500 flex items-center justify-center shrink-0">
               <Lightbulb className="w-4 h-4 text-white" />
             </div>
             Генерация контента
           </h1>
-          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">Идеи, заметки, ссылки - всё в одном месте</p>
+          <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">Идеи, заметки, ссылки — всё в одном месте</p>
         </div>
         <button onClick={() => setShowAdd(true)} className="flex items-center gap-2 bg-primary text-primary-foreground px-3.5 py-2 rounded-lg text-[13px] hover:opacity-90 transition-opacity shrink-0">
           <Plus className="w-4 h-4" />
@@ -137,7 +137,7 @@ export function ContentIdeas() {
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <input type="text" value={aiPrompt} onChange={(e) => setAiPrompt(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") handleAIGenerate(); }}
-            placeholder="Тема: фитнес-студия, аудитория - женщины 25-35..."
+            placeholder="Тема: фитнес-студия, аудитория — женщины 25-35..."
             className="flex-1 bg-muted/30 border border-border rounded-lg px-3 py-2 text-foreground text-[13px] placeholder:text-muted-foreground/50" />
           <button onClick={handleAIGenerate} disabled={aiLoading}
             className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px] hover:opacity-90 disabled:opacity-50 shrink-0">

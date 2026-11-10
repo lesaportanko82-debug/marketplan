@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import {
   Hash, Search, TrendingUp, Copy, Star, Plus, X, Loader2, Trash2,
-  Sparkles, Globe, Instagram, BarChart3, Target, RefreshCw,
+  Zap as Sparkles, Globe, Instagram, BarChart3, Target, RefreshCw,
   CheckCircle2, ArrowUpRight, Tag, Zap, Filter, Download,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -128,7 +128,7 @@ export function HashtagSEO() {
     setTrendLoading(true);
     try {
       const result = await aiGenerate("trend_analysis",
-        `Ты - аналитик трендов в digital-маркетинге. Для ниши "${trendNiche}" дай анализ текущих трендов (март 2026):
+        `Ты — аналитик трендов в digital-маркетинге. Для ниши "${trendNiche}" дай анализ текущих трендов (март 2026):
         
         1. **Актуальные тренды** - 5 трендов с описанием и рекомендациями
         2. **Растущие форматы контента** - какие форматы набирают популярность
@@ -197,7 +197,7 @@ export function HashtagSEO() {
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-[#d4a373] flex items-center justify-center shrink-0">
               <Hash className="w-4 h-4 text-white" />
             </div>
             Хештеги и SEO
@@ -254,7 +254,7 @@ export function HashtagSEO() {
                 onClick={handleAIHashtags}
                 disabled={aiLoading || !aiPrompt.trim()}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[13px] font-medium text-white disabled:opacity-50 transition-colors"
-                style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+                style={{ background: "#c0854a" }}
               >
                 {aiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                 Найти
@@ -395,7 +395,7 @@ export function HashtagSEO() {
                 onClick={handleKeywordResearch}
                 disabled={keywordLoading || !keywordPrompt.trim()}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[13px] font-medium text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+                style={{ background: "#c0854a" }}
               >
                 {keywordLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                 Исследовать
@@ -472,7 +472,7 @@ export function HashtagSEO() {
                 onClick={handleTrendAnalysis}
                 disabled={trendLoading || !trendNiche.trim()}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[13px] font-medium text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+                style={{ background: "#c0854a" }}
               >
                 {trendLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <TrendingUp className="w-4 h-4" />}
                 Анализ

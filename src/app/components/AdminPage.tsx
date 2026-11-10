@@ -80,7 +80,7 @@ function AdminLogin({ onOk }: { onOk: (pw: string) => void }) {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <form onSubmit={submit} className="w-full max-w-[360px] bg-card border border-border rounded-2xl p-6 shadow-sm space-y-4">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1a7a6d, #0d7377)" }}>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "#1a7a6d" }}>
             <Shield className="w-4 h-4 text-white" />
           </div>
           <div>
@@ -95,7 +95,7 @@ function AdminLogin({ onOk }: { onOk: (pw: string) => void }) {
         />
         <button type="submit" disabled={loading}
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-[13px] font-semibold disabled:opacity-60"
-          style={{ background: "linear-gradient(135deg, #1a7a6d, #0d7377)" }}>
+          style={{ background: "#1a7a6d" }}>
           {loading && <Loader2 className="w-4 h-4 animate-spin" />} Войти
         </button>
       </form>
@@ -403,7 +403,7 @@ function PrimaryBtn({ children, onClick, busy, type = "button", full }: { childr
   return (
     <button type={type} onClick={onClick} disabled={busy}
       className={"flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-white text-[12px] font-semibold disabled:opacity-60 " + (full ? "w-full" : "")}
-      style={{ background: "linear-gradient(135deg, #1a7a6d, #0d7377)" }}>
+      style={{ background: "#1a7a6d" }}>
       {busy && <Loader2 className="w-3.5 h-3.5 animate-spin" />}{children}
     </button>
   );

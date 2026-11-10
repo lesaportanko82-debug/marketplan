@@ -8,7 +8,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Plus, Trash2, GripVertical, Eye, Save, X, Settings,
-  ArrowUp, ArrowDown, Copy, Wand2, Sparkles, Target,
+  ArrowUp, ArrowDown, Copy, Wand2, Zap as Sparkles, Target,
   Clock, MapPin, CheckCircle2, AlertCircle,
 } from "lucide-react";
 import { Tour, TourStep } from "../lib/hotspot-tours";
@@ -163,7 +163,7 @@ export function TourEditor({ tour, onSave, onCancel, onPreview }: TourEditorProp
         {/* Header */}
         <div className="p-6 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#d4a373] to-[#c08a40] flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-[#d4a373] flex items-center justify-center">
               <Wand2 className="w-6 h-6 text-white" />
             </div>
             <div>

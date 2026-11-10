@@ -3,7 +3,7 @@ import {
   Workflow, Plus, Play, Pause, Trash2, X, Check, Edit3, Copy,
   Zap, Clock, FileText, FlaskConical, CalendarRange, MessageCircle,
   Mail, Globe, Target, Bell, ArrowRight, ArrowDown, ChevronDown,
-  ChevronRight, Loader2, Save, GitBranch, Sparkles, AlertTriangle,
+  ChevronRight, Loader2, Save, GitBranch, Zap as Sparkles, AlertTriangle,
   CheckCircle2, Settings, Layers, MousePointerClick, MoreHorizontal,
   Eye, GripVertical, Plug, XCircle, History,
 } from "lucide-react";
@@ -259,7 +259,7 @@ export function AutomationFlows() {
   const runFlow = useCallback(async (id: string) => {
     const flow = flows.find((f) => f.id === id);
     if (!flow || flow.nodes.length === 0) {
-      toast.error("Нечего выполнять - добавьте узлы");
+      toast.error("Нечего выполнять — добавьте узлы");
       return;
     }
 
@@ -372,7 +372,7 @@ export function AutomationFlows() {
               <MascotMessage
                 emotion="work"
                 message="Нет автоматизаций"
-                subtext="Создайте первую или выберите шаблон - Марк всё выполнит!"
+                subtext="Создайте первую или выберите шаблон — Марк всё выполнит!"
                 size={80}
               />
             </div>

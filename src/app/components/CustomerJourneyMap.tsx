@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import {
-  MapPin, Plus, Edit3, Trash2, X, Check, Loader2, Sparkles,
+  MapPin, Plus, Edit3, Trash2, X, Check, Loader2, Zap as Sparkles,
   ArrowRight, Smile, Meh, Frown, Heart, MessageCircle, Eye,
   ShoppingCart, Users, Star, ThumbsUp, Zap, AlertTriangle,
 } from "lucide-react";
@@ -177,10 +177,10 @@ export function CustomerJourneyMap() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#d4a373] flex items-center justify-center shrink-0">
               <MapPin className="w-4 h-4 text-white" />
             </div>
-            Customer Journey Map
+            Путь клиента
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Визуальная карта пути клиента с точками контакта
@@ -200,7 +200,7 @@ export function CustomerJourneyMap() {
           <button
             onClick={() => setShowCreate(true)}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium text-white"
-            style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+            style={{ background: "#c0854a" }}
           >
             <Plus className="w-3.5 h-3.5" /> Новая карта
           </button>
@@ -332,7 +332,7 @@ export function CustomerJourneyMap() {
       ) : (
         <EmptyState
           title="Создайте первую CJM"
-          description="Customer Journey Map поможет визуализировать путь клиента и найти точки роста"
+          description="Карта пути клиента поможет визуализировать путь клиента и найти точки роста"
           emotion="idle"
           action={{ label: "Создать карту", onClick: () => setShowCreate(true), icon: <Plus className="w-4 h-4" /> }}
         />
@@ -393,7 +393,7 @@ function CreateMapModal({ onCreate, onClose }: { onCreate: (name: string, person
           onClick={() => { if (name.trim()) onCreate(name.trim(), persona.trim()); }}
           disabled={!name.trim()}
           className="px-4 py-2 rounded-lg text-[12px] font-medium text-white disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+          style={{ background: "#c0854a" }}
         >
           Создать
         </button>
@@ -481,7 +481,7 @@ function TouchpointModal({ existing, onSave, onClose }: { existing?: Touchpoint;
           onClick={() => { if (form.name.trim()) onSave(form); }}
           disabled={!form.name.trim()}
           className="px-4 py-2 rounded-lg text-[12px] font-medium text-white disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+          style={{ background: "#c0854a" }}
         >
           {existing ? "Сохранить" : "Добавить"}
         </button>

@@ -68,7 +68,7 @@ const emptyAsset = (): BrandAsset => ({
 
 
   // (removed demo data)\n\nВы сделали отличный выбор. Вот что вас ждёт:\n\n1. AI-аналитика маркетинга\n2. Умный контент-план\n3. Отслеживание конкурентов\n\nС наилучшими пожеланиями,\nКоманда MarketPlan", description: "Приветственное письмо для новых пользователей", tags: ["email", "welcome"], starred: false, category: "Email", createdAt: new Date().toISOString() },
-  // (removed demo data 2) сложное простыми словами\n• Дружелюбно, но профессионально - без панибратства\n• Уверенно, но не высокомерно - делимся знаниями, а не хвастаемся\n\nМы НЕ используем:\n• Канцеляризмы и бюрократический язык\n• Сленг и жаргон без необходимости\n• Негативные формулировки ('не упустите' → 'успейте')\n\nПримеры:\n✅ 'Разберём 5 стратегий, которые помогут вашему бизнесу расти'\n❌ 'ТОП-5 СЕКРЕТОВ для ВЗРЫВА продаж!!!'", description: "Руководство по тону коммуникации бренда", tags: ["голос", "тон", "стиль"], starred: true, category: "Бренд", createdAt: new Date().toISOString() },
+  // (removed demo data 2) сложное простыми словами\n• Дружелюбно, но профессионально — без панибратства\n• Уверенно, но не высокомерно — делимся знаниями, а не хвастаемся\n\nМы НЕ используем:\n• Канцеляризмы и бюрократический язык\n• Сленг и жаргон без необходимости\n• Негативные формулировки ('не упустите' → 'успейте')\n\nПримеры:\n 'Разберём 5 стратегий, которые помогут вашему бизнесу расти'\n 'ТОП-5 СЕКРЕТОВ для ВЗРЫВА продаж!!!'", description: "Руководство по тону коммуникации бренда", tags: ["голос", "тон", "стиль"], starred: true, category: "Бренд", createdAt: new Date().toISOString() },
 // Load Google Font dynamically
 function loadGoogleFont(fontName: string) {
   const id = `gfont-${fontName.replace(/\s+/g, "-")}`;
@@ -137,7 +137,7 @@ export function MediaLibrary() {
       <div className="flex items-start justify-between gap-3 mb-4 sm:mb-5 flex-wrap">
         <div className="min-w-0">
           <h1 className="text-foreground text-xl font-semibold flex items-center gap-3">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#a87040] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#d4a373] flex items-center justify-center shrink-0">
               <Palette className="w-4 h-4 text-white" />
             </div>
             Бренд-ассеты
@@ -295,7 +295,7 @@ function BrandbookModal({ assets, onClose }: { assets: BrandAsset[]; onClose: ()
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#d4a373] to-[#a87040] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#d4a373] flex items-center justify-center shrink-0">
               <BookOpen className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -351,7 +351,7 @@ function BrandbookModal({ assets, onClose }: { assets: BrandAsset[]; onClose: ()
           {/* Preview tree */}
           <div className="bg-muted/20 rounded-lg p-3 border border-border text-[12px]">
             <div className="text-muted-foreground mb-1.5">Структура документа:</div>
-            <div className="text-foreground font-medium mb-1">📘 {brandName}</div>
+            <div className="text-foreground font-medium mb-1"> {brandName}</div>
             <div className="text-muted-foreground pl-4 space-y-0.5">
               <div>├ Обложка</div>
               <div>├ Содержание</div>
@@ -377,7 +377,7 @@ function BrandbookModal({ assets, onClose }: { assets: BrandAsset[]; onClose: ()
             <button
               onClick={handleGenerate}
               disabled={generating || totalIncluded === 0 || !brandName.trim()}
-              className="flex items-center gap-2 h-9 bg-gradient-to-r from-[#d4a373] to-[#a87040] text-white px-5 rounded-lg text-[13px] font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+              className="flex items-center gap-2 h-9 bg-[#d4a373] text-white px-5 rounded-lg text-[13px] font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
             >
               {generating ? <><Loader2 className="w-4 h-4 animate-spin" /> Генерация...</> : <><Download className="w-4 h-4" /> Скачать</>}
             </button>

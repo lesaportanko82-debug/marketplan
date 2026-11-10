@@ -1,6 +1,6 @@
 import { useState, useCallback, type ReactNode } from "react";
 import {
-  Radar, Loader2, Sparkles, Plus, Globe, Trash2,
+  Radar, Loader2, Zap as Sparkles, Plus, Globe, Trash2,
   Eye, Shield, Crosshair, TrendingUp, TrendingDown,
   MessageSquare, Zap, Copy, Check, ArrowRight, Target,
   AlertTriangle, CheckCircle2, BarChart3, Clock,
@@ -190,7 +190,7 @@ export function CompetitorSpy() {
           "КОНКУРЕНТ:",
           compContext,
           "",
-          "На основе названия, ссылок на соцсети и сайт, а также любых заметок - проанализируй вероятную контент-стратегию конкурента. По ссылкам определи нишу, позиционирование, tone of voice. Если данных мало, делай обоснованные предположения.",
+          "На основе названия, ссылок на соцсети и сайт, а также любых заметок — проанализируй вероятную контент-стратегию конкурента. По ссылкам определи нишу, позиционирование, tone of voice. Если данных мало, делай обоснованные предположения.",
           "",
           "Ответь СТРОГО в таком формате (каждое поле с новой строки):",
           "",
@@ -371,7 +371,7 @@ export function CompetitorSpy() {
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
             <Radar className="w-5 h-5 text-[#d4a373] shrink-0" />
-            Competitor Creative Spy
+            Разведка конкурентов
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Добавьте сайт и Telegram-канал конкурента — AI прочитает их страницы; Instagram — по вашему описанию
@@ -781,7 +781,7 @@ export function CompetitorSpy() {
                       </div>
                       <p className="text-[12px] text-muted-foreground">
                         Попробуйте добавить больше ссылок или вставить примеры постов конкурента в поле "Заметки".
-                        Чем больше контекста - тем точнее анализ.
+                        Чем больше контекста — тем точнее анализ.
                       </p>
                     </div>
                   )}

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import {
-  MessageSquare, Plus, Edit3, Trash2, X, Check, Loader2, Sparkles,
+  MessageSquare, Plus, Edit3, Trash2, X, Check, Loader2, Zap as Sparkles,
   ShieldCheck, AlertTriangle, Copy, Volume2, Ban, ThumbsUp, BookOpen,
   CheckCircle2, XCircle, Lightbulb,
 } from "lucide-react";
@@ -67,7 +67,7 @@ export function BrandVoice() {
     setCheckLoading(true);
     try {
       const result = await aiGenerate("brand_voice_check",
-        `Ты - бренд-менеджер. Проверь текст на соответствие brand voice гайду.
+        `Ты — бренд-менеджер. Проверь текст на соответствие brand voice гайду.
 
 Tone of voice: ${config.tonality.join(", ")}
 Стиль: ${config.style}
@@ -139,7 +139,7 @@ Tone of voice: ${config.tonality.join(", ")}
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-3">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#d4a373] flex items-center justify-center shrink-0">
               <Volume2 className="w-4 h-4 text-white" />
             </div>
             Brand Voice
@@ -153,7 +153,7 @@ Tone of voice: ${config.tonality.join(", ")}
             onClick={handleGenerateGuide}
             disabled={genLoading}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+            style={{ background: "#c0854a" }}
           >
             {genLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
             <span className="hidden sm:inline">Сгенерировать гайд</span>
@@ -388,7 +388,7 @@ Tone of voice: ${config.tonality.join(", ")}
               onClick={handleCheckText}
               disabled={checkLoading || !checkText.trim()}
               className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-[12px] font-medium text-white disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+              style={{ background: "#c0854a" }}
             >
               {checkLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5" />}
               Проверить

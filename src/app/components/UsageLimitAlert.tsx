@@ -1,5 +1,5 @@
 /**
- * 🦊 Usage Limit Alert - visual header alert when any usage counter ≥ 80%.
+ * Usage Limit Alert - visual header alert when any usage counter ≥ 80%.
  *
  * Shows a compact amber/red banner with the most critical counters,
  * auto-hides after dismissal (per session), and links to /pricing.
@@ -12,11 +12,11 @@ import { useUsage, KEY_LABELS, type UsageKey } from "../lib/useUsage";
 
 /* ─── Plan display metadata ─── */
 const PLAN_META: Record<string, { name: string; emoji: string }> = {
-  free:       { name: "Free",       emoji: "🌱" },
-  starter:    { name: "Starter",    emoji: "⚡" },
-  growth:     { name: "Growth",     emoji: "🚀" },
-  pro:        { name: "Pro",        emoji: "💎" },
-  enterprise: { name: "Enterprise", emoji: "🏢" },
+  free:       { name: "Free",       emoji: "" },
+  starter:    { name: "Starter",    emoji: "" },
+  growth:     { name: "Growth",     emoji: "" },
+  pro:        { name: "Pro",        emoji: "" },
+  enterprise: { name: "Enterprise", emoji: "" },
 };
 
 const TRACKED_KEYS: UsageKey[] = [
@@ -47,8 +47,8 @@ export function UsageLimitAlert() {
   const navigate = useNavigate();
   const [dismissed, setDismissed] = useState(false);
 
-  // ✅ Fix: derive plan from planId with safe fallback
-  const plan = PLAN_META[planId] ?? { name: planId, emoji: "📦" };
+  // Fix: derive plan from planId with safe fallback
+  const plan = PLAN_META[planId] ?? { name: planId, emoji: "" };
 
   const alerts: AlertItem[] = useMemo(() => {
     if (loading) return [];
@@ -172,7 +172,7 @@ export function UsageLimitAlert() {
 
           {/* Plan badge */}
           <span className="text-muted-foreground shrink-0">
-            {plan.emoji} {plan.name}
+            {plan.name}
           </span>
 
           {/* Dismiss */}

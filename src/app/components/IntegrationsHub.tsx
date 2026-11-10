@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Globe, Mail, ImagePlus, Webhook, CheckCircle2, XCircle, RefreshCw,
   Send, Loader2, Zap, ExternalLink, Copy, Check,
-  Settings2, BarChart3, FileText, X, Sparkles, Plug, MessageCircle,
+  Settings2, BarChart3, FileText, X, Zap as Sparkles, Plug, MessageCircle,
   Trash2, Bot, FileDown, GitBranch, Kanban, LayoutList, Box,
   Search as SearchIcon, Layers, ClipboardList, PenTool, Table2,
 } from "lucide-react";
@@ -341,7 +341,7 @@ function TelegramModal({ open, onClose, onConfigUpdate }: { open: boolean; onClo
           "KPI: положительная динамика по основным метрикам",
           "ROI: выше средних показателей по рынку",
           "Каналы: лидирует Telegram и Instagram",
-          "Воронка: конверсия из лида в клиента - стабильна",
+          "Воронка: конверсия из лида в клиента — стабильна",
           "Бюджет: 67% от запланированного освоено",
           "",
           "Подробная аналитика доступна в дашборде MarketPlan.",
@@ -364,7 +364,7 @@ function TelegramModal({ open, onClose, onConfigUpdate }: { open: boolean; onClo
       const pdfBase64 = pdf.output("datauristring").split(",")[1];
       const filename = `MarketPlan-${pdfType}-${new Date().toISOString().slice(0, 10)}.pdf`;
 
-      await sendTelegramDocument(pdfBase64, filename, `📊 ${titles[pdfType]}\n${now}`);
+      await sendTelegramDocument(pdfBase64, filename, ` ${titles[pdfType]}\n${now}`);
       toast.success("PDF отправлен в Telegram!");
     } catch (err: any) {
       toast.error("Ошибка отправки PDF", { description: err.message });

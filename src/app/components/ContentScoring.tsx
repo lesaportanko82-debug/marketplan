@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import {
-  BarChart3, Loader2, Sparkles, TrendingUp, Heart, MousePointerClick,
+  BarChart3, Loader2, Zap as Sparkles, TrendingUp, Heart, MousePointerClick,
   Search, Shield, AlertTriangle, CheckCircle2, ArrowUp, ArrowDown,
   Minus, RefreshCw, Copy, Check, Lightbulb, Target, Zap,
   Instagram, MessageCircle, Mail, Video, FileText,
@@ -106,11 +106,11 @@ ${text.slice(0, 3000)}
 
 Оцени по 5 осям (каждая от 0 до 100):
 
-1. VIRALITY (Виральность) - потенциал шеринга, эмоциональные триггеры, "хук" в начале, необычность
-2. ENGAGEMENT (Вовлеченность) - вызывает ли реакции, комментарии, вопросы, интерактивность
-3. CONVERSION (Конверсия) - наличие CTA, убедительность, выгоды для читателя, urgency
-4. SEO (SEO-потенциал) - ключевые слова, структура, релевантность для поиска
-5. BRAND_FIT (Соответствие бренду) - профессиональность, консистентность тона, доверие
+1. VIRALITY (Виральность) — потенциал шеринга, эмоциональные триггеры, "хук" в начале, необычность
+2. ENGAGEMENT (Вовлеченность) — вызывает ли реакции, комментарии, вопросы, интерактивность
+3. CONVERSION (Конверсия) — наличие CTA, убедительность, выгоды для читателя, urgency
+4. SEO (SEO-потенциал) — ключевые слова, структура, релевантность для поиска
+5. BRAND_FIT (Соответствие бренду) — профессиональность, консистентность тона, доверие
 
 ВАЖНО: Будь строгим и честным. Не завышай оценки. Средний пост в интернете должен получать 40-60 баллов.
 
@@ -231,13 +231,13 @@ ${text.slice(0, 3000)}
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
             <Target className="w-5 h-5 text-[#d4a373] shrink-0" />
-            Predictive Content Scoring
+            Оценка текста
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             Оценка контента до публикации по 5 осям + AI-рекомендации для буста метрик
           </p>
         </div>
-        <AddToProjectButton itemType="content-studio" itemId="scoring" itemTitle="Content Scoring" />
+        <AddToProjectButton itemType="content-studio" itemId="scoring" itemTitle="Оценка текста" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">

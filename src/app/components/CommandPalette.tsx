@@ -95,7 +95,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
           <Command.List className="max-h-[400px] overflow-y-auto p-2">
             <Command.Empty className="py-8 text-center text-muted-foreground text-[13px]">
               <div className="flex flex-col items-center gap-2">
-                <span className="text-[28px]">🦊</span>
+                <span className="text-[28px]"></span>
                 <span>Марк ничего не нашёл. Попробуйте другой запрос.</span>
               </div>
             </Command.Empty>

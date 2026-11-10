@@ -100,7 +100,7 @@ export function CompetitorAnalysis() {
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shrink-0"><Swords className="w-4 h-4 text-white" /></div>
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-red-500 flex items-center justify-center shrink-0"><Swords className="w-4 h-4 text-white" /></div>
             Конкуренты
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1">{competitors.length} конкурентов · Отслеживайте рынок и позиционирование</p>

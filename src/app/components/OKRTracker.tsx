@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import {
   Target, Plus, Edit3, Trash2, X, Check, Loader2, ChevronDown, ChevronRight,
   TrendingUp, Calendar, AlertTriangle, CheckCircle2, Clock, ArrowUpRight,
-  Sparkles, BarChart3, Flag,
+  Zap as Sparkles, BarChart3, Flag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useKV } from "../lib/useKV";
@@ -137,7 +137,7 @@ export function OKRTracker() {
     setAiLoading(true);
     try {
       const result = await aiGenerate("okr_suggest",
-        `Ты - стратег по маркетингу. Предложи 3 маркетинговых OKR для ${quarterFilter} в формате JSON:
+        `Ты — стратег по маркетингу. Предложи 3 маркетинговых OKR для ${quarterFilter} в формате JSON:
         [{"title":"Objective...", "description":"...", "category":"Маркетинг", "keyResults":[{"title":"KR...", "metric":"...", "target":100, "unit":"%"}]}]
         Каждый OKR должен иметь 3-4 измеримых ключевых результата. Только JSON.`
       );
@@ -174,7 +174,7 @@ export function OKRTracker() {
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-[#d4a373] to-[#c0854a] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-[#d4a373] flex items-center justify-center shrink-0">
               <Target className="w-4 h-4 text-white" />
             </div>
             OKR-трекинг
@@ -195,7 +195,7 @@ export function OKRTracker() {
           <button
             onClick={() => setShowAdd(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] font-medium text-white"
-            style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+            style={{ background: "#c0854a" }}
           >
             <Plus className="w-3.5 h-3.5" /><span className="hidden sm:inline"> Добавить</span> OKR
           </button>
@@ -454,7 +454,7 @@ function AddOKRModal({ quarter, onSave, onClose }: { quarter: string; onSave: (o
           }}
           disabled={!title.trim()}
           className="px-4 py-2 rounded-lg text-[12px] font-medium text-white disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #d4a373 0%, #c0854a 100%)" }}
+          style={{ background: "#c0854a" }}
         >
           Создать
         </button>

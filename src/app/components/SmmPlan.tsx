@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {
   Instagram, MessageCircle, Globe, Video, Mail, Plus, Edit3, Trash2, Check, X,
-  ChevronLeft, ChevronRight, GripVertical, Loader2, Sparkles, Eye, FileText,
+  ChevronLeft, ChevronRight, GripVertical, Loader2, Zap as Sparkles, Eye, FileText,
   BarChart3, LayoutDashboard, PieChart, Target, Users, Heart, Zap,
   Share2, TrendingUp, Calendar, CalendarRange, Download, Search, ArrowRight, Filter,
   PanelRightClose, PanelRightOpen, Lightbulb, Calculator, MousePointerClick,
@@ -194,7 +194,7 @@ export function SmmPlan() {
   }, [allMonthPosts]);
 
   const handleAddPost = async (post: ContentPost) => {
-    if (!canUse("posts")) { showMascotReaction("error", "Лимит постов исчерпан! Обновите план 🦊"); toast.error("Лимит постов исчерпан. Обновите план."); return; }
+    if (!canUse("posts")) { showMascotReaction("error", "Лимит постов исчерпан! Обновите план"); toast.error("Лимит постов исчерпан. Обновите план."); return; }
     // Server-side validation (authoritative)
     try {
       const serverCheck = await checkServerUsage("posts");
@@ -246,7 +246,7 @@ export function SmmPlan() {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h1 className="text-foreground flex items-center gap-2.5">
-              <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center shrink-0"><CalendarRange className="w-4 h-4 text-white" /></div>
+              <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-teal-600 flex items-center justify-center shrink-0"><CalendarRange className="w-4 h-4 text-white" /></div>
               Контент-план
             </h1>
             <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">Планируйте, публикуйте и анализируйте контент по площадкам</p>
@@ -310,7 +310,7 @@ export function SmmPlan() {
             <button onClick={() => setEditingMetrics(!editingMetrics)} className="flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground">
               <Target className="w-3.5 h-3.5" /> {editingMetrics ? "Закрыть" : "Цели"}
             </button>
-            <button onClick={handleCalculateMetrics} className="flex items-center gap-2 bg-gradient-to-r from-teal-600 to-emerald-700 text-white px-3.5 py-1.5 rounded-lg text-[12px] hover:opacity-90 transition-opacity shadow-sm">
+            <button onClick={handleCalculateMetrics} className="flex items-center gap-2 bg-teal-600 text-white px-3.5 py-1.5 rounded-lg text-[12px] hover:opacity-90 transition-opacity shadow-sm">
               <Calculator className="w-3.5 h-3.5" /> Посчитать метрики
             </button>
           </div>
@@ -430,7 +430,7 @@ function DashboardView({ allPosts, platformStats, calcMetrics, periodMetrics, ac
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-foreground flex items-center gap-2"><LayoutDashboard className="w-5 h-5 text-primary" /> Общий план</h3>
           {!metricsCalculated && (
-            <button onClick={onCalculate} className="flex items-center gap-2 bg-gradient-to-r from-teal-600 to-emerald-700 text-white px-4 py-2 rounded-lg text-[13px] hover:opacity-90 shadow-sm">
+            <button onClick={onCalculate} className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-lg text-[13px] hover:opacity-90 shadow-sm">
               <Calculator className="w-4 h-4" /> Посчитать метрики
             </button>
           )}
@@ -481,7 +481,7 @@ function DashboardView({ allPosts, platformStats, calcMetrics, periodMetrics, ac
                     </div>
                   )}
                   {metricsCalculated && s.published === 0 && (
-                    <p className="text-[11px] text-muted-foreground italic">Нет опубликованных - метрики недоступны</p>
+                    <p className="text-[11px] text-muted-foreground italic">Нет опубликованных — метрики недоступны</p>
                   )}
                   {/* Progress bar */}
                   <div className="mt-2">
@@ -513,10 +513,10 @@ function DashboardView({ allPosts, platformStats, calcMetrics, periodMetrics, ac
 
               if (s.published === 0 && s.posts > 0) issues.push({ type: "warn", text: `${plat}: ни один пост не опубликован` });
               if (s.reach >= pp.targetReach * 0.8) issues.push({ type: "good", text: `${plat}: охват на уровне цели (${fmtNum(s.reach)} / ${fmtNum(pp.targetReach)})` });
-              else if (s.published > 0) issues.push({ type: "bad", text: `${plat}: охват ниже цели (${fmtNum(s.reach)} / ${fmtNum(pp.targetReach)}) - пробуйте Reels, коллаборации` });
-              if (er >= pp.targetEngagement * 0.8 && s.published > 0) issues.push({ type: "good", text: `${plat}: ER ${er.toFixed(1)}% - аудитория вовлечена` });
-              else if (s.published > 0 && er < pp.targetEngagement * 0.5) issues.push({ type: "bad", text: `${plat}: ER ${er.toFixed(1)}% - добавьте опросы, интерактив, CTA` });
-              else if (s.published > 0) issues.push({ type: "warn", text: `${plat}: ER ${er.toFixed(1)}% - есть потенциал для роста` });
+              else if (s.published > 0) issues.push({ type: "bad", text: `${plat}: охват ниже цели (${fmtNum(s.reach)} / ${fmtNum(pp.targetReach)}) — пробуйте Reels, коллаборации` });
+              if (er >= pp.targetEngagement * 0.8 && s.published > 0) issues.push({ type: "good", text: `${plat}: ER ${er.toFixed(1)}% — аудитория вовлечена` });
+              else if (s.published > 0 && er < pp.targetEngagement * 0.5) issues.push({ type: "bad", text: `${plat}: ER ${er.toFixed(1)}% — добавьте опросы, интерактив, CTA` });
+              else if (s.published > 0) issues.push({ type: "warn", text: `${plat}: ER ${er.toFixed(1)}% — есть потенциал для роста` });
               if (s.posts < pp.targetPosts * 0.5 && pp.targetPosts > 0) issues.push({ type: "bad", text: `${plat}: мало контента (${s.posts} / ${pp.targetPosts} постов)` });
 
               return issues.map((issue, i) => (
@@ -600,7 +600,7 @@ function DraggableIdea({ idea }: { idea: ContentIdea }) {
         <div className="flex-1 min-w-0">
           <p className="text-[12px] text-foreground font-medium truncate">{idea.title}</p>
           {idea.description && <p className="text-[11px] text-muted-foreground line-clamp-2 mt-0.5">{idea.description}</p>}
-          <div className="flex items-center gap-1.5 mt-1"><span className="text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{idea.category}</span>{idea.starred && <span className="text-[10px] text-amber-500">★</span>}</div>
+          <div className="flex items-center gap-1.5 mt-1"><span className="text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{idea.category}</span>{idea.starred && <span className="text-[10px] text-amber-500"></span>}</div>
         </div>
       </div>
     </div>
@@ -631,7 +631,7 @@ function TableDropZone({ posts, onEdit, onDelete, onIdeaDrop, onAddClick }: { po
                     <svg width="14" height="10" viewBox="0 0 14 10" fill="none" className="absolute -bottom-[9px] left-1/2 -translate-x-1/2">
                       <path d="M7 10 L0 0 L14 0 Z" fill="var(--muted)" />
                     </svg>
-                    <p className="text-[12px] text-foreground">Контент-план пуст - давай его заполним!</p>
+                    <p className="text-[12px] text-foreground">Контент-план пуст — давай его заполним!</p>
                   </div>
                 </div>
                 <Mascot emotion="wave" size={64} />
@@ -732,8 +732,8 @@ ${form.goals ? `Цель: ${form.goals}` : ""}
 - Подходящий формат для ${platNames}
 - Включи релевантные хэштеги
 - Добавь призыв к действию (CTA)
-- Пиши на русском, стиль - вовлекающий, живой
-- Если площадок несколько - адаптируй текст под основную (${form.platforms[0]})`;
+- Пиши на русском, стиль — вовлекающий, живой
+- Если площадок несколько — адаптируй текст под основную (${form.platforms[0]})`;
       const res = await aiGenerate("copywriter", prompt);
       if (res) {
         set("caption", res.content);
@@ -741,11 +741,11 @@ ${form.goals ? `Цель: ${form.goals}` : ""}
         showMascotReaction("ai_done", "Текст готов!");
         // Pick a random contextual tip from Марк
         const tips = [
-          "Попробуй добавить вопрос в конце - это повысит ER!",
-          "Первые 2 строки решают всё - зацепи читателя!",
+          "Попробуй добавить вопрос в конце — это повысит ER!",
+          "Первые 2 строки решают всё — зацепи читателя!",
           "Не забудь CTA - без него вовлечённость падает на 40%",
           "Хештеги лучше ставить в первом комментарии (для Instagram)",
-          "Длинные посты работают лучше в Telegram, короткие - в Instagram",
+          "Длинные посты работают лучше в Telegram, короткие — в Instagram",
         ];
         setAiTip(tips[Math.floor(Math.random() * tips.length)]);
       }
@@ -800,7 +800,7 @@ ${form.goals ? `Цель: ${form.goals}` : ""}
             <div className="flex items-center justify-between mb-1">
               <label className="text-[12px] text-muted-foreground">Текст / Подпись</label>
               <button onClick={handleAICaption} disabled={aiLoading || !form.topic.trim()}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] bg-gradient-to-r from-teal-600/10 to-emerald-600/10 text-teal-700 hover:from-teal-600/20 hover:to-emerald-600/20 disabled:opacity-50 border border-teal-600/15">
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] bg-teal-600/10 text-teal-700 hover:from-teal-600/20 hover:to-emerald-600/20 disabled:opacity-50 border border-teal-600/15">
                 {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                 {aiLoading ? "Генерирую..." : "AI подпись"}
               </button>

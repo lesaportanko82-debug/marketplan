@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import {
-  Sparkles,
+  Zap as Sparkles,
   Users,
   User,
   MapPin,
@@ -63,7 +63,7 @@ export function AudienceTab({ project }: { project: Project }) {
         <button
           onClick={handleAIGenerate}
           disabled={isGenerating}
-          className="flex items-center gap-2 bg-gradient-to-r from-emerald-700 to-teal-700 text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+          className="flex items-center gap-2 bg-emerald-700 text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
         >
           {isGenerating ? (
             <RefreshCw className="w-4 h-4 animate-spin" />
@@ -76,7 +76,7 @@ export function AudienceTab({ project }: { project: Project }) {
 
       {/* AI Insights Panel */}
       {showAIPanel && (
-        <div className="bg-gradient-to-r from-emerald-600/5 to-teal-600/5 border border-emerald-600/20 rounded-xl p-4 md:p-6">
+        <div className="bg-emerald-600/5 border border-emerald-600/20 rounded-xl p-4 md:p-6">
           <div className="flex items-start gap-3">
             <Sparkles className="w-5 h-5 text-emerald-700 mt-0.5 shrink-0" />
             <div>

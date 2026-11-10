@@ -164,7 +164,7 @@ export function SpeechBubble({
             style={{
               background: accentColor
                 ? `linear-gradient(90deg, ${accentColor}, ${accentColor}80)`
-                : "linear-gradient(90deg, #d4a373, #1a7a6d)",
+                : "#1a7a6d",
             }}
           />
         )}

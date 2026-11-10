@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import {
   Users, Loader2, Plus, Trash2, Edit3, Save, X, Globe,
   Target, ShoppingCart, MessageSquare, Heart, AlertTriangle,
-  Zap, ChevronDown, ChevronRight, Sparkles, Copy, Check,
+  Zap, ChevronDown, ChevronRight, Zap as Sparkles, Copy, Check,
   User, Briefcase, MapPin, Clock, Smartphone, Star,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -104,7 +104,7 @@ ${context}
 **AGE:** [возраст или диапазон, например "28-34"]
 **OCCUPATION:** [должность/профессия]
 **LOCATION:** [город/регион]
-**BIO:** [2-3 предложения - кто этот человек, его жизненная ситуация]
+**BIO:** [2-3 предложения — кто этот человек, его жизненная ситуация]
 **PAINS:** [3-4 боли через |, например: Нехватка времени | Сложные инструменты | Высокая стоимость]
 **GOALS:** [3-4 цели через |]
 **TRIGGERS:** [3-4 триггера покупки через | - что подталкивает к покупке]
@@ -229,7 +229,7 @@ ${context}
         <div>
           <h1 className="text-foreground flex items-center gap-2.5">
             <Users className="w-5 h-5 text-[#d4a373] shrink-0" />
-            Audience Persona Builder
+            Персоны
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
             AI генерирует живые персоны ЦА с болями, триггерами и покупательским поведением
