@@ -187,7 +187,7 @@ export function ProjectsList() {
             Проекты
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 ml-[52px]">
-            {projects.length} проектов · {statusCounts.active} активных
+            {projects.length} {ruPlural(projects.length, "проект", "проекта", "проектов")} · {statusCounts.active} {ruPlural(statusCounts.active, "активный", "активных", "активных")}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -736,4 +736,11 @@ function AddProjectModal({ onSave, onClose }: { onSave: (p: Project) => void; on
       </div>
     </ModalOverlay>
   );
+}
+
+function ruPlural(n: number, one: string, few: string, many: string) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
 }
