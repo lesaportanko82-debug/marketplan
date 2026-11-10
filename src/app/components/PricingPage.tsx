@@ -230,21 +230,25 @@ export function PricingPage() {
               MarketPlan помогает структурировать задачи, видеть картину целиком и доводить идеи до результата
             </p>
           </div>
+          {user && currentPlan ? (
+            <div className="max-w-[520px] mx-auto text-left"><SubscriptionStatus /></div>
+          ) : (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button
               onClick={() => navigate("/app")}
               className="px-6 py-3 rounded-xl text-white font-semibold text-[14px] transition-all hover:opacity-90 active:scale-[0.98] shadow-lg"
               style={{ background: "linear-gradient(135deg, #d4a373 0%, #c08a40 100%)" }}
             >
-              Начать бесплатно
+              {user ? "Перейти к проектам" : "Начать бесплатно"}
             </button>
             <button
-              onClick={() => handleCta("demo")}
+              onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })}
               className="px-6 py-3 rounded-xl bg-muted text-foreground font-medium text-[14px] transition-all hover:bg-muted/80 active:scale-[0.98]"
             >
-              Посмотреть демо
+              Смотреть тарифы
             </button>
           </div>
+          )}
         </motion.section>
 
         {/* 2. ПРОБЛЕМА → РЕШЕНИЕ */}

@@ -374,7 +374,7 @@ export function CompetitorSpy() {
             Competitor Creative Spy
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
-            Добавьте ссылки на сайт, Instagram, Telegram конкурента - AI проведёт разведку
+            Добавьте сайт и Telegram-канал конкурента — AI прочитает их страницы; Instagram — по вашему описанию
           </p>
         </div>
         <AddToProjectButton itemType="competitor" itemId="spy" itemTitle="Competitor Spy" />
@@ -570,7 +570,7 @@ export function CompetitorSpy() {
           {reports.length === 0 && !analyzing ? (
             <EmptyState
               title="Разведданные появятся здесь"
-              description="Добавьте ссылки на сайт, Instagram или Telegram конкурента - система проанализирует их контент-стратегию и предложит контратаки"
+              description="Добавьте сайт и Telegram-канал конкурента — система прочитает их страницы, разберёт контент-стратегию и предложит контратаки"
               emotion="think"
               compact
             />

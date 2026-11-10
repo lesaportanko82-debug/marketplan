@@ -143,7 +143,7 @@ export function SmmPlan() {
   const saveMetrics = useCallback((m: PeriodMetrics) => { setPeriodMetrics(m); saveData(METRICS_KEY, m); }, []);
 
   const [year, month] = currentMonth.split("-").map(Number);
-  const monthLabel = new Date(year, month - 1).toLocaleDateString("ru-RU", { month: "long", year: "numeric" });
+  const monthLabel = (() => { const m = new Date(year, month - 1).toLocaleDateString("ru-RU", { month: "long" }); return `${m.charAt(0).toUpperCase()}${m.slice(1)} ${year}`; })();
   const prevMonth = () => { const d = new Date(year, month - 2); setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`); setMetricsCalculated(false); };
   const nextMonth = () => { const d = new Date(year, month); setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`); setMetricsCalculated(false); };
 
@@ -288,7 +288,7 @@ export function SmmPlan() {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <button onClick={prevMonth} className="p-1.5 rounded-md hover:bg-muted text-muted-foreground"><ChevronLeft className="w-4 h-4" /></button>
-            <h2 className="text-foreground capitalize min-w-[130px] sm:min-w-[180px] text-center text-[15px] sm:text-[18px]">{monthLabel}</h2>
+            <h2 className="text-foreground min-w-[130px] sm:min-w-[180px] text-center text-[15px] sm:text-[18px]">{monthLabel}</h2>
             <button onClick={nextMonth} className="p-1.5 rounded-md hover:bg-muted text-muted-foreground"><ChevronRight className="w-4 h-4" /></button>
           </div>
           <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-0.5">

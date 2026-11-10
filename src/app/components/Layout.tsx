@@ -205,7 +205,8 @@ function PlanBadge({ collapsed }: { collapsed: boolean }) {
   const { hasAccess, plan, expiresAt, isExpired, daysLeft, loading } = useAccess();
   const navigate = useNavigate();
 
-  if (loading || !plan) {
+  if (loading) return <div className="h-[46px]" aria-hidden />;
+  if (!plan) {
     // Демо-режим: показываем "Тариф" ссылку
     return (
       <div className={`${collapsed ? "px-2" : "px-3"} py-2`}>
@@ -1118,10 +1119,10 @@ export function Layout() {
 /* ═══ Breadcrumbs ═══ */
 function Breadcrumbs() {
   const location = useLocation();
-  const path = location.pathname;
+  const path = location.pathname.replace(/\/+$/, "") || "/app";
 
   const labels: Record<string, string> = {
-    "/app/": "Проекты",
+    "/app": "Проекты",
     "/app/smm/plan": "Контент-план",
     "/app/smm/ideas": "Идеи и заметки",
     "/app/smm/hashtags": "Хештеги и SEO",
@@ -1154,7 +1155,7 @@ function Breadcrumbs() {
   };
 
   const isProjectDetail = path.startsWith("/app/project/");
-  const label = isProjectDetail ? "Проект" : labels[path] || path;
+  const label = isProjectDetail ? "Проект" : labels[path] || "MarketPlan";
 
   return (
     <div className="flex items-center gap-1.5">

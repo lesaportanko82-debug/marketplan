@@ -36,8 +36,8 @@ const FEATURES = [
     bg: "from-[#d4a373]/20 to-[#c08a40]/5",
     badge: "AI",
     title: "6 AI-инструментов",
-    desc: "GPT-4o-mini и DALL-E 3 на каждом шаге: от идей до публикации, от аналитики до стратегии.",
-    details: ["Content Studio + DALL-E 3", "Brand Voice Engine", "Persona Builder", "Campaign Storyline"],
+    desc: "AI-тексты и AI-изображения на каждом шаге: от идей до публикации, от аналитики до стратегии.",
+    details: ["Content Studio + AI-визуалы", "Brand Voice Engine", "Persona Builder", "Campaign Storyline"],
   },
   {
     id: "calendar",

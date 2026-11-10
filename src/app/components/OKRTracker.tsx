@@ -33,7 +33,9 @@ interface Objective {
 }
 
 const STORAGE_KEY = "okr:objectives";
-const QUARTERS = ["Q1 2026", "Q2 2026", "Q3 2026", "Q4 2026"];
+const NOW = new Date();
+const CURRENT_QUARTER = `Q${Math.floor(NOW.getMonth() / 3) + 1} ${NOW.getFullYear()}`;
+const QUARTERS = [1, 2, 3, 4].map((q) => `Q${q} ${NOW.getFullYear()}`);
 const CATEGORIES = ["Рост", "Продукт", "Маркетинг", "Продажи", "Бренд", "Операции"];
 const CATEGORY_COLORS: Record<string, string> = {
   "Рост": "bg-emerald-500/10 text-emerald-600",
@@ -72,7 +74,7 @@ function getObjectiveProgress(obj: Objective) {
 
 export function OKRTracker() {
   const { data: objectives, save: saveObjectives } = useKV<Objective[]>(STORAGE_KEY, []);
-  const [quarterFilter, setQuarterFilter] = useState("Q1 2026");
+  const [quarterFilter, setQuarterFilter] = useState(CURRENT_QUARTER);
   const [showAdd, setShowAdd] = useState(false);
   const [editingOKR, setEditingOKR] = useState<Objective | null>(null);
   const [expandedOKR, setExpandedOKR] = useState<string | null>(null);

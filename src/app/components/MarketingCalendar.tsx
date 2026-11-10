@@ -335,7 +335,7 @@ export function MarketingCalendar() {
             <span>Маркетинговый календарь</span>
           </h1>
           <p className="text-muted-foreground text-[13px] mt-1 hidden sm:block">
-            Все события из {events.length} модулей на одной шкале
+            {events.length > 0 ? `${events.length} ${plural(events.length, "событие", "события", "событий")} из всех модулей на одной шкале` : "События контент-плана, тестов, OKR, кампаний и CJM на одной шкале"}
           </p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
@@ -583,4 +583,11 @@ export function MarketingCalendar() {
       </div>
     </div>
   );
+}
+
+function plural(n: number, one: string, few: string, many: string) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
 }

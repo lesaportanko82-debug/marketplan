@@ -143,7 +143,7 @@ function DalleModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div className="bg-card border border-border rounded-xl w-full max-w-[600px] max-h-[85vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <div className="flex items-center gap-2"><ImagePlus className="w-4 h-4 text-[#d4a373]" /><h3 className="text-foreground font-medium text-[14px]">DALL-E 3 - Генерация изображений</h3></div>
+          <div className="flex items-center gap-2"><ImagePlus className="w-4 h-4 text-[#d4a373]" /><h3 className="text-foreground font-medium text-[14px]">AI-генерация изображений</h3></div>
           <button onClick={onClose} className="p-1 rounded hover:bg-muted"><X className="w-4 h-4 text-muted-foreground" /></button>
         </div>
         <div className="p-5 space-y-4">
@@ -352,7 +352,7 @@ function TelegramModal({ open, onClose, onConfigUpdate }: { open: boolean; onClo
           "MarketPlan - AI-маркетинг планер",
           "Модули: Проекты, Аналитика, SMM, Конкуренты, A/B, Медиа",
           "AI-инструменты: Метрики, Бюджет, ЦА, Триггеры",
-          "Интеграции: OpenAI, Resend, Telegram, DALL-E",
+          "Интеграции: OpenAI, Resend, Telegram",
           "Технологии: React, Tailwind, Supabase, Recharts",
           "",
           "Полная версия PRD доступна в MarketPlan → PRD.",
@@ -639,11 +639,11 @@ export function IntegrationsHub() {
       features: ["Шаблоны (Аналитика, PRD, Брендбук)", "HTML-форматирование"],
     },
     {
-      id: "dalle", name: "DALL-E 3", icon: ImagePlus,
+      id: "dalle", name: "AI-изображения (OpenAI)", icon: ImagePlus,
       description: "AI-генерация изображений для контент-плана и медиабиблиотеки",
       color: "bg-teal-500/10 text-teal-600", connected: dalleStatus?.connected ?? false,
       actions: [{ label: "Генерировать", onClick: () => setDalleOpen(true), icon: Sparkles }],
-      features: ["3 размера", "2 стиля (vivid, natural)", "Промпт-шаблоны"],
+      features: ["3 размера", "2 стиля: яркий и натуральный", "Промпт-шаблоны"],
     },
     {
       id: "notion", name: "Notion", icon: FileText,

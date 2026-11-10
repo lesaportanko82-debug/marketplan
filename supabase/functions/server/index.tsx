@@ -316,6 +316,68 @@ Email - профессиональный, с воронкой и CTA. YouTube - 
 Отвечай максимально подробно и структурированно на русском языке.`,
 };
 
+// ── Чтение публичных страниц для разведки конкурентов ──
+function stripHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isPublicHttpUrl(raw: string): URL | null {
+  try {
+    const u = new URL(raw);
+    if (!/^https?:$/.test(u.protocol)) return null;
+    const h = u.hostname.toLowerCase();
+    if (h === "localhost" || h.endsWith(".local") || /^(\d+\.){3}\d+$/.test(h) || h.includes(":")) return null;
+    return u;
+  } catch { return null; }
+}
+
+async function fetchPageSummary(raw: string): Promise<string | null> {
+  let u = isPublicHttpUrl(raw);
+  if (!u) return null;
+  const host = u.hostname.replace(/^www\./, "");
+  if (host.includes("instagram.com") || host.includes("facebook.com")) return null; // закрыты для внешних запросов
+  // Telegram-канал: публичная лента t.me/s/<channel>
+  if (host === "t.me" || host === "telegram.me") {
+    const ch = u.pathname.replace(/^\/(s\/)?/, "").split("/")[0];
+    if (!ch) return null;
+    u = new URL(`https://t.me/s/${ch}`);
+  }
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 7000);
+    const res = await fetch(u.toString(), {
+      signal: ctrl.signal,
+      redirect: "follow",
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; MarketPlanBot/1.0)", "Accept-Language": "ru,en;q=0.8" },
+    });
+    clearTimeout(timer);
+    if (!res.ok || !(res.headers.get("content-type") || "").includes("text/html")) return null;
+    const html = (await res.text()).slice(0, 400_000);
+    const title = (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "").trim();
+    const desc = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i)?.[1]
+      || html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']*)["']/i)?.[1] || "";
+    let body: string;
+    if (u.hostname === "t.me") {
+      const posts = [...html.matchAll(/<div class="tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/g)]
+        .slice(-12).map((m) => stripHtml(m[1])).filter(Boolean);
+      body = posts.length ? "Последние посты:\n- " + posts.map((p) => p.slice(0, 300)).join("\n- ") : stripHtml(html).slice(0, 1500);
+    } else {
+      const heads = [...html.matchAll(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/gi)].map((m) => stripHtml(m[1])).filter(Boolean).slice(0, 15);
+      body = (heads.length ? "Заголовки: " + heads.join(" | ") + "\n" : "") + "Текст: " + stripHtml(html).slice(0, 1800);
+    }
+    return `Источник: ${u.toString()}\nЗаголовок: ${stripHtml(title)}\nОписание: ${stripHtml(desc)}\n${body}`.slice(0, 3500);
+  } catch (e) {
+    console.log(`fetchPageSummary failed for ${raw}: ${e}`);
+    return null;
+  }
+}
+
 app.post("/make-server-b80b3260/ai/generate", async (c) => {
   const apiKey = Deno.env.get("OPENAI_API_KEY");
   if (!apiKey) {
@@ -360,6 +422,22 @@ app.post("/make-server-b80b3260/ai/generate", async (c) => {
     const systemPrompt =
       SYSTEM_PROMPTS[toolId] || SYSTEM_PROMPTS["strategy"];
 
+    // Разведка конкурентов: подтягиваем реальное содержимое сайтов и публичных Telegram-каналов
+    let finalPrompt = prompt as string;
+    if (toolId === "competitor-spy") {
+      const urls = [...new Set((String(prompt).match(/https?:\/\/[^\s"'<>)]+/g) || []))].slice(0, 4);
+      const tgHandles = [...String(prompt).matchAll(/(?:^|\s)@([A-Za-z][\w]{4,31})\b/g)].map((m) => `https://t.me/${m[1]}`);
+      const targets = [...urls, ...tgHandles].slice(0, 5);
+      if (targets.length) {
+        const pages = (await Promise.all(targets.map(fetchPageSummary))).filter(Boolean) as string[];
+        if (pages.length) {
+          finalPrompt += `\n\n=== РЕАЛЬНЫЕ ДАННЫЕ СО СТРАНИЦ КОНКУРЕНТА (опирайся на них, а не на догадки) ===\n${pages.join("\n\n---\n\n")}`;
+        } else {
+          finalPrompt += "\n\n(Страницы конкурента открыть не удалось — честно отметь, какие выводы сделаны по косвенным данным.)";
+        }
+      }
+    }
+
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -370,7 +448,7 @@ app.post("/make-server-b80b3260/ai/generate", async (c) => {
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: prompt },
+          { role: "user", content: finalPrompt },
         ],
         temperature: 0.7,
         max_tokens: 3000,
@@ -503,6 +581,14 @@ app.post("/make-server-b80b3260/ai/image", async (c) => {
       }, 429);
     }
 
+    // DALL·E 3 отключён OpenAI 12.05.2026 → gpt-image-2. Размеры и стиль переводим в новые параметры.
+    const SIZE_MAP: Record<string, string> = {
+      "1024x1024": "1024x1024", "1792x1024": "1536x1024", "1024x1792": "1024x1536",
+      "1536x1024": "1536x1024", "1024x1536": "1024x1536",
+    };
+    const styleHint = style === "natural"
+      ? " Natural, realistic photographic style."
+      : " Vivid, expressive, high-contrast style.";
     const res = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
@@ -510,33 +596,46 @@ app.post("/make-server-b80b3260/ai/image", async (c) => {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "dall-e-3",
-        prompt,
-        n: Math.min(n, 1), // DALL-E 3 supports max 1 at a time
-        size,
-        style,
-        response_format: "url",
+        model: Deno.env.get("OPENAI_IMAGE_MODEL") || "gpt-image-2",
+        prompt: `${prompt}${styleHint}`,
+        n: 1,
+        size: SIZE_MAP[size] || "1024x1024",
+        quality: "medium",
       }),
     });
 
     if (!res.ok) {
       const errText = await res.text();
-      console.log(`DALL-E API error (${res.status}): ${errText}`);
-      return c.json({ success: false, error: `DALL-E error ${res.status}: ${errText}` }, 500);
+      console.log(`Image API error (${res.status}): ${errText}`);
+      return c.json({ success: false, error: `Image generation error ${res.status}` }, 500);
     }
 
     const data = await res.json();
-    const images = data.data.map((img: any) => ({
-      url: img.url,
-      revised_prompt: img.revised_prompt,
-    }));
+    // Новые модели отдают base64 — сохраняем в публичный бакет ai-images и возвращаем ссылку
+    const storage = getAdminClient().storage.from("ai-images");
+    const images: { url: string; revised_prompt?: string }[] = [];
+    for (const img of data.data || []) {
+      if (img.url) { images.push({ url: img.url, revised_prompt: img.revised_prompt }); continue; }
+      if (!img.b64_json) continue;
+      const bin = Uint8Array.from(atob(img.b64_json), (ch) => ch.charCodeAt(0));
+      const path = `${wsAuth.wsId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.png`;
+      const { error: upErr } = await storage.upload(path, bin, { contentType: "image/png", upsert: false });
+      if (upErr) {
+        console.log(`Image upload error: ${upErr.message}`);
+        return c.json({ success: false, error: "Не удалось сохранить изображение" }, 500);
+      }
+      images.push({ url: storage.getPublicUrl(path).data.publicUrl, revised_prompt: img.revised_prompt });
+    }
+    if (images.length === 0) {
+      return c.json({ success: false, error: "Модель не вернула изображение" }, 500);
+    }
 
     // ── Server-side increment after successful DALL-E generation ──
     const imgIncrement = await usageLimits.checkAndIncrement(wsPrefix, "aiImagePerMonth");
     console.log(`[USAGE] DALL-E incremented: new=${imgIncrement.current}, remaining=${imgIncrement.remaining}`);
 
     sendWebhook("ai.image_generated", { prompt: prompt.slice(0, 100), count: images.length });
-    appendActivityLog({ type: "ai", action: `DALL-E генерация изображения`, details: { promptPreview: prompt.slice(0, 120), model: "dall-e-3" } });
+    appendActivityLog({ type: "ai", action: `Генерация изображения`, details: { promptPreview: prompt.slice(0, 120) } });
 
     return c.json({
       success: true,
@@ -646,7 +745,7 @@ app.get("/make-server-b80b3260/ai/dalle-status", async (c) => {
     return c.json({ success: true, data: { connected: false, error: "OPENAI_API_KEY not set" } });
   }
   // If OpenAI key exists, DALL-E is available
-  return c.json({ success: true, data: { connected: true, model: "dall-e-3" } });
+  return c.json({ success: true, data: { connected: true, model: "gpt-image-2" } });
 });
 
 // ============================================
@@ -663,7 +762,7 @@ app.get("/make-server-b80b3260/integrations/status", async (c) => {
       success: true,
       data: {
         resend: { connected: !!resendKey },
-        dalle: { connected: !!openaiKey, model: "dall-e-3" },
+        dalle: { connected: !!openaiKey, model: "gpt-image-2" },
         notion: { connected: config?.notion?.connected || false, config: config?.notion },
         amplitude: { connected: config?.amplitude?.connected || false, config: config?.amplitude },
       },

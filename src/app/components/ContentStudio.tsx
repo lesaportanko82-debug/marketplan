@@ -211,12 +211,12 @@ export function ContentStudio() {
     // Usage gate: check AI image limit
     if (!canUse("aiImagePerMonth")) {
       showMascotReaction("error", "Лимит AI-изображений исчерпан! Обновите план 🦊");
-      toast.error("Лимит DALL-E генераций исчерпан. Обновите план.");
+      toast.error("Лимит AI-изображений исчерпан. Обновите план.");
       return;
     }
 
     setGeneratingImages(true);
-    toast.info(`Генерация ${withPrompts.length} визуалов через DALL-E 3...`);
+    toast.info(`Генерация ${withPrompts.length} визуалов...`);
     const updatedResults = [...parsed];
     let successCount = 0;
 
@@ -239,7 +239,7 @@ export function ContentStudio() {
         const msg = err?.message || String(err);
         console.error(`[DALL-E] Error for ${item.platformId}:`, msg);
         if (err?.name === "UsageLimitError") {
-          toast.error(err.message || "Лимит DALL-E исчерпан!");
+          toast.error(err.message || "Лимит AI-изображений исчерпан!");
           break;
         }
       }
@@ -412,12 +412,12 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
         );
         toast.success("Изображение обновлено");
       } else {
-        toast.error("Пустой ответ от DALL-E");
+        toast.error("Пустой ответ генератора изображений");
       }
     } catch (err: any) {
       console.error("Regenerate image error:", err?.message || err);
       if (err?.name === "UsageLimitError") {
-        toast.error(err.message || "Лимит DALL-E исчерпан. Обновите план.");
+        toast.error(err.message || "Лимит AI-изображений исчерпан. Обновите план.");
       } else {
         toast.error(`Ошибка генерации: ${err?.message || "неизвестная ошибка"}`);
       }
@@ -480,12 +480,12 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
         );
         toast.success("Изображение сгенерировано");
       } else {
-        toast.error("Пустой ответ от DALL-E");
+        toast.error("Пустой ответ генератора изображений");
       }
     } catch (err: any) {
       console.error("Custom prompt image error:", err?.message || err);
       if (err?.name === "UsageLimitError") {
-        toast.error(err.message || "Лимит DALL-E исчерпан. Обновите план.");
+        toast.error(err.message || "Лимит AI-изображений исчерпан. Обновите план.");
       } else {
         toast.error(`Ошибка генерации: ${err?.message || "неизвестная ошибка"}`);
       }
@@ -771,7 +771,7 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
           {/* Usage meters */}
           <div className="space-y-2 mt-2">
             <UsageMeter usageKey="aiTextPerMonth" label="AI-тексты" variant="compact" />
-            <UsageMeter usageKey="aiImagePerMonth" label="DALL-E" variant="compact" />
+            <UsageMeter usageKey="aiImagePerMonth" label="AI-изображения" variant="compact" />
           </div>
 
           {/* Brand Voice check button */}
@@ -939,7 +939,7 @@ ${brandContext}${hashtagContext}${projectContext}${emojiInstruction}${imageInstr
                             ? <Loader2 className="w-3 h-3 animate-spin" />
                             : <Send className="w-3 h-3" />
                           }
-                          <span className="hidden sm:inline">DALL-E</span>
+                          <span className="hidden sm:inline">AI-визуал</span>
                         </button>
                         {activeResult.imageUrl && (
                           <button

@@ -398,7 +398,12 @@ export function MascotGamesProvider() {
       const pending = getPendingGame();
       if (pending && mounted) {
         // Delay a moment so page renders first
-        const t = setTimeout(() => { if (mounted) setPendingMilestone(pending); }, 1200);
+        const t = setTimeout(() => {
+          if (!mounted) return;
+          // показываем один раз: отмечаем сразу, чтобы окно не всплывало после перезагрузки
+          markGameShown(pending.id);
+          setPendingMilestone(pending);
+        }, 1200);
         timers.push(t);
       }
     };
@@ -425,7 +430,7 @@ export function MascotGamesProvider() {
     // Re-check for more pending
     setTimeout(() => {
       const next = getPendingGame();
-      if (next) setTimeout(() => setPendingMilestone(next), 800);
+      if (next) setTimeout(() => { markGameShown(next.id); setPendingMilestone(next); }, 800);
     }, 500);
   }, [pendingMilestone]);
 
