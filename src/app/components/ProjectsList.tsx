@@ -19,6 +19,7 @@ import { ModalOverlay } from "./ModalOverlay";
 import { useUsage } from "../lib/useUsage";
 import { checkServerUsage } from "../lib/api";
 import { EmptyState } from "./EmptyState";
+import { hasDemoProject, removeDemo } from "../lib/demoSeed";
 
 const PROJECTS_KEY = "projects:list";
 
@@ -100,6 +101,22 @@ export function ProjectsList() {
     if (!loading) syncCounter("projects", projects.length);
   }, [projects.length, loading]);
 
+  const [removingDemo, setRemovingDemo] = useState(false);
+  const showDemoBanner = hasDemoProject(projects);
+  const handleRemoveDemo = async () => {
+    if (!window.confirm("Удалить демо-проект и все примеры (контент-план, идеи, OKR, CJM)? Ваши собственные данные останутся.")) return;
+    setRemovingDemo(true);
+    const ok = await removeDemo();
+    setRemovingDemo(false);
+    if (ok) {
+      save(projects.filter(p => !p.id.includes("-demo-")));
+      toast.success("Демо удалено. Создайте свой первый проект.");
+      setShowAddModal(true);
+    } else {
+      toast.error("Не получилось удалить демо. Попробуйте ещё раз.");
+    }
+  };
+
   const toggleView = (v: "list" | "grid") => {
     setViewMode(v);
     localStorage.setItem("mp:projects:view", v);
@@ -176,6 +193,23 @@ export function ProjectsList() {
 
   return (
     <div className="p-4 md:p-6 max-w-[1440px] mx-auto space-y-5">
+
+      {showDemoBanner && (
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border border-border bg-muted/50 px-4 py-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-[14px] text-foreground font-medium">Сейчас вы смотрите демо-пример</p>
+            <p className="text-[13px] text-muted-foreground">Проект кофейни, контент-план, идеи, OKR и CJM добавлены для знакомства. Когда будете готовы, удалите их и начните со своего.</p>
+          </div>
+          <button
+            onClick={handleRemoveDemo}
+            disabled={removingDemo}
+            className="shrink-0 inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px] hover:opacity-90 disabled:opacity-60"
+          >
+            {removingDemo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+            Удалить демо и начать своё
+          </button>
+        </div>
+      )}
 
       {/* ── Header ── */}
       <div className="flex items-start justify-between flex-wrap gap-3">

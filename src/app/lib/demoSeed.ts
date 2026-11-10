@@ -179,3 +179,30 @@ export async function seedDemoIfNeeded(): Promise<boolean> {
     return false;
   }
 }
+
+const DEMO_KEYS = ["projects:list", "smm_plan:posts", "smm:content_ideas", "okr:objectives", "cjm:maps"];
+const isDemo = (x: any) => typeof x?.id === "string" && x.id.includes("-demo-");
+
+/** Есть ли у пользователя демо-данные (по проекту-примеру). */
+export function hasDemoProject(projects: any[] | null | undefined): boolean {
+  return Array.isArray(projects) && projects.some(isDemo);
+}
+
+/** Удаляет всё демо-наполнение, свои данные пользователя не трогает. */
+export async function removeDemo(): Promise<boolean> {
+  try {
+    const lists = await Promise.all(DEMO_KEYS.map((k) => getData<any[]>(k)));
+    const writes: Promise<boolean>[] = [];
+    lists.forEach((list, i) => {
+      if (Array.isArray(list) && list.some(isDemo)) {
+        writes.push(saveData(DEMO_KEYS[i], list.filter((x) => !isDemo(x))));
+      }
+    });
+    const ok = (await Promise.all(writes)).every(Boolean);
+    clearKVCache();
+    return ok;
+  } catch (e) {
+    console.warn("[demoSeed] remove failed:", e);
+    return false;
+  }
+}
