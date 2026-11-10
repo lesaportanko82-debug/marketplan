@@ -1,9 +1,11 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { Home } from "lucide-react";
 import { Mascot } from "./Mascot";
 
 export function NotFound() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const inApp = pathname.startsWith("/app");
   return (
     <div className="flex flex-col items-center justify-center h-full p-4 md:p-6 text-center">
       <Mascot emotion="oops" size={130} />
@@ -13,11 +15,11 @@ export function NotFound() {
         Марк обыскал всё, но не нашёл. Возможно, страница была перемещена.
       </p>
       <button
-        onClick={() => navigate("/")}
+        onClick={() => navigate(inApp ? "/app" : "/")}
         className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity"
       >
         <Home className="w-4 h-4" />
-        На главную
+        {inApp ? "К проектам" : "На главную"}
       </button>
     </div>
   );
