@@ -169,7 +169,7 @@ export async function checkMarketPlanAccess(userId: string): Promise<{
 // ─── Payment initiation ──────────────────────────────────────────────────────
 
 const PAYMENT_URL =
-  "https://bjhsgjsxhvwtuerahuha.supabase.co/functions/v1/create-payment-marketplan";
+  `https://${projectId}.supabase.co/functions/v1/create-payment-marketplan`;
 
 export async function initiatePayment(
   userId: string,
