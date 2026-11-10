@@ -6,6 +6,22 @@ import { toast } from "sonner";
 import { useAuth } from "../lib/useAuth";
 import { Mascot } from "./Mascot";
 
+/** Понятные сообщения вместо технических ошибок Supabase */
+function humanAuthError(raw: string, fallback: string): string {
+  const m = raw.toLowerCase();
+  if (m.includes("weak") || m.includes("easy to guess") || m.includes("pwned") || m.includes("leaked"))
+    return "Пароль слишком простой или встречался в утечках. Придумайте другой: 8+ символов, буквы, цифры и знаки.";
+  if (m.includes("at least 6") || m.includes("password should be"))
+    return "Пароль слишком короткий — минимум 6 символов.";
+  if (m.includes("invalid email") || m.includes("unable to validate email") || m.includes("email address") && m.includes("invalid"))
+    return "Проверьте email — похоже, в нём ошибка.";
+  if (m.includes("rate limit") || m.includes("too many"))
+    return "Слишком много попыток. Подождите минуту и попробуйте снова.";
+  if (m.includes("failed to fetch") || m.includes("network"))
+    return "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.";
+  return fallback + ". Попробуйте ещё раз или напишите @ohh_lessya в Telegram.";
+}
+
 export function AuthPages() {
   const [mode, setMode] = useState<"login" | "signup" | "reset">("login");
   const [email, setEmail] = useState("");
@@ -33,11 +49,16 @@ export function AuthPages() {
         toast.info("Этот email уже зарегистрирован. Попробуйте войти.");
         setMode("login");
       } else {
-        toast.error("Ошибка регистрации: " + msg);
+        toast.error(humanAuthError(msg, "Не удалось зарегистрироваться"));
       }
     } finally {
       setLoading(false);
     }
+  };
+
+  const openPasswordHelp = () => {
+    window.open("https://t.me/ohh_lessya", "_blank", "noopener");
+    toast.info("Пароль меняет администратор: напишите @ohh_lessya в Telegram с email вашего аккаунта.", { duration: 8000 });
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -73,12 +94,12 @@ export function AuthPages() {
                 <button
                   onClick={() => {
                     toast.dismiss(toastId);
-                    setMode("reset");
+                    openPasswordHelp();
                   }}
                   className="text-left text-[#d4a373] hover:underline text-[12px] font-medium flex items-center gap-1"
                 >
                   <KeyRound className="w-3 h-3" />
-                  Сбросить пароль
+                  Написать в Telegram
                 </button>
               </div>
             </div>
@@ -87,38 +108,8 @@ export function AuthPages() {
         );
         setShowResetHint(true);
       } else {
-        toast.error("Ошибка входа: " + msg);
+        toast.error(humanAuthError(msg, "Не удалось войти"));
       }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePasswordReset = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) { 
-      toast.error("Укажите email для сброса пароля"); 
-      return; 
-    }
-
-    setLoading(true);
-    try {
-      const { supabase } = await import("../lib/useAuth");
-      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      
-      if (error) throw error;
-      
-      toast.success(
-        "Письмо для сброса пароля отправлено! Проверьте почту.",
-        { duration: 6000 }
-      );
-      setMode("login");
-      setPassword("");
-    } catch (err: any) {
-      console.error("Password reset error:", err);
-      toast.error("Не удалось отправить письмо: " + (err?.message || String(err)));
     } finally {
       setLoading(false);
     }
@@ -210,7 +201,7 @@ export function AuthPages() {
               <div className="flex-1">
                 <p className="text-[12px] text-emerald-700 font-medium">Не получилось войти</p>
                 <p className="text-[11px] text-emerald-600/80 mt-0.5">
-                  Проверьте email и пароль. Если аккаунта ещё нет — создайте его, если забыли пароль — сбросьте.
+                  Проверьте email и пароль. Если аккаунта ещё нет — создайте его. Забыли пароль — напишите администратору в Telegram.
                 </p>
                 <button
                   onClick={() => {
@@ -223,11 +214,11 @@ export function AuthPages() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setShowResetHint(false); setMode("reset"); }}
+                  onClick={openPasswordHelp}
                   className="mt-2 ml-2 inline-flex items-center gap-1.5 text-[12px] text-emerald-700 hover:underline font-medium"
                 >
                   <KeyRound className="w-3.5 h-3.5" />
-                  Сбросить пароль
+                  Написать в Telegram
                 </button>
               </div>
             </div>
@@ -235,7 +226,7 @@ export function AuthPages() {
 
           {/* Login / Signup / Reset form */}
           <form
-            onSubmit={mode === "reset" ? handlePasswordReset : mode === "signup" ? handleSignup : handleLogin}
+            onSubmit={mode === "signup" ? handleSignup : handleLogin}
             className="bg-card border border-border rounded-2xl p-4 md:p-6 space-y-4 shadow-xl"
           >
             {mode === "signup" && (
@@ -284,10 +275,10 @@ export function AuthPages() {
                 {mode === "login" && (
                   <button
                     type="button"
-                    onClick={() => setMode("reset")}
+                    onClick={openPasswordHelp}
                     className="mt-1.5 text-[11px] text-muted-foreground hover:text-[#c0854a] transition-colors"
                   >
-                    Забыли пароль?
+                    Забыли пароль? Напишите в Telegram @ohh_lessya
                   </button>
                 )}
               </div>

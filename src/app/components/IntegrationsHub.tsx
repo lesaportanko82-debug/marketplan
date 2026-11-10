@@ -352,7 +352,7 @@ function TelegramModal({ open, onClose, onConfigUpdate }: { open: boolean; onClo
           "MarketPlan - AI-маркетинг планер",
           "Модули: Проекты, Аналитика, SMM, Конкуренты, A/B, Медиа",
           "AI-инструменты: Метрики, Бюджет, ЦА, Триггеры",
-          "Интеграции: OpenAI, Resend, Pipedream, Telegram, DALL-E",
+          "Интеграции: OpenAI, Resend, Telegram, DALL-E",
           "Технологии: React, Tailwind, Supabase, Recharts",
           "",
           "Полная версия PRD доступна в MarketPlan → PRD.",
@@ -646,13 +646,6 @@ export function IntegrationsHub() {
       features: ["3 размера", "2 стиля (vivid, natural)", "Промпт-шаблоны"],
     },
     {
-      id: "pipedream", name: "Pipedream Webhooks", icon: Webhook,
-      description: "Автоматизации: Telegram/Slack-уведомления, Google Sheets",
-      color: "bg-orange-500/10 text-orange-600", connected: true,
-      actions: [{ label: "Webhook Builder", onClick: () => setWebhookOpen(true), icon: Settings2 }, { label: "Тест", onClick: handleTestWebhook, icon: Zap }],
-      features: ["Пресеты событий", "Произвольный JSON", "История отправок"],
-    },
-    {
       id: "notion", name: "Notion", icon: FileText,
       description: "Двусторонняя синхронизация проектов и контент-планов",
       color: "bg-gray-500/10 text-gray-600", connected: status?.notion?.connected ?? false, actions: [],
@@ -856,7 +849,6 @@ export function IntegrationsHub() {
       {/* Modals */}
       <EmailModal open={emailOpen} onClose={() => setEmailOpen(false)} />
       <DalleModal open={dalleOpen} onClose={() => setDalleOpen(false)} />
-      <WebhookModal open={webhookOpen} onClose={() => setWebhookOpen(false)} />
       <TelegramModal open={telegramOpen} onClose={() => setTelegramOpen(false)} onConfigUpdate={loadAll} />
     </div>
   );

@@ -568,7 +568,7 @@ export function PricingPage() {
               </section>
               <section className="space-y-1.5">
                 <h3 className="text-[14px] font-semibold text-foreground">6. Ваши права</h3>
-                <p>Вы вправе запросить доступ к своим данным, их исправление или удаление. Для этого свяжитесь с нами через форму обратной связи внутри сервиса.</p>
+                <p>Вы вправе запросить доступ к своим данным, их исправление или удаление. Для этого свяжитесь с нами в Telegram: @ohh_lessya (t.me/ohh_lessya).</p>
               </section>
               <section className="space-y-1.5">
                 <h3 className="text-[14px] font-semibold text-foreground">7. Cookie</h3>

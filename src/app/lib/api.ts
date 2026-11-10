@@ -353,7 +353,6 @@ export async function sendWebhookEvent(event: string, data: Record<string, any>)
 export interface IntegrationsStatus {
   resend: { connected: boolean };
   dalle: { connected: boolean; model?: string };
-  pipedream: { connected: boolean; url?: string };
   notion: { connected: boolean; config?: any };
   amplitude: { connected: boolean; config?: any };
   googleSheets?: { connected: boolean; config?: any };

@@ -3,7 +3,6 @@ import { createBrowserRouter, redirect } from "react-router";
 import { Layout } from "./components/Layout";
 import { ProjectsList } from "./components/ProjectsList";
 import { NotFound } from "./components/NotFound";
-import { ResetPasswordPage } from "./components/ResetPasswordPage";
 import { OnboardingPage } from "./components/OnboardingPage";
 
 // Lazy loaded components for better performance
@@ -166,10 +165,6 @@ export const router = createBrowserRouter([
   {
     path: "/onboarding",
     loader: () => redirect("/"),
-  },
-  {
-    path: "/reset-password",
-    Component: ResetPasswordPage,
   },
   {
     path: "/app",

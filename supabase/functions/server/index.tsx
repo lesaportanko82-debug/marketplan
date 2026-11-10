@@ -167,27 +167,6 @@ app.get("/make-server-b80b3260/data-prefix/:prefix", async (c) => {
 });
 
 // ============================================
-// Webhook test endpoint
-// ============================================
-app.post("/make-server-b80b3260/webhook/test", async (c) => {
-  try {
-    if (!(await requireWs(c.req.header("Authorization")))) return c.json(UNAUTH, 401);
-    const body = await c.req.json().catch(() => ({}));
-    await sendWebhook("test.ping", {
-      message: body.message || "Test ping from MarketPlan",
-      source: "manual",
-    });
-    return c.json({ success: true, message: "Webhook sent to Pipedream" });
-  } catch (error) {
-    console.log(`Webhook test error: ${error}`);
-    return c.json(
-      { success: false, error: `Webhook test failed: ${error}` },
-      500
-    );
-  }
-});
-
-// ============================================
 // OpenAI connection check
 // ============================================
 app.get("/make-server-b80b3260/ai/status", async (c) => {
@@ -667,27 +646,6 @@ app.get("/make-server-b80b3260/ai/dalle-status", async (c) => {
 });
 
 // ============================================
-// Enhanced Pipedream Webhooks
-// ============================================
-app.post("/make-server-b80b3260/webhook/send", async (c) => {
-  try {
-    if (!(await requireWs(c.req.header("Authorization")))) return c.json(UNAUTH, 401);
-    const body = await c.req.json();
-    const { event, data } = body;
-
-    if (!event) {
-      return c.json({ success: false, error: "event is required" }, 400);
-    }
-
-    await sendWebhook(event, data || {});
-    return c.json({ success: true, message: `Webhook '${event}' sent` });
-  } catch (error) {
-    console.log(`Webhook send error: ${error}`);
-    return c.json({ success: false, error: `Webhook send failed: ${error}` }, 500);
-  }
-});
-
-// ============================================
 // Notion Integration Proxy (saves/reads sync config)
 // ============================================
 app.get("/make-server-b80b3260/integrations/status", async (c) => {
@@ -702,7 +660,6 @@ app.get("/make-server-b80b3260/integrations/status", async (c) => {
       data: {
         resend: { connected: !!resendKey },
         dalle: { connected: !!openaiKey, model: "dall-e-3" },
-        pipedream: { connected: true, url: "eo25iidnjf3m2wa.m.pipedream.net" },
         notion: { connected: config?.notion?.connected || false, config: config?.notion },
         amplitude: { connected: config?.amplitude?.connected || false, config: config?.amplitude },
       },
@@ -1021,14 +978,9 @@ app.post("/make-server-b80b3260/automation/execute", async (c) => {
             });
           }
         } else if (node.subtype === "webhook") {
-          const event = node.config?.event || `automation.${flowId}`;
-          await sendWebhook(event, {
-            flowId, flowName, nodeId: node.id, nodeLabel: node.label,
-            executedAt: new Date().toISOString(),
-          });
           results.push({
             nodeId: node.id, subtype: node.subtype, label: node.label,
-            status: "success", message: `Webhook отправлен: событие "${event}"`,
+            status: "skipped", message: "Внешние вебхуки отключены",
             durationMs: Date.now() - start,
           });
         } else if (node.subtype === "notify") {
@@ -1585,108 +1537,6 @@ app.post("/make-server-b80b3260/auth/remove-member", async (c) => {
   } catch (error) {
     console.log(`Remove member error: ${error}`);
     return c.json({ success: false, error: `Remove member failed: ${error}` }, 500);
-  }
-});
-
-// ============================================
-// AUTH: Change own password (authenticated user)
-// ============================================
-app.post("/make-server-b80b3260/auth/change-password", async (c) => {
-  try {
-    const user = await getUserFromToken(c.req.header("Authorization"));
-    if (!user) {
-      return c.json({ success: false, error: "Not authenticated" }, 401);
-    }
-
-    const body = await c.req.json();
-    const { currentPassword, newPassword } = body;
-
-    if (!currentPassword || !newPassword) {
-      return c.json({ success: false, error: "currentPassword and newPassword are required" }, 400);
-    }
-    if (newPassword.length < 6) {
-      return c.json({ success: false, error: "New password must be at least 6 characters" }, 400);
-    }
-    if (currentPassword === newPassword) {
-      return c.json({ success: false, error: "New password must differ from current" }, 400);
-    }
-
-    // Verify current password by attempting sign-in with user's email
-    const anonClient = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-    );
-    const { error: signInError } = await anonClient.auth.signInWithPassword({
-      email: user.email,
-      password: currentPassword,
-    });
-    if (signInError) {
-      return c.json({ success: false, error: "Current password is incorrect" }, 403);
-    }
-
-    // Update password via admin API
-    const supabase = getAdminClient();
-    const { error: updateError } = await supabase.auth.admin.updateUserById(user.id, {
-      password: newPassword,
-    });
-    if (updateError) {
-      console.log(`Change password admin error: ${updateError.message}`);
-      return c.json({ success: false, error: updateError.message }, 500);
-    }
-
-    console.log(`Password changed for user ${user.id} (${user.email})`);
-    sendWebhook("auth.password_changed", { userId: user.id, email: user.email });
-    return c.json({ success: true });
-  } catch (error) {
-    console.log(`Change password error: ${error}`);
-    return c.json({ success: false, error: `Change password failed: ${error}` }, 500);
-  }
-});
-
-// ============================================
-// AUTH: Reset team member password (owner only)
-// Generates a new random password and returns it
-// ============================================
-app.post("/make-server-b80b3260/auth/reset-member-password", async (c) => {
-  try {
-    const owner = await getUserFromToken(c.req.header("Authorization"));
-    if (!owner) {
-      return c.json({ success: false, error: "Not authenticated" }, 401);
-    }
-
-    const ownerWs = await kv.get(`mp:user_workspace:${owner.id}`) as any;
-    if (ownerWs?.role && ownerWs.role !== "owner") {
-      return c.json({ success: false, error: "Only workspace owners can reset member passwords" }, 403);
-    }
-
-    const body = await c.req.json();
-    const { memberId } = body;
-    if (!memberId) {
-      return c.json({ success: false, error: "memberId is required" }, 400);
-    }
-
-    const memberWs = await kv.get(`mp:user_workspace:${memberId}`) as any;
-    if (!memberWs || memberWs.workspaceId !== owner.id) {
-      return c.json({ success: false, error: "Member not found in your workspace" }, 404);
-    }
-
-    const newPassword = generatePassword(14);
-
-    const supabase = getAdminClient();
-    const { error: updateError } = await supabase.auth.admin.updateUserById(memberId, {
-      password: newPassword,
-    });
-    if (updateError) {
-      console.log(`Reset member password admin error: ${updateError.message}`);
-      return c.json({ success: false, error: updateError.message }, 500);
-    }
-
-    console.log(`Password reset by owner ${owner.id} for member ${memberId}`);
-    sendWebhook("auth.member_password_reset", { ownerId: owner.id, memberId });
-    return c.json({ success: true, data: { password: newPassword } });
-  } catch (error) {
-    console.log(`Reset member password error: ${error}`);
-    return c.json({ success: false, error: `Reset password failed: ${error}` }, 500);
   }
 });
 

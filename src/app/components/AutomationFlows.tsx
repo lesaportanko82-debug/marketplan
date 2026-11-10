@@ -72,7 +72,6 @@ const NODE_REGISTRY: NodeDef[] = [
 
   { subtype: "send_telegram", label: "Отправить в Telegram", icon: MessageCircle, color: "text-sky-500", bg: "bg-sky-500/10 border-sky-500/40", type: "action", category: "Уведомления", configFields: [{ key: "message", label: "Сообщение", type: "text" }] },
   { subtype: "send_email", label: "Отправить Email", icon: Mail, color: "text-amber-500", bg: "bg-amber-500/10 border-amber-500/40", type: "action", category: "Уведомления", configFields: [{ key: "to", label: "Кому", type: "text" }, { key: "subject", label: "Тема", type: "text" }] },
-  { subtype: "webhook", label: "Webhook (Pipedream)", icon: Globe, color: "text-emerald-500", bg: "bg-emerald-500/10 border-emerald-500/40", type: "action", category: "Интеграции", configFields: [{ key: "event", label: "Событие", type: "text" }] },
   { subtype: "update_okr", label: "Обновить OKR", icon: Target, color: "text-teal-500", bg: "bg-teal-500/10 border-teal-500/40", type: "action", category: "Данные", configFields: [{ key: "action", label: "Действие", type: "select", options: ["Увеличить прогресс", "Отметить как выполнено", "Добавить комментарий"] }] },
   { subtype: "create_task", label: "Создать задачу в Notion", icon: Layers, color: "text-gray-500", bg: "bg-gray-500/10 border-gray-500/40", type: "action", category: "Интеграции", configFields: [{ key: "title", label: "Заголовок", type: "text" }] },
   { subtype: "notify", label: "Системное уведомление", icon: Bell, color: "text-orange-500", bg: "bg-orange-500/10 border-orange-500/40", type: "action", category: "Уведомления", configFields: [{ key: "text", label: "Текст", type: "text" }] },
@@ -106,15 +105,14 @@ const FLOW_TEMPLATES: Omit<AutomationFlow, "id" | "createdAt" | "updatedAt" | "r
     connections: [{ from: "t1", to: "c1" }, { from: "c1", to: "a1", label: "Да" }, { from: "a1", to: "a2" }],
   },
   {
-    name: "Контент -> Telegram + Webhook",
-    description: "При публикации конента отправляет уведомление и триггерит Pipedream",
+    name: "Контент → Telegram",
+    description: "При публикации контента отправляет уведомление команде в Telegram",
     active: false,
     nodes: [
       { id: "t1", type: "trigger", subtype: "content_published", label: "Контент опубликован", config: { platform: "Любая" }, x: 50, y: 50 },
       { id: "a1", type: "action", subtype: "send_telegram", label: "Уведомить команду", config: { message: "Новый пост опубликован!" }, x: 50, y: 170 },
-      { id: "a2", type: "action", subtype: "webhook", label: "Pipedream триггер", config: { event: "content_published" }, x: 50, y: 290 },
     ],
-    connections: [{ from: "t1", to: "a1" }, { from: "a1", to: "a2" }],
+    connections: [{ from: "t1", to: "a1" }],
   },
   {
     name: "Результат A/B теста",

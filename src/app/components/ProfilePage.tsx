@@ -52,7 +52,7 @@ interface TeamMember {
   email: string;
   name: string;
   role: UserRole;
-  access?: string;
+  access?: string[] | "all";
   addedAt?: number;
 }
 
@@ -408,168 +408,25 @@ export function ProfilePage() {
         </div>
       </div>
 
-      {/* Change Password Card */}
+      {/* Security: password changes go through the administrator */}
       <div className="bg-card border border-border rounded-2xl p-5">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-2.5">
             <Lock className="w-5 h-5 text-[#d4a373]" />
             <div>
               <h3 className="text-[14px] font-semibold text-foreground">Безопасность</h3>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Смена пароля для вашего аккаунта</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Смена пароля — через администратора в Telegram</p>
             </div>
           </div>
-          {!pwOpen && (
-            <button
-              onClick={() => setPwOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-muted hover:bg-muted/80 text-foreground text-[11px] font-medium rounded-lg transition-colors"
-            >
-              <Key className="w-3 h-3" />
-              Сменить пароль
-            </button>
-          )}
+          <a
+            href="https://t.me/ohh_lessya" target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-muted hover:bg-muted/80 text-foreground text-[11px] font-medium rounded-lg transition-colors"
+          >
+            <Key className="w-3 h-3" />
+            Написать @ohh_lessya
+          </a>
         </div>
-
-        {pwOpen && (
-          <div className="mt-4 pt-4 border-t border-border space-y-3">
-            {/* Current password */}
-            <div>
-              <label className="text-[11px] font-medium text-muted-foreground mb-1 block">Текущий пароль</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-                <input
-                  type={showCurrentPw ? "text" : "password"}
-                  value={currentPw}
-                  onChange={e => setCurrentPw(e.target.value)}
-                  placeholder="Ваш текущий пароль"
-                  className="w-full pl-9 pr-10 py-2.5 text-[13px] bg-input-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-[#d4a373]/40 placeholder:text-muted-foreground"
-                />
-                <button type="button" onClick={() => setShowCurrentPw(!showCurrentPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                  {showCurrentPw ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-            </div>
-
-            {/* New password */}
-            <div>
-              <label className="text-[11px] font-medium text-muted-foreground mb-1 block">Новый пароль</label>
-              <div className="relative">
-                <Key className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-                <input
-                  type={showNewPw ? "text" : "password"}
-                  value={newPw}
-                  onChange={e => setNewPw(e.target.value)}
-                  placeholder="Минимум 6 символов"
-                  className="w-full pl-9 pr-10 py-2.5 text-[13px] bg-input-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-[#d4a373]/40 placeholder:text-muted-foreground"
-                />
-                <button type="button" onClick={() => setShowNewPw(!showNewPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                  {showNewPw ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-              {/* Strength indicator */}
-              {pwStrength && (
-                <div className="mt-1.5">
-                  <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
-                    <div className={`h-full ${pwStrength.color} ${pwStrength.w} transition-all duration-300 rounded-full`} />
-                  </div>
-                  <p className={`text-[10px] mt-0.5 ${pwStrength.color.replace("bg-", "text-")}`}>{pwStrength.label}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Confirm password */}
-            <div>
-              <label className="text-[11px] font-medium text-muted-foreground mb-1 block">Подтвердите пароль</label>
-              <div className="relative">
-                <CheckCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-                <input
-                  type="password"
-                  value={confirmPw}
-                  onChange={e => setConfirmPw(e.target.value)}
-                  placeholder="Повторите новый проль"
-                  onKeyDown={e => e.key === "Enter" && handleChangePassword()}
-                  className={`w-full pl-9 pr-4 py-2.5 text-[13px] bg-input-background border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-[#d4a373]/40 placeholder:text-muted-foreground ${
-                    confirmPw && confirmPw !== newPw ? "border-red-500/50" : "border-border"
-                  }`}
-                />
-              </div>
-              {confirmPw && confirmPw !== newPw && (
-                <p className="text-[10px] text-red-500 mt-0.5 flex items-center gap-1">
-                  <AlertTriangle className="w-3 h-3" />Пароли не совпадают
-                </p>
-              )}
-              {confirmPw && confirmPw === newPw && newPw.length >= 6 && (
-                <p className="text-[10px] text-emerald-500 mt-0.5 flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" />Пароли совпадают
-                </p>
-              )}
-            </div>
-
-            <div className="flex gap-2 pt-1">
-              <button
-                onClick={handleChangePassword}
-                disabled={changePwLoading || !currentPw || !newPw || newPw !== confirmPw || newPw.length < 6}
-                className="flex-1 py-2.5 bg-[#d4a373] hover:bg-[#c0854a] text-white text-[12px] font-medium rounded-xl flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
-              >
-                {changePwLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-                Сохранить
-              </button>
-              <button
-                onClick={() => { setPwOpen(false); setCurrentPw(""); setNewPw(""); setConfirmPw(""); }}
-                className="px-4 py-2.5 text-[12px] text-muted-foreground hover:bg-muted rounded-xl transition-colors"
-              >
-                Отмена
-              </button>
-            </div>
-          </div>
-        )}
       </div>
-
-      {/* Data Migration Card (owner only) */}
-      {isOwner && (
-        <div className="bg-card border border-border rounded-2xl p-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <Database className="w-5 h-5 text-[#d4a373]" />
-              <div>
-                <h3 className="text-[14px] font-semibold text-foreground">Миграция данных</h3>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Перенос старых данных в изолированное рабочее пространство</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {migrationStatus?.migrated ? (
-                <span className="text-[11px] text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-full font-medium flex items-center gap-1">
-                  <Check className="w-3 h-3" />Мигрировано
-                </span>
-              ) : (
-                <button
-                  onClick={handleManualMigration}
-                  disabled={migrating}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#d4a373] hover:bg-[#c0854a] text-white text-[11px] font-medium rounded-lg transition-colors disabled:opacity-50"
-                >
-                  {migrating ? <Loader2 className="w-3 h-3 animate-spin" /> : <ArrowRightLeft className="w-3 h-3" />}
-                  Мигрировать
-                </button>
-              )}
-            </div>
-          </div>
-          {migrationStatus?.details && (
-            <div className="mt-3 pt-3 border-t border-border grid grid-cols-2 md:grid-cols-3 gap-3 text-center">
-              <div>
-                <p className="text-[18px] font-bold text-foreground">{migrationStatus.details.count ?? migrationStatus.details.migrated ?? 0}</p>
-                <p className="text-[10px] text-muted-foreground">Перенесено</p>
-              </div>
-              <div>
-                <p className="text-[18px] font-bold text-foreground">{migrationStatus.details.skippedCount ?? migrationStatus.details.skipped ?? 0}</p>
-                <p className="text-[10px] text-muted-foreground">Пропущено</p>
-              </div>
-              <div>
-                <p className="text-[18px] font-bold text-foreground">{migrationStatus.details.totalLegacyKeys ?? "-"}</p>
-                <p className="text-[10px] text-muted-foreground">Всего ключей</p>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Access info for non-owners */}
       {!isOwner && (
@@ -644,16 +501,6 @@ export function ProfilePage() {
                       <span className={"text-[10px] font-medium px-2 py-0.5 rounded-full " + ROLE_COLORS[member.role]}>
                         {ROLE_LABELS[member.role]}
                       </span>
-                      <button
-                        onClick={() => handleResetMemberPassword(member.userId)}
-                        disabled={resetLoading && resetMemberId === member.userId}
-                        title="Сбросить пароль"
-                        className="p-1.5 hover:bg-amber-500/10 rounded-lg text-muted-foreground hover:text-amber-500 transition-colors"
-                      >
-                        {resetLoading && resetMemberId === member.userId
-                          ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          : <RefreshCw className="w-3.5 h-3.5" />}
-                      </button>
                       <button onClick={() => setEditMember(editMember === member.userId ? null : member.userId)} className="p-1.5 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground transition-colors">
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
@@ -662,28 +509,6 @@ export function ProfilePage() {
                       </button>
                     </div>
                   </div>
-
-                  {/* Show reset password result */}
-                  {resetMemberId === member.userId && resetNewPw && (
-                    <div className="mt-3 pt-3 border-t border-border">
-                      <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
-                        <p className="text-[11px] text-amber-600 font-medium mb-2 flex items-center gap-1.5">
-                          <Key className="w-3 h-3" />Новый пароль (покажите участнику)
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 px-3 py-2 bg-background border border-border rounded-lg text-[13px] text-foreground font-mono">
-                            {resetNewPw}
-                          </div>
-                          <button onClick={() => copyToClip("reset-pw", resetNewPw)} className="p-2 hover:bg-muted rounded-lg">
-                            {copiedField === "reset-pw" ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
-                          </button>
-                        </div>
-                        <button onClick={() => { setResetMemberId(null); setResetNewPw(null); }} className="mt-2 text-[10px] text-muted-foreground hover:text-foreground transition-colors">
-                          Скрыть
-                        </button>
-                      </div>
-                    </div>
-                  )}
 
                   <div className="mt-2 flex flex-wrap gap-1">
                     {member.access === "all" ? (
